@@ -1,0 +1,18 @@
+{
+  "template": "typescript",
+  "name": "runbook",
+  "description": "",
+  "packageJson": {
+    "bin":             {
+      "runbook": "dist/index.js"
+    },
+    "dependencies": {  "commander": "^10.0.0"},
+    "devDependencies": {}
+  },
+  "links": [],
+  "guards": {
+    "compile": true,
+    "publish": false,
+    "test": true
+  }
+}

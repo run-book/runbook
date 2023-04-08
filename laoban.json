@@ -1,0 +1,22 @@
+{
+  "packageManager": "yarn",
+  "parents": [
+    "@laoban@/laoban.json/core.laoban.json",
+    "@laoban@/laoban.json/javascript.laoban.json",
+    "@laoban@/laoban.json/typescript.laoban.json",
+    "@laoban@/laoban.json/typescript.publish.laoban.json",
+    "@laoban@/laoban.json/react.laoban.json"
+  ],
+  "properties": {
+    "license": "MIT",
+    "repository": "LICENSE.md"
+  },
+  "templates": {
+    "javascript": "@laoban@/templates/javascript",
+    "typescript": "@laoban@/templates/typescript_405",
+    "typescript_react": "@laoban@/templates/typescript_react"
+  },
+  "defaultEnv": {
+    "NPM_TOKEN": ""
+  }
+}

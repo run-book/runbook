@@ -1,0 +1,14 @@
+# Laoban ignores
+.cache/
+.session/
+.log
+.status
+.profile
+.version.test.txt
+.package.details.test.json
+.laoban.test.json
+
+node_modules/
+
+.idea/
+dist/
