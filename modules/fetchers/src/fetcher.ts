@@ -9,7 +9,7 @@ import { ShouldFetchFn, ShouldFetchResult } from "./shouldFetch";
  * And we don't want to waste CPU cycles recalculating the same thing over and over so we
  * pass the ShouldFetchResult to the fetch function. They can have 'payload' in it.
  *
- * It's hard in typescript to have the payload typed (possible, but very very busy code) so we just
+ * It's hard in typescript to have the payload typed (possible, but very very busy / messy code) so we just
  * pass the ShouldFetchResult and let the fetcher decide what to do with it.
  */
 export interface Fetcher<State, C> extends HasDescription {
@@ -17,4 +17,9 @@ export interface Fetcher<State, C> extends HasDescription {
   fetch: FetcherLoadFn<State, C>
 }
 
-export type FetcherLoadFn<State, C> = ( f: ShouldFetchResult ) => KleisliWithErrors<State, TransformCmd<State, C>[]>
+export type FetcherLoadFn<State, C> = ( f: ShouldFetchResult ) => KleisliWithErrors<State, FetcherResult<State, C>>
+
+export interface FetcherResult<State, C> {
+  tx: TransformCmd<State, C>
+  otherTxs: TransformCmd<State, any>[]
+}

@@ -1,9 +1,12 @@
 {
-  "name": "@runbook/fetchers",
+  "name": "run-book",
   "description": "",
   "version": "0.0.1",
   "main": "dist/index",
   "types": "dist/index",
+  "bin": {
+    "runbook": "dist/index.js"
+  },
   "browserslist": {
     "development": [
       "last 1 chrome version",
@@ -16,7 +19,9 @@
       "not op_mini all"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "commander": "^10.0.0"
+  },
   "devDependencies": {
     "typescript": "^4.0.5",
     "@types/node": "^14.14.7",

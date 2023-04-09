@@ -1,0 +1,15 @@
+{
+  "template":    "typescript",
+  "name":        "@runbook/fetch-shell",
+  "description": "",
+  "packageJson": {
+    "dependencies":    {},
+    "devDependencies": {}
+  },
+  "links":       ["@runbook/fetchers"],
+  "guards":      {
+    "compile": true,
+    "publish": false,
+    "test":    true
+  }
+}

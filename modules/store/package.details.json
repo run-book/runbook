@@ -1,0 +1,15 @@
+{
+  "template":    "typescript",
+  "name":        "@runbook/store",
+  "description": "",
+  "packageJson": {
+    "dependencies":    {},
+    "devDependencies": {}
+  },
+  "links":       ["@runbook/utils", "@runbook/optics"],
+  "guards":      {
+    "compile": true,
+    "publish": true,
+    "test":    true
+  }
+}

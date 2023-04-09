@@ -1,5 +1,5 @@
-import { TransformCmd, transformToString } from "@runbook/optics";
-import { Fetcher } from "./fetcher";
+import { transformToString } from "@runbook/optics";
+import { Fetcher, FetcherResult } from "./fetcher";
 import { ErrorsAnd, foldErrors, mapObjValues, mapObjValuesK, merge2Objs, NameAnd } from "@runbook/utils";
 import { isFailedShouldFetchResult, isSuccessfulShouldFetchResult, ShouldFetchResult } from "./shouldFetch";
 
@@ -16,9 +16,9 @@ export interface WhyNotLoadedAnd<State, T> {
 }
 
 /**Functor. If 'wont load' then map will do nothing. If it can load. map will work */
-export type WhyNotLoadedAndFetcher<State> = WhyNotLoadedAnd<State, Fetcher<State, any>>
+export type WhyNotLoadedAndFetcher<State, C> = WhyNotLoadedAnd<State, Fetcher<State, C>>
 
-export type WhyNotLoadedAndTransforms<State> = WhyNotLoadedAnd<State, ErrorsAnd<TransformCmd<State, any>[]>>
+export type WhyNotLoadedAndTransforms<State, C> = WhyNotLoadedAnd<State, ErrorsAnd<FetcherResult<State, C>>>
 export function mapWhyNotLoadedAnd<State, T, T1> ( w: WhyNotLoadedAnd<State, T>, f: ( t: T ) => T1 ): WhyNotLoadedAnd<State, T1> {
   let whyNotLoaded = w.whyNotLoaded;
   return isSuccessfulShouldFetchResult ( whyNotLoaded ) ? { whyNotLoaded, data: f ( w.data! ) } : { whyNotLoaded };
@@ -33,39 +33,39 @@ export async function mapWhyNotLoadedAndK<State, T, T1> ( w: WhyNotLoadedAnd<Sta
 }
 
 
-export function whichWillLoad<State> ( fs: NameAnd<Fetcher<State, any>> ): ( s: State ) => NameAnd<WhyNotLoadedAndFetcher<State>> {
+export function whichWillLoad<State> ( fs: NameAnd<Fetcher<State, any>> ): ( s: State ) => NameAnd<WhyNotLoadedAndFetcher<State, any>> {
   return s => mapObjValues ( fs, ( f: Fetcher<State, any> ) => {
     let whyNotLoaded: ShouldFetchResult = f.shouldLoad ( s );
     return isFailedShouldFetchResult ( whyNotLoaded ) ? { whyNotLoaded } : { whyNotLoaded, data: f }
   } )
 }
 
-export const fetch = <State> ( state: State ) => async ( w: WhyNotLoadedAndFetcher<State> ): Promise<WhyNotLoadedAndTransforms<State>> =>
+export const fetch = <State> ( state: State ) => async <C> ( w: WhyNotLoadedAndFetcher<State, C> ): Promise<WhyNotLoadedAndTransforms<State, C>> =>
   mapWhyNotLoadedAndK ( w, f => f.fetch ( w.whyNotLoaded ) ( state ) );
 
-export const fetchAll = async <State> ( ws: NameAnd<WhyNotLoadedAndFetcher<State>>, state: State ): Promise<NameAnd<WhyNotLoadedAndTransforms<State>>> =>
+export const fetchAll = async <State, C> ( ws: NameAnd<WhyNotLoadedAndFetcher<State, C>>, state: State ): Promise<NameAnd<WhyNotLoadedAndTransforms<State, C>>> =>
   mapObjValuesK ( ws, fetch ( state ) );
 
-export interface TraceFetch<State> {
-  whyNotLoaded: WhyNotLoadedAndFetcher<State>
-  transforms?: ErrorsAnd<TransformCmd<State, any>[]>
+export interface TraceFetch<State, C> {
+  whyNotLoaded: WhyNotLoadedAndFetcher<State, C>
+  transforms?: ErrorsAnd<FetcherResult<State, C>>
 }
-function mergeIntoTraceFetch<State> ( whyNotLoaded: WhyNotLoadedAndFetcher<State>, transforms: WhyNotLoadedAndTransforms<State> ): TraceFetch<State> {
+function mergeIntoTraceFetch<State, C> ( whyNotLoaded: WhyNotLoadedAndFetcher<State, C>, transforms: WhyNotLoadedAndTransforms<State, C> ): TraceFetch<State, C> {
   if ( isFailedShouldFetchResult ( whyNotLoaded.whyNotLoaded ) ) return { whyNotLoaded }
   return { whyNotLoaded, transforms: transforms.data }
 }
-export async function traceFetch<State> ( fs: NameAnd<Fetcher<State, any>>, state: State ): Promise<NameAnd<TraceFetch<State>>> {
+export async function traceFetch<State, C> ( fs: NameAnd<Fetcher<State, any>>, state: State ): Promise<NameAnd<TraceFetch<State, C>>> {
   const whyNotLoaded = whichWillLoad ( fs ) ( state )
   const transforms = await fetchAll ( whyNotLoaded, state )
   return merge2Objs ( whyNotLoaded, transforms, mergeIntoTraceFetch )
 }
-export function traceFetchToString<State> ( t: TraceFetch<State> ) {
+export function traceFetchToString<State, C> ( t: TraceFetch<State, C> ) {
   const whyNotLoaded = t.whyNotLoaded
-  const transforms = foldErrors ( t.transforms, ts => ts.map ( transformToString ), t => t.errors )
+  const transforms = foldErrors ( t.transforms, res => { return { tx: transformToString ( res.tx ), otherTxs: res.otherTxs.map ( transformToString ) }; }, t => ({ errors: t.errors }) as any )
   const result = { whyNotLoaded, transforms }
   return JSON.stringify ( result, null, 2 )
 }
 
-export function traceFetchObjToString<State> ( t: NameAnd<TraceFetch<State>> ) {
+export function traceFetchObjToString<State, C> ( t: NameAnd<TraceFetch<State, C>> ) {
   return mapObjValues ( t, traceFetchToString )
 }

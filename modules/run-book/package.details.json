@@ -1,9 +1,12 @@
 {
   "template": "typescript",
-  "name": "@runbook/fetchers",
+  "name": "run-book",
   "description": "",
   "packageJson": {
-    "dependencies": {},
+    "bin":             {
+      "runbook": "dist/index.js"
+    },
+    "dependencies": {  "commander": "^10.0.0"},
     "devDependencies": {}
   },
   "links": [],

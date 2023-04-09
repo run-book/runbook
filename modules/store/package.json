@@ -1,12 +1,9 @@
 {
-  "name": "runbook",
+  "name": "@runbook/store",
   "description": "",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "dist/index",
   "types": "dist/index",
-  "bin": {
-    "runbook": "dist/index.js"
-  },
   "browserslist": {
     "development": [
       "last 1 chrome version",
@@ -20,7 +17,8 @@
     ]
   },
   "dependencies": {
-    "commander": "^10.0.0"
+    "@runbook/utils": "0.0.1",
+    "@runbook/optics": "0.0.1"
   },
   "devDependencies": {
     "typescript": "^4.0.5",
