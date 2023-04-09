@@ -1,3 +1,6 @@
+import { getOptional, getOptionalFn } from "./getter";
+import { Optional } from "./optional";
+
 export type SetFn<M, C> = Setter<M, C> | ReverseGet<M, C>
 export type SetOptionalFn<M, C> = SetOptional<M, C> | Setter<M, C> | ReverseGet<M, C>
 
@@ -7,6 +10,16 @@ export function set<M, C> ( optic: SetFn<M, C>, model: M, child: C ): M {
 export function setOptional<M, C> ( optic: SetOptionalFn<M, C>, model: M, child: C ): M | undefined {
   return setOptionalFn ( optic ) ( model, child )
 }
+export function setOptionalOrOriginal<M, C> ( optic: SetOptionalFn<M, C>, model: M, child: C ): M {
+  const result = setOptionalFn ( optic ) ( model, child )
+  return result === undefined ? model : result
+}
+export const mapOptionalOrOriginal = <M, C> ( optic: Optional<M, C>)=>( model: M, fn: ( child: C ) => C ): M => {
+  const result = getOptional ( optic, model )
+  if ( result === undefined ) return model
+  const newChild = fn ( result )
+  return setOptionalOrOriginal ( optic, model, newChild )
+};
 
 export interface SetOptional<M, C> {setOptional: ( model: M, child: C ) => M | undefined}
 export function isSetOptional<M, C> ( setOptional: SetOptionalFn<M, C> ): setOptional is SetOptional<M, C> {

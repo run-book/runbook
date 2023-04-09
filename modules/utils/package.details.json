@@ -1,0 +1,15 @@
+{
+  "template": "typescript",
+  "name": "@runbook/utils",
+  "description": "",
+  "packageJson": {
+    "dependencies": {},
+    "devDependencies": {}
+  },
+  "links": [],
+  "guards": {
+    "compile": true,
+    "publish": false,
+    "test": true
+  }
+}

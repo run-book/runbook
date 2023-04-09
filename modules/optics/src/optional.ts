@@ -6,6 +6,10 @@ import { Iso } from "./iso";
 import { PrismR } from "./prism";
 
 export type Optional<M, C> = OptionalR<M, C> | Iso<M, C> | LensR<M, C> | PrismR<M, C>
+export interface HasOptional<M, C> {
+  optional: Optional<M, C>
+}
+
 export interface OptionalR<M, C> {
   getOptional: ( model: M ) => C | undefined
   setOptional: ( model: M, child: C ) => M | undefined
