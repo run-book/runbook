@@ -6,7 +6,7 @@
     "dependencies": {},
     "devDependencies": {}
   },
-  "links": [],
+  "links": ["@runbook/loaders"],
   "guards": {
     "compile": true,
     "publish": true,

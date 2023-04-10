@@ -1,4 +1,5 @@
 import { ErrorsAnd, isErrors } from "./errors";
+import { flatMap } from "./list";
 
 export type NameAnd<T> = { [ name: string ]: T }
 
@@ -28,7 +29,9 @@ export function mapObjToArray<T, T1> ( obj: NameAnd<T>, fn: ( t: T, name: string
   for ( const name in obj ) result.push ( fn ( obj[ name ], name, i++ ) )
   return result
 }
-
+export function flatMapEntries<T, T1> ( o: NameAnd<T>, fn: ( t: T, name: string ) => T1[] ): T1[] {
+  return flatMap ( Object.entries ( o ), ( [ name, t ] ) => fn ( t, name ) )
+}
 export function fromEntries<T> ( entries: [ string, T ][] ): NameAnd<T> {
   const result: NameAnd<T> = {}
   for ( const [ name, t ] of entries ) result[ name ] = t
@@ -45,4 +48,25 @@ export async function mapObjErrorK<T, T1> ( obj: NameAnd<ErrorsAnd<T>>, fn: ( t:
   } )
   const nameAndResults: [ string, ErrorsAnd<T1> ][] = await Promise.all ( nameAndResultsPromiseArray )
   return fromEntries ( nameAndResults )
+}
+
+export interface ObjEqualMessages<T> {
+  oneIsNull: string
+  twoIsNull: string
+  lengthMismatch: ( one: number, two: number ) => string
+  keyMismatch: ( one: string, legal: string[]) => string
+  valueMismatch: ( key: string, one: T, two: T ) => string
+}
+export function objsEqualOrMessages<T> ( msgs: ObjEqualMessages<T>, one: NameAnd<T>, two: NameAnd<T> ): string[] {
+  if ( one === null ) return [ msgs.oneIsNull ]
+  if ( two === null ) return [ msgs.twoIsNull ]
+  const oneKeys = Object.keys ( one ).sort()
+  const twoKeys = Object.keys ( two )
+  if ( oneKeys.length !== twoKeys.length ) return [ msgs.lengthMismatch ( oneKeys.length, twoKeys.length ) ]
+  const result: string[] = []
+  for ( const key of oneKeys ) {
+    if ( !twoKeys.includes ( key ) ) result.push ( msgs.keyMismatch ( key, oneKeys ) )
+    else if ( one[ key ] !== two[ key ] ) result.push ( msgs.valueMismatch ( key, one[ key ], two[ key ] ) )
+  }
+  return result
 }
