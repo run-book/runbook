@@ -1,7 +1,7 @@
 import { BindingContext, eval2 } from "./binding2";
 
 const bc: BindingContext = {
-  debug: true,
+  debug: false,
   inheritance: {
     parents: {
       "prod": [ "environment" ],
@@ -86,35 +86,26 @@ describe ( 'another way of doing conditions', () => {
     const condition = { "{env:environment}": { "{ser:service}": { domain: "{domain}", port: "{port}" } } }
     expect ( eval2 ( bc, condition, situation ) ).toEqual ( [
       {
+        "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
         "env": { "path": [ "prod" ], "value": "prod" },
         "port": { "path": [ "prod", "leo", "port" ], "value": 8080 },
         "ser": { "path": [ "prod", "leo" ], "value": "leo" }
       },
-
       {
-        "domainx": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" }
-      },
-      {
-        "env": { "path": [ "prod" ], "value": "prod" },
-        "port": { "path": [ "prod", "leo", "port" ], "value": 8080 },
-        "ser": { "path": [ "prod", "leo" ], "value": "leo" }
-      },
-
-      {
+        "domain": { "path": [ "dev", "leo", "domain" ], "value": "devLeo" },
         "env": { "path": [ "dev" ], "value": "dev" },
         "port": { "path": [ "dev", "leo", "port" ], "value": 80 },
         "ser": { "path": [ "dev", "leo" ], "value": "leo" }
-      },
-      { "domainy": { "path": [ "dev", "leo", "domain" ], "value": "devLeo" } },
-      {
-        "env": { "path": [ "dev" ], "value": "dev" },
-        "port": { "path": [ "dev", "leo", "port" ], "value": 80 },
-        "ser": { "path": [ "dev", "leo" ], "value": "leo" }
-      }
-    ] )
+      } ] )
   } )
   it ( "should have a tree in the condition - constrained", () => {
     const condition = { "{env:environment}": { "{ser:service}": { domain: "{domain}", port: 8080 } } }
+    expect ( eval2 ( bc, condition, situation ) ).toEqual ( [
+      {
+        "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
+        "env": { "path": [ "prod" ], "value": "prod" },
+        "ser": { "path": [ "prod", "leo" ], "value": "leo" }
+      } ] )
 
   } )
 

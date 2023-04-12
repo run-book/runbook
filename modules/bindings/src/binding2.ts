@@ -64,17 +64,16 @@ type OnFoundFn = ( b: Binding2[], thisBinding: Binding2 ) => Binding2[]
 function makeOnFoundToExploreObject ( bc: BindingContext, oldPath: string[], condition: any, situation: any, onFound: OnFoundFn ): OnFoundFn {
   const bcIndented = debugAndIndent ( bc, 'makeOnFoundToExploreObject', JSON.stringify ( condition ) )
   let condKVs = Object.entries ( condition );
-  if ( condKVs.length === 0 ) return ( b, t ) => onFound ( [ ...b, t ], {} );
+  // if ( condKVs.length === 0 ) return ( b, t ) => onFound ( [ ...b, t ], {} );
   let listOfFunctionsForEachPath = condKVs.map ( ( [ condK, condV ] ) => {
     //TODO when tests pass optimse for 'i know the binding' aka 'prod' instead of '{prod}'
     let contFn = ( continuation: OnFoundFn ) =>
       ( bindings: Binding2[], thisBinding ) => flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) => {
         const path = [ ...oldPath, sitK ]
         const newBinding: Binding2 = matchPrimitiveAndAddBindingIfNeeded ( bc, thisBinding, path, condK, sitK )
-        console.log ( 'onFoundToExploreObject', path, newBinding ? newBinding : 'undefined', 'bindings', JSON.stringify ( bindings ) )
         if ( newBinding === undefined ) return bindings
         let result = matchUntilLeafAndThenContinue ( bcIndented, path, condV, sitV, bindings, newBinding, continuation );
-        console.log ( 'result from matchUntilLeafAndThenContinue', result )
+        if ( result === undefined ) return bindings
         return result;
       } );
     return contFn
@@ -92,9 +91,8 @@ function matchUntilLeafAndThenContinue ( bc: BindingContext, path: string[], con
     if ( newBinding ) {
       let allBindings = [ ...b, newBinding ];
       const x = (onFound as any).description;
-      let res = onFound ( allBindings, {} );
-      console.log ( 'res', res )
-      console.log ( 'allBindings', allBindings )
+      let res = onFound ( b, newBinding );
+
       return res;
     } else {
       return [];
@@ -108,10 +106,7 @@ function matchUntilLeafAndThenContinue ( bc: BindingContext, path: string[], con
   return newOnFound ( b, thisBinding )
 }
 
-export function finalOnBound ( b, thisBinding ) {
-  return b;
-}
-finalOnBound.description = 'finalOnBound'
+export const finalOnBound: OnFoundFn = ( b, thisBinding ) => [ ...b, thisBinding ];
 export function eval2 ( bc: BindingContext, condition: any, situation: any ): Binding2[] {
   return matchUntilLeafAndThenContinue ( bc, [], condition, situation, [], {}, finalOnBound )
 }
