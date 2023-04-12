@@ -31,10 +31,6 @@ function isPrimitive ( a: any ): a is Primitive {
   return a === null || a == undefined || t === 'string' || t === 'number' || t === 'boolean'
 }
 
-function keyMatches ( sitK: string, condK: string ) {
-  return condK.startsWith ( '{' ) && condK.endsWith ( '}' ) || sitK === condK;
-}
-
 const idAndInheritsFrom = /^\{([a-zA-Z0-9]*):?([a-zA-Z0-9]*)}$/
 function parseBracketedString ( path: string[], s: string ) {
   const matches = idAndInheritsFrom.exec ( s )
@@ -84,19 +80,10 @@ function makeOnFoundToExploreObject ( bc: BindingContext, oldPath: string[], con
 }
 function matchUntilLeafAndThenContinue ( bc: BindingContext, path: string[], condition: any, situation: any, b: Binding[], thisBinding: Binding, onFound: OnFoundFn ): Binding[] | undefined {
   const bcIndented = debugAndIndent ( bc, )
-  if ( b === undefined ) return undefined
   if ( isPrimitive ( condition ) ) {
     const newBinding = matchPrimitiveAndAddBindingIfNeeded ( bcIndented, thisBinding, path, condition, situation )
     debug ( bcIndented, 'isPrimitive', JSON.stringify ( condition ), JSON.stringify ( situation ), JSON.stringify ( newBinding ) )
-    if ( newBinding ) {
-      let allBindings = [ ...b, newBinding ];
-      const x = (onFound as any).description;
-      let res = onFound ( b, newBinding );
-
-      return res;
-    } else {
-      return [];
-    }
+    return newBinding ? onFound ( b, newBinding ) : [];
   }
 
   if ( Array.isArray ( condition ) || Array.isArray ( situation ) ) throw new Error ( `Can't handle arrays yet` )
