@@ -1,0 +1,15 @@
+{
+  "template":    "typescript",
+  "name":        "@runbook/conditions",
+  "description": "",
+  "packageJson": {
+    "dependencies":    {"@dbpath/parser": "0.3.16"},
+    "devDependencies": {}
+  },
+  "links":       ["@runbook/optics"],
+  "guards":      {
+    "compile": true,
+    "publish": false,
+    "test":    true
+  }
+}
