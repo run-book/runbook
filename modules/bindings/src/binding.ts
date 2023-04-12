@@ -2,7 +2,7 @@ import { flatMap, NameAnd } from "@runbook/utils";
 import { StringDag } from "./inheritance";
 
 
-export type Binding2 = NameAnd<PathAndValue>
+export type Binding = NameAnd<PathAndValue>
 
 export interface PathAndValue {
   path: string[]
@@ -43,7 +43,7 @@ function parseBracketedString ( path: string[], s: string ) {
   const inheritsFrom = matches[ 2 ]
   return { varName, inheritsFrom }
 }
-function matchPrimitiveAndAddBindingIfNeeded ( bc: BindingContext, b: Binding2, path: string[], condition: Primitive, situation: Primitive ): Binding2 | undefined {
+function matchPrimitiveAndAddBindingIfNeeded ( bc: BindingContext, b: Binding, path: string[], condition: Primitive, situation: Primitive ): Binding | undefined {
   if ( typeof condition === 'string' && condition.startsWith ( '{' ) && condition.endsWith ( '}' ) ) {
     const { varName, inheritsFrom } = parseBracketedString ( path, condition )
     if ( inheritsFrom.length > 0 ) {
@@ -52,14 +52,14 @@ function matchPrimitiveAndAddBindingIfNeeded ( bc: BindingContext, b: Binding2, 
       let inherits = bc.inheritance.parents[ situation ]?.includes ( inheritsFrom );
       if ( !inherits ) return undefined;
     }
-    const newBinding: Binding2 = { ...b }
+    const newBinding: Binding = { ...b }
     newBinding[ varName ] = { path, value: situation }
     return newBinding
   }
   return condition === situation ? b : undefined
 }
 
-type OnFoundFn = ( b: Binding2[], thisBinding: Binding2 ) => Binding2[]
+type OnFoundFn = ( b: Binding[], thisBinding: Binding ) => Binding[]
 
 function makeOnFoundToExploreObject ( bc: BindingContext, oldPath: string[], condition: any, situation: any, onFound: OnFoundFn ): OnFoundFn {
   const bcIndented = debugAndIndent ( bc, 'makeOnFoundToExploreObject', JSON.stringify ( condition ) )
@@ -68,9 +68,9 @@ function makeOnFoundToExploreObject ( bc: BindingContext, oldPath: string[], con
   let listOfFunctionsForEachPath = condKVs.map ( ( [ condK, condV ] ) => {
     //TODO when tests pass optimse for 'i know the binding' aka 'prod' instead of '{prod}'
     let contFn = ( continuation: OnFoundFn ) =>
-      ( bindings: Binding2[], thisBinding ) => flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) => {
+      ( bindings: Binding[], thisBinding ) => flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) => {
         const path = [ ...oldPath, sitK ]
-        const newBinding: Binding2 = matchPrimitiveAndAddBindingIfNeeded ( bc, thisBinding, path, condK, sitK )
+        const newBinding: Binding = matchPrimitiveAndAddBindingIfNeeded ( bc, thisBinding, path, condK, sitK )
         if ( newBinding === undefined ) return bindings
         let result = matchUntilLeafAndThenContinue ( bcIndented, path, condV, sitV, bindings, newBinding, continuation );
         if ( result === undefined ) return bindings
@@ -82,7 +82,7 @@ function makeOnFoundToExploreObject ( bc: BindingContext, oldPath: string[], con
   let res = onFoundForEachEntry.reduce ( ( acc, v ) => v ( acc ), onFound );
   return res
 }
-function matchUntilLeafAndThenContinue ( bc: BindingContext, path: string[], condition: any, situation: any, b: Binding2[], thisBinding: Binding2, onFound: OnFoundFn ): Binding2[] | undefined {
+function matchUntilLeafAndThenContinue ( bc: BindingContext, path: string[], condition: any, situation: any, b: Binding[], thisBinding: Binding, onFound: OnFoundFn ): Binding[] | undefined {
   const bcIndented = debugAndIndent ( bc, )
   if ( b === undefined ) return undefined
   if ( isPrimitive ( condition ) ) {
@@ -107,6 +107,6 @@ function matchUntilLeafAndThenContinue ( bc: BindingContext, path: string[], con
 }
 
 export const finalOnBound: OnFoundFn = ( b, thisBinding ) => [ ...b, thisBinding ];
-export function eval2 ( bc: BindingContext, condition: any, situation: any ): Binding2[] {
+export function eval2 ( bc: BindingContext, condition: any, situation: any ): Binding[] {
   return matchUntilLeafAndThenContinue ( bc, [], condition, situation, [], {}, finalOnBound )
 }

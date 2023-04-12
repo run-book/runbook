@@ -1,7 +1,7 @@
-import { AndCondition, parseCondition, RootCondition } from "@runbook/conditions";
-import { BindingContext, evaluateAndCondition, evaluateRootCondition, evaluateRootConditions } from "./bindings";
+import { BindingContext, eval2 } from "./binding";
 
 const bc: BindingContext = {
+  debug: false,
   inheritance: {
     parents: {
       "prod": [ "environment" ],
@@ -14,113 +14,98 @@ const bc: BindingContext = {
     }
   }
 }
+const situation = {
+  prod: { some: "data", leo: { domain: "prodLeo", port: 8080 } },
+  test: { some: "data", leo: { domain: "testLeo", port: 8080 } },
+  dev: { some: 'otherdata', leo: { domain: 'devLeo', port: 80 } }, "junk": "other"
+};
+const s1 = { s: 1, a: 1, b: 2 }
+const s2 = { s: 2, a: 1, b: 2 }
+function bind ( path: string | string[], value: string | number ) {
+  return { path, value }
+}
+describe ( 'another way of doing conditions', () => {
+  it ( "should detect prod", () => {
+    const condition = { "prod": {} }
+    expect ( eval2 ( bc, condition, situation ) ).toEqual ( [ {} ] )
+  } )
+  it ( "should detect {env}", () => {
+    const condition = { "{env}": {} }
+    expect ( eval2 ( bc, condition, situation ) ).toEqual ( [
+      { env: bind ( [ "prod" ], "prod" ) },
+      { "env": { "path": [ "test" ], "value": "test" } },
+      { env: bind ( [ "dev" ], "dev" ) },
+      { env: bind ( [ "junk" ], "junk" ) } ] )
 
-describe ( "binding", () => {
-  let situation = { prod: { some: "data", leo: "data" }, dev: { some: 'otherdata', leo: 'data' }, "junk": "other" };
-  describe ( "single node", () => {
-    describe ( "simple", () => {
-      it ( "should detect 'prod'", () => {
-        const condition = parseCondition ( "prod" ) as RootCondition
-        expect ( evaluateRootCondition ( bc, condition, 99, situation ) ).toEqual ( [
-          { conditionIndex: 99, path: [ 'prod' ] }
-        ] )
-      } )
-      it ( "should detect '{env}", () => {
-        const condition = parseCondition ( "{env}" ) as RootCondition
-        expect ( evaluateRootCondition ( bc, condition, 99, situation ) ).toEqual ( [
-          { conditionIndex: 99, path: [ 'prod' ] },
-          { conditionIndex: 99, path: [ 'dev' ] },
-          { conditionIndex: 99, path: [ 'junk' ] },
-        ] )
-      } )
-    } )
-    describe ( "inheritance", () => {
-      it ( "should detect 'prod:environment'", () => {
-        const condition = parseCondition ( "prod:environment" ) as RootCondition
-        expect ( evaluateRootCondition ( bc, condition, 99, situation ) ).toEqual ( [
-          { conditionIndex: 99, path: [ 'prod' ] }
-        ] )
-      } )
-      it ( "should not detect 'junk:environment'", () => {
-        const condition = parseCondition ( "junk:environment" ) as RootCondition
-        expect ( evaluateRootCondition ( bc, condition, 99, situation ) ).toEqual ( [] )
-      } )
-      it ( "should detect '{env:environment}", () => {
-        const condition = parseCondition ( "{env:environment}" ) as RootCondition
-        expect ( evaluateRootCondition ( bc, condition, 99, situation ) ).toEqual ( [
-          { conditionIndex: 99, path: [ 'prod' ] },
-          { conditionIndex: 99, path: [ 'dev' ] },
-        ] )
-      } )
-    } )
-    describe ( "<>=", () => {
-      const s1 = { s: 1, a: 1, b: 2 }
-      const s2 = { s: 2, a: 1, b: 2 }
-      it ( "should detect 's=1", () => {
-        const condition = parseCondition ( "s=1" ) as RootCondition
-        expect ( evaluateRootCondition ( bc, condition, 99, s1 ) ).toEqual ( [ { conditionIndex: 99, path: [ 's' ] } ] )
-        expect ( evaluateRootCondition ( bc, condition, 99, s2 ) ).toEqual ( [] )
-      } )
-      it ( "should detect '{s}=1", () => {
-        const condition = parseCondition ( "{s}=1" ) as RootCondition
-        expect ( evaluateRootCondition ( bc, condition, 99, s1 ) ).toEqual ( [
-          { conditionIndex: 99, path: [ 's' ] },
-          { conditionIndex: 99, path: [ 'a' ] }
-        ] )
-        expect ( evaluateRootCondition ( bc, condition, 99, s2 ) ).toEqual ( [
-          { conditionIndex: 99, path: [ 'a' ] },
-        ] )
-      } )
-    } );
+  } )
+  it ( "should detect {prod:environment}", () => {
+    const condition = { "{prod:environment}": {} }
+    expect ( eval2 ( bc, condition, situation ) ).toEqual ( [
+      { "prod": { "path": [ "prod" ], "value": "prod" } },
+      { "prod": { "path": [ "dev" ], "value": "dev" } }
+    ] )
+  } )
+  it ( "should detect s:1", () => {
+    const condition = { s: 1 }
+    expect ( eval2 ( bc, condition, s1 ) ).toEqual ( [ {} ] ) // matched twice but no variables
+    expect ( eval2 ( bc, condition, s2 ) ).toEqual ( [] )
+  } )
+  it ( "should detect {any}:{s}", () => {
+    const condition = { "{any}": "{s}" }
+    expect ( eval2 ( bc, condition, s1 ) ).toEqual ( [
+      { "any": { "path": [ "s" ], "value": "s" }, "s": { "path": [ "s" ], "value": 1 } },
+      { "any": { "path": [ "a" ], "value": "a" }, "s": { "path": [ "a" ], "value": 1 } },
+      { "any": { "path": [ "b" ], "value": "b" }, "s": { "path": [ "b" ], "value": 2 } },
+    ] ) // matched twice but no variables
+  } )
+  it ( "should detect {env:{ {ser:service} }}", () => {
+    const condition = { "{env}": { "{ser:service}": {} } }
+    expect ( eval2 ( bc, condition, situation ) ).toEqual ( [
+      { "env": { "path": [ "prod" ], "value": "prod" }, "ser": { "path": [ "prod", "leo" ], "value": "leo" } },
+      { "env": { "path": [ "test" ], "value": "test" }, "ser": { "path": [ "test", "leo" ], "value": "leo" } },
+      { "env": { "path": [ "dev" ], "value": "dev" }, "ser": { "path": [ "dev", "leo" ], "value": "leo" } } ] )
   } )
 
-  describe ( 'multiple nodes', () => {
-    it ( 'should detect "prod.leo"', () => {
-      const condition = parseCondition ( "prod.leo" ) as RootCondition
-      expect ( evaluateRootCondition ( bc, condition, 99, situation ) ).toEqual ( [
-        { conditionIndex: 99, path: [ 'prod', 'leo' ] }
-      ] )
-    } )
-    it ( 'should detect "{env}.{sys}"', () => {
-      const condition = parseCondition ( "{env}.{sys}" ) as RootCondition
-      //  let situation = { prod: { some: "data", leo: "data" }, dev: { some: 'otherdata', leo: 'data' }, "junk": "other" };
-      expect ( evaluateRootCondition ( bc, condition, 99, situation ) ).toEqual ( [
-        { conditionIndex: 99, path: [ 'prod', 'some' ] },
-        { conditionIndex: 99, path: [ 'prod', 'leo' ] },
-        { conditionIndex: 99, path: [ 'dev', 'some' ] },
-        { conditionIndex: 99, path: [ 'dev', 'leo' ] },
-      ] )
-    } )
+  it ( "should have a depth 3 condition", () => {
+    const condition = { "{env:environment}": { "{ser:service}": { domain: "{domain}" } } }//, port: "{port}" } } }
+    expect ( eval2 ( bc, condition, situation ) ).toEqual ( [
+      {
+        "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
+        "env": { "path": [ "prod" ], "value": "prod" }, "ser": {
+          "path": [ "prod", "leo" ], "value": "leo"
+        }
+      },
+      {
+        "domain": { "path": [ "dev", "leo", "domain" ], "value": "devLeo" },
+        "env": { "path": [ "dev" ], "value": "dev" },
+        "ser": { "path": [ "dev", "leo" ], "value": "leo" }
+      }
+    ] )
   } )
-  describe ( 'evaluateConditions', () => {
-    const c0 = parseCondition ( "{env:environment}.{sys}" ) as RootCondition
-    const c1 = parseCondition ( "{env}.{sys:service}" ) as RootCondition
-    it ( "should evaluate conditions", () => {
-      expect ( evaluateRootConditions ( bc, [ c0, c1 ], situation ) ).toEqual ( [
-        { conditionIndex: 0, path: [ 'prod', 'some' ] },
-        { conditionIndex: 0, path: [ 'prod', 'leo' ] },
-        { conditionIndex: 0, path: [ 'dev', 'some' ] },
-        { conditionIndex: 0, path: [ 'dev', 'leo' ] },
-        { conditionIndex: 1, path: [ 'prod', 'leo' ] },
-        { conditionIndex: 1, path: [ 'dev', 'leo' ] },
-      ] )
-    } )
+  it ( "should have a tree", () => {
+    const condition = { "{env:environment}": { "{ser:service}": { domain: "{domain}", port: "{port}" } } }
+    expect ( eval2 ( bc, condition, situation ) ).toEqual ( [
+      {
+        "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
+        "env": { "path": [ "prod" ], "value": "prod" },
+        "port": { "path": [ "prod", "leo", "port" ], "value": 8080 },
+        "ser": { "path": [ "prod", "leo" ], "value": "leo" }
+      },
+      {
+        "domain": { "path": [ "dev", "leo", "domain" ], "value": "devLeo" },
+        "env": { "path": [ "dev" ], "value": "dev" },
+        "port": { "path": [ "dev", "leo", "port" ], "value": 80 },
+        "ser": { "path": [ "dev", "leo" ], "value": "leo" }
+      } ] )
   } )
-
-  describe ( "and conditions", () => {
-    const c2 = parseCondition ( "{env:environment}.{sys}&{env}.{sys:service}" ) as AndCondition
-    const c0 = c2.conditions[ 0 ] as RootCondition
-    const c1 = c2.conditions[ 1 ] as RootCondition
-    it ( "should evaluate and conditions", () => {
-      const rootBindings = evaluateRootConditions ( bc, [ c0, c1 ], situation )
-      expect ( evaluateAndCondition ( bc, rootBindings, c2, 2, situation ) ).toEqual ( [
-        { conditionIndex: 2, parents: [ 0, 1 ], variables: { env: [ "prod" ], sys: [ "prod", "leo" ] } },
-        { conditionIndex: 2, parents: [ 0, 1 ], variables: { env: [ "dev" ], sys: [ "dev", "leo" ] } },
-
-      ] )
-    } )
-
-
+  it ( "should have a tree in the condition - constrained", () => {
+    const condition = { "{env:environment}": { "{ser:service}": { domain: "{domain}", port: 8080 } } }
+    expect ( eval2 ( bc, condition, situation ) ).toEqual ( [
+      {
+        "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
+        "env": { "path": [ "prod" ], "value": "prod" },
+        "ser": { "path": [ "prod", "leo" ], "value": "leo" }
+      } ] )
   } )
 
 } )
