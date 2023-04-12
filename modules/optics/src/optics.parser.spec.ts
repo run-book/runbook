@@ -39,4 +39,5 @@ describe ( "opticsParser", () => {
       expect ( setOptionalFn ( parsed ) ( a1barrayc, 4 ) ).toEqual ( { a: { b: [ { c: 1 }, { c: 2 }, { c: 3 }, { c: 4 } ] } } )
     } )
   } )
+
 } )

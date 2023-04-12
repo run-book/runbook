@@ -305,6 +305,11 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@dbpath/parser@0.3.16":
+  version "0.3.16"
+  resolved "https://registry.yarnpkg.com/@dbpath/parser/-/parser-0.3.16.tgz#fad779546e4f59eb4213464ed5f86902087c905c"
+  integrity sha512-ZQlS8Ow+WGrO6o+5NJ5wm8H2pvwuYqkELFy7e9SB/lfjxtos51dtIx9j90UIzUBOnPL9Jvo4w/1skHFTq5Gh9Q==
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
