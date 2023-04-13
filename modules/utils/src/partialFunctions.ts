@@ -9,8 +9,8 @@ export interface PartialFunction2<Opt, From, To> {
   apply: ( from: From, opt: Opt ) => To
 }
 
-export const chainOfResponsibility2 = <From, Opt,To> ( defaultFn: ( from: From, opt: Opt ) => To, ...fns: PartialFunction2<Opt, From, To>[] ) =>
-  ( opt: Opt, from: From ): To => {
+export const chainOfResponsibility2 = <From, Opt, To> ( defaultFn: ( from: From, opt: Opt ) => To, ...fns: PartialFunction2<Opt, From, To>[] ) =>
+  ( from: From, opt: Opt ): To => {
     for ( let fn of fns )
       if ( fn.isDefinedAt ( opt ) ) return fn.apply ( from, opt )
     return defaultFn ( from, opt )

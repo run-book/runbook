@@ -1,4 +1,4 @@
-import { chainOfResponsibility, chainOfResponsibility2, fromEntries, zipAll } from "@runbook/utils";
+import { chainOfResponsibility2, fromEntries, zipAll } from "@runbook/utils";
 import { DisplayFormat, isTableFormat, TableFormat } from "./displayFormat";
 
 
@@ -36,11 +36,11 @@ export const stringToJsonForJson = ( text: string[] ) => {
   return JSON.parse ( text.join ( '\n' ) )
 }
 export function stringToJsonForOneLineJson ( text: string[] ) {
-  return text.map ( s => JSON.parse ( s ) )
+  return text.map ( s => JSON.parse ( s ) ).join ( '\n' )
 }
 export const stringToJson = chainOfResponsibility2<string[], DisplayFormat, any> (
-  ( text, format ) => {throw Error ( `Unknown format: ${format}` )},
-  { isDefinedAt: f => f === 'asis', apply: t => t },
+  ( text, format ) => {throw Error ( `Unknown format: ${JSON.stringify ( format )}\n\n${text}` )},
+  { isDefinedAt: f => f === 'raw', apply: t => t.join ( '\n' ) },
   { isDefinedAt: f => f === 'json', apply: stringToJsonForJson },
   { isDefinedAt: f => f === 'onelinejson', apply: stringToJsonForJson },
   { isDefinedAt: f => f === 'oneperlinejson', apply: stringToJsonForOneLineJson },

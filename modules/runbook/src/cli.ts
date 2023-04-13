@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { CleanConfig } from "@runbook/config";
-import { mapObjValues, safeObject } from "@runbook/utils";
+import { mapObjValues, NameAnd, safeObject } from "@runbook/utils";
 import { executeScriptInstrument, isVaryingScriptInstument, ScriptInstrument } from "@runbook/scriptinstruments";
 import { execute } from "@runbook/scripts";
 import { bracesVarDefn, derefence } from "@runbook/variables";
@@ -13,11 +13,12 @@ function addInstrumentCommand ( cwd: string, command: Command, name: string, ins
   mapObjValues ( instrument.params, ( value, name ) =>
     command.option ( `--${name} <${name}>`, value.description, value.default )
       .option ( '-s|--showCmd', "Show the command instead of executing it" )
+      .option ( '-r|--raw', "Show the raw output instead of formatting it" )
       .option ( '--config', "Show the json representing the command in the confit" ) )
   command.action ( async () => {
-    const args = command.optsWithGlobals ()
+    const args: any = command.optsWithGlobals ()
     if ( args.config ) return console.log ( JSON.stringify ( instrument, null, 2 ) )
-    console.log ( await (executeScriptInstrument ( cwd, args.showCmd ) ( 'runbook', instrument ) ( args )) )
+    console.log ( await (executeScriptInstrument ( { ...args, cwd, instrument } ) ( 'runbook', instrument ) ( args )) )
   } )
 }
 export function makeProgram ( cwd: string, config: CleanConfig, version: string ): Command {

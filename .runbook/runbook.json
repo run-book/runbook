@@ -9,11 +9,9 @@
       "format":        "table",
       "outputColumns": ["mode", "date", "length", "name"],
       "windows":       {
-        "script":       "dir {dir}",
-        "format":       "table",
-        "ignoreRows":   2,
-        "key":          "name",
-        "inputColumns": ["mode", "date", "length", "name"]
+        "script": "dir {dir}",
+        "format": {"type": "table", "hideHeader": 7, "hideFooter":1,"headers": ["mode", "date", "length", "name"]},
+        "key":    "name"
       },
       "linux":         {
         "script":     "ls -l {dir}",

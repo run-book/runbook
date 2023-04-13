@@ -1,6 +1,7 @@
 import { CommonInstrument, ExecuteInstrumentK } from "@runbook/instruments";
 import { bracesVarDefn, derefence } from "@runbook/variables";
 import { execute } from "@runbook/scripts";
+import { DisplayFormat, stringToJson } from "@runbook/displayformat";
 
 export interface SharedScriptInstrument extends CommonScript {
   script: string
@@ -14,7 +15,7 @@ export interface VaryingScriptInstrument extends CommonScript {
   linux: SharedScriptInstrument,
 }
 export function isVaryingScriptInstument ( instrument: CommonInstrument ): instrument is VaryingScriptInstrument {
-  return (instrument as VaryingScriptInstrument).windows !== undefined
+  return (instrument as any).windows !== undefined
 }
 export type ScriptInstrument = VaryingScriptInstrument | SharedScriptInstrument
 export function isScript ( instrument: CommonInstrument ): instrument is ScriptInstrument {
@@ -23,25 +24,35 @@ export function isScript ( instrument: CommonInstrument ): instrument is ScriptI
 export interface CommonScript extends CommonInstrument {
   type: 'script'
   key: string
-  ignoreHeaderRows?: number,
-  ignoreTailRows?: number,
-  inputColumns?: string[],
+  format: DisplayFormat
 }
 
-export const executeVaryingScriptInstrument = ( cwd: string, showCmd: boolean | undefined ): ExecuteInstrumentK<VaryingScriptInstrument> =>
-  ( context: string, si: VaryingScriptInstrument ) => async ( params ) =>
-    executeSharedScriptInstrument ( cwd, showCmd ) ( context, si.windows ) ( params )
-export const executeSharedScriptInstrument = ( cwd: string, showCmd: boolean | undefined ): ExecuteInstrumentK<SharedScriptInstrument> => ( context: string, si: SharedScriptInstrument ) => async ( params ) => {
-  const cmd = derefence ( context, params, si.script, { variableDefn: bracesVarDefn } );
-  if ( showCmd ) return cmd
-  let result =await execute ( cwd, cmd );
-  return result;
+interface ExecuteScriptOptions {
+  cwd: string,
+  showCmd?: boolean
 }
-export const executeScriptInstrument = ( cwd: string, showCmd: boolean | undefined ): ExecuteInstrumentK<ScriptInstrument> =>
-  ( context, instrument ) => async ( params ) => {
-    if ( isVaryingScriptInstument ( instrument ) )
-      return executeVaryingScriptInstrument ( cwd, showCmd ) ( context, instrument ) ( params )
-    else if ( isSharedScriptInstrument ( instrument ) )
-      return executeSharedScriptInstrument ( cwd, showCmd ) ( context, instrument ) ( params )
-    else throw new Error ( `Unknown instrument type${instrument}` )
-  }
+export interface ExecuteOptions {
+  instrument: ScriptInstrument,
+  cwd: string
+  showCmd?: boolean
+  raw?: boolean
+}
+
+export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumentK<SharedScriptInstrument> => ( context: string, si: SharedScriptInstrument ) => async ( params ) => {
+  const cmd = derefence ( context, params, si.script, { variableDefn: bracesVarDefn } );
+  const { cwd,  showCmd, raw } = opt
+  if ( showCmd ) return cmd
+  let res = await execute ( cwd, cmd );
+  let lines = res.split ( '\n' );
+  console.log ( 'iinstrument', si )
+  return stringToJson ( lines, raw?"raw":si.format )
+}
+export function findShared ( s: ScriptInstrument ): SharedScriptInstrument {
+  if ( isVaryingScriptInstument ( s ) ) return s.windows
+  else if ( isSharedScriptInstrument ( s ) ) return s
+  else throw new Error ( `Unknown instrument type${s}` )
+}
+
+export const executeScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumentK<ScriptInstrument> =>
+  ( context, instrument ) => async ( params ) =>
+    executeSharedScriptInstrument ( opt ) ( context, findShared ( instrument ) ) ( params )

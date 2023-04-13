@@ -9,7 +9,7 @@
   "links": [],
   "guards": {
     "compile": true,
-    "publish": false,
+    "publish": true,
     "test": true
   }
 }
