@@ -1,11 +1,12 @@
-import { NameAnd } from "@runbook/utils";
+import { KleisliWithErrors, NameAnd, Primitive } from "@runbook/utils";
+import { DisplayFormat } from "@runbook/displayformat";
 
 export interface CommonInstrument {
   description: string,
   params: NameAnd<CleanInstrumentParam>,
   staleness: number,
   cost: InstrumentCost,
-  "format": InstrumentFormat,
+  "format": DisplayFormat,
 }
 export interface CleanInstrumentParam {
   type: string,
@@ -13,5 +14,5 @@ export interface CleanInstrumentParam {
   default: string
 }
 type InstrumentCost = "low" | "medium" | "high"
-type InstrumentFormat = "table" | "tablenoheader" | "json" | "onelinejson"
 
+export type ExecuteInstrumentK<I extends CommonInstrument> = ( context: string, instrument: I ) => KleisliWithErrors<NameAnd<Primitive>, any>

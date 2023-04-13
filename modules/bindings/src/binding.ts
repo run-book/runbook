@@ -1,5 +1,6 @@
-import { flatMap, NameAnd } from "@runbook/utils";
+import { flatMap, NameAnd, Primitive } from "@runbook/utils";
 import { StringDag } from "./inheritance";
+import { isPrimitive } from "@runbook/utils";
 
 
 export type Binding = NameAnd<PathAndValue>
@@ -25,11 +26,6 @@ function debugAndIndent ( bc: BindingContext, ...args: any[] ): BindingContext {
   return bc
 }
 
-type Primitive = string | number | boolean | null | undefined;
-function isPrimitive ( a: any ): a is Primitive {
-  const t = typeof a
-  return a === null || a == undefined || t === 'string' || t === 'number' || t === 'boolean'
-}
 
 const idAndInheritsFrom = /^\{([a-zA-Z0-9]*):?([a-zA-Z0-9]*)}$/
 function parseBracketedString ( path: string[], s: string ) {

@@ -1,7 +1,7 @@
-import { flatMap, NameAnd, objsEqualOrMessages } from "@runbook/utils";
+import { flatMap, NameAnd, objsEqualOrMessages, Primitive } from "@runbook/utils";
 
 /** A param is used to parameterise a loader. It can be a string, number or boolean */
-export type Param = string | number | boolean | undefined
+export type Param = Primitive
 export type Params = NameAnd<Param>
 
 /** We need to be able to get the params from the state */

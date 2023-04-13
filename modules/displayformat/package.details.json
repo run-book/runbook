@@ -1,6 +1,6 @@
 {
   "template": "typescript",
-  "name": "@runbook/files",
+  "name": "@runbook/displayformat",
   "description": "",
   "packageJson": {
     "dependencies": {},
@@ -9,7 +9,7 @@
   "links": [],
   "guards": {
     "compile": true,
-    "publish": true,
-    "test": false
+    "publish": false,
+    "test": true
   }
 }

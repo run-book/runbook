@@ -27,13 +27,14 @@ export const getTagsGetterFnFromPath = <State> ( paths: NameAnd<string> ): Param
 }
 
 
-export interface ExistingTags {
-  existingTags?: Params
+export interface ExistingAndRecordedTags {
+  existing?: Params
+  recorded?: Params
 }
-export function isExistingTags ( result: ShouldFetchResult & ExistingTags ): result is ShouldFetchResult & ExistingTags {
+export function isExistingTags ( result: ShouldFetchResult & ExistingAndRecordedTags ): result is ShouldFetchResult & ExistingAndRecordedTags {
   return (result as any).existingTags !== undefined
 }
-export const shouldLoadForTags = <State> ( name: string, recordedTags: ParamsGetterFn<State>, existingTags: ParamsGetterFn<State> ) => ( state: State ): ShouldFetchResult & ExistingTags => {
+export const shouldLoadForTags = <State> ( name: string, recordedTags: ParamsGetterFn<State>, existingTags: ParamsGetterFn<State> ) => ( state: State ): ShouldFetchResult & ExistingAndRecordedTags => {
   const recorded = recordedTags ( state )
   const existing = existingTags ( state )
   if ( recorded === undefined ) return { willFetchBecause: [ 'no recorded tags: this is the first time' ] }
@@ -41,7 +42,7 @@ export const shouldLoadForTags = <State> ( name: string, recordedTags: ParamsGet
   const mismatches = paramsEqualsWithMessagesIfNot ( name,
     recorded, existing )
   if ( mismatches.length > 0 ) return { willFetchBecause: mismatches }
-  return { willNotFetchBecause: [ `tags match ${recorded}` ], existingTags: existing }
+  return { willNotFetchBecause: [ `tags match ${recorded}` ], existing, recorded }
 };
 
 export function transformTagsAfterLoad<State> ( tagHolderOpt: Optional<State, TagHolder>, name: string, existingTags: Params ): TransformSet<State, Params> {
@@ -49,12 +50,14 @@ export function transformTagsAfterLoad<State> ( tagHolderOpt: Optional<State, Ta
   return { optional, set: existingTags }
 }
 
-export function tagFetcher<State, C> ( tagHolderOpt: TagHolderOpt<State>, name: string, paramPaths: NameAnd<string>, loader: KleisliWithErrors<State, TransformCmd<State, C>> ): Fetcher<State, C> {
+export function paramsFetcher<State, C> ( tagHolderOpt: TagHolderOpt<State>, name: string, paramPaths: NameAnd<string>, loader: KleisliWithErrors<Params, TransformCmd<State, C>> ): Fetcher<State, C> {
   const shouldLoad = shouldLoadForTags ( name, recordedTags ( tagHolderOpt, name ), getTagsGetterFnFromPath ( paramPaths ) )
-  const fetch = shouldLoad => async state => mapErrors ( await loader ( state ), tx => {
-    const existingTags = isExistingTags ( shouldLoad ) && shouldLoad.existingTags
-    if ( existingTags === undefined ) return { errors: [ 'no existing tags - this is a violation of an assumption' ] }
-    return { tx, otherTxs: [ transformTagsAfterLoad ( tagHolderOpt, name, existingTags ) ] }
-  } )
+  const fetch = shouldLoad => async state => {
+    const existing = isExistingTags ( shouldLoad ) && shouldLoad.existing
+    return mapErrors ( await loader ( existing ), tx => {
+      if ( existing === undefined ) return { errors: [ 'no existing tags - this is a violation of an assumption' ] }
+      return { tx, otherTxs: [ transformTagsAfterLoad ( tagHolderOpt, name, existing ) ] }
+    } );
+  }
   return { shouldLoad, fetch }
 }

@@ -1,12 +1,12 @@
 {
   "template": "typescript",
-  "name": "@runbook/files",
+  "name": "@runbook/instruments",
   "description": "",
   "packageJson": {
     "dependencies": {},
     "devDependencies": {}
   },
-  "links": [],
+  "links": ["@runbook/utils", "@runbook/displayformat"],
   "guards": {
     "compile": true,
     "publish": true,

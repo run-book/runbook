@@ -1,5 +1,5 @@
 {
-  "name": "@runbook/utils",
+  "name": "@runbook/scriptinstruments",
   "description": "",
   "version": "0.0.5",
   "main": "dist/index",
@@ -16,7 +16,9 @@
       "not op_mini all"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "@runbook/instruments": "0.0.5"
+  },
   "devDependencies": {
     "typescript": "^4.0.5",
     "@types/node": "^14.14.7",

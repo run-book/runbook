@@ -1,15 +1,15 @@
 {
   "template":    "typescript",
-  "name":        "@runbook/fetch-shell",
+  "name":        "@runbook/config",
   "description": "",
   "packageJson": {
     "dependencies":    {},
     "devDependencies": {}
   },
-  "links":       ["@runbook/fetchers"],
+  "links":       ["@runbook/scriptinstruments"],
   "guards":      {
     "compile": true,
     "publish": true,
-    "test":    true
+    "test":    false
   }
 }
