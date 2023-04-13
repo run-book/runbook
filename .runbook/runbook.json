@@ -1,19 +1,17 @@
 {
   "instruments": {
     "ls": {
-      "type":          "script",
-      "description":   "A demo instrument that displays the directory contents",
-      "params":        {"dir": {"default": ".", "description": "The directory to display"}},
-      "staleness":     5000,
-      "cost":          "low",
-      "format":        "table",
-      "outputColumns": ["date", "time", "length", "name"],
-      "windows":       {
+      "type":        "script",
+      "description": "A demo instrument that displays the directory contents",
+      "params":      {"dir": {"default": ".", "description": "The directory to display"}},
+      "staleness":   5000,
+      "cost":        "low",
+      "format":      {"type": "table", "headers": ["date", "time", "length", "name"]},
+      "windows":     {
         "script": "dir {dir}",
-        "format": {"type": "table", "hideHeader": 7, "hideFooter": 3,"headers": ["date", "time", "length", "name"]},
-        "key":    "name"
+        "format": {"type": "table", "hideHeader": 7, "hideFooter": 3, "headers": ["date", "time", "length", "name"]}
       },
-      "linux":         {
+      "linux":       {
         "script":     "ls -l {dir}",
         "format":     "table",
         "ignoreRows": 1,

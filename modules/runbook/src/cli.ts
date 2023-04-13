@@ -25,9 +25,11 @@ function addInstrumentCommand ( cwd: string, command: Command, name: string, ins
     let json = await (executeScriptInstrument ( { ...args, cwd, instrument } ) ( 'runbook', instrument ) ( args ));
 
     function optionToDisplayFormat ( args: any ) {
+      if ( args.raw ) return 'raw'
+      if ( args.json ) return 'json'
       if ( args.onelinejson ) return 'onelinejson'
       if ( args.oneperlinejson ) return 'oneperlinejson'
-      return 'json'
+      return 'oneperlinejson'
     }
     const displayFormat = optionToDisplayFormat ( args )
     console.log ( args.raw ? json : jsonToDisplay ( json, displayFormat ) )
