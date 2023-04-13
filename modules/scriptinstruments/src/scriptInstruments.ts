@@ -40,12 +40,11 @@ export interface ExecuteOptions {
 
 export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumentK<SharedScriptInstrument> => ( context: string, si: SharedScriptInstrument ) => async ( params ) => {
   const cmd = derefence ( context, params, si.script, { variableDefn: bracesVarDefn } );
-  const { cwd,  showCmd, raw } = opt
+  const { cwd, showCmd, raw } = opt
   if ( showCmd ) return cmd
   let res = await execute ( cwd, cmd );
   let lines = res.split ( '\n' );
-  console.log ( 'iinstrument', si )
-  return stringToJson ( lines, raw?"raw":si.format )
+  return stringToJson ( lines, raw ? "raw" : si.format )
 }
 export function findShared ( s: ScriptInstrument ): SharedScriptInstrument {
   if ( isVaryingScriptInstument ( s ) ) return s.windows

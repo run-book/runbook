@@ -4,6 +4,7 @@ import { mapObjValues, NameAnd, safeObject } from "@runbook/utils";
 import { executeScriptInstrument, isVaryingScriptInstument, ScriptInstrument } from "@runbook/scriptinstruments";
 import { execute } from "@runbook/scripts";
 import { bracesVarDefn, derefence } from "@runbook/variables";
+import { jsonToDisplay } from "@runbook/displayformat";
 
 
 function argumentsForInstrument ( command: Command, instrument: ScriptInstrument ) {
@@ -14,11 +15,22 @@ function addInstrumentCommand ( cwd: string, command: Command, name: string, ins
     command.option ( `--${name} <${name}>`, value.description, value.default )
       .option ( '-s|--showCmd', "Show the command instead of executing it" )
       .option ( '-r|--raw', "Show the raw output instead of formatting it" )
+      .option ( "-j|--json", "Show the output as json" )
+      .option ( "--onelinejson", "Show the output as json" )
+      .option ( "-1|--oneperlinejson", "Show the output as json" )
       .option ( '--config', "Show the json representing the command in the confit" ) )
   command.action ( async () => {
     const args: any = command.optsWithGlobals ()
     if ( args.config ) return console.log ( JSON.stringify ( instrument, null, 2 ) )
-    console.log ( await (executeScriptInstrument ( { ...args, cwd, instrument } ) ( 'runbook', instrument ) ( args )) )
+    let json = await (executeScriptInstrument ( { ...args, cwd, instrument } ) ( 'runbook', instrument ) ( args ));
+
+    function optionToDisplayFormat ( args: any ) {
+      if ( args.onelinejson ) return 'onelinejson'
+      if ( args.oneperlinejson ) return 'oneperlinejson'
+      return 'json'
+    }
+    const displayFormat = optionToDisplayFormat ( args )
+    console.log ( args.raw ? json : jsonToDisplay ( json, displayFormat ) )
   } )
 }
 export function makeProgram ( cwd: string, config: CleanConfig, version: string ): Command {

@@ -3,7 +3,7 @@ import { DisplayFormat, isTableFormat, TableFormat } from "./displayFormat";
 
 
 const convertOneLineToJson = ( headers: string[] ) => ( text: string ) => {
-  const matches = text.split ( /\s+/ )
+  const matches = text.split ( /\s+/ ).map(s => s.trim()).filter ( s => s.length > 0 )
   if ( matches === null ) throw new Error ( `Cannot match ${text}` )
   return fromEntries ( zipAll ( headers, matches, ( h, m ) => [ h, m ] ) )
 };
@@ -13,7 +13,7 @@ export const columnsToJson = ( headers: string[], text: string[] ) => {
 
 export const findHeaders = ( tableFormat: TableFormat, text: string[] ) => {
   if ( Array.isArray ( tableFormat.headers ) ) return tableFormat.headers;
-  if ( tableFormat.hideHeader ) return text[ 0 ].split ( /\s+/ )
+  if ( tableFormat.hideHeader ) return text[ 0 ].split ( /\s+/ ).filter ( s => s.length > 0 )
   return text[ 0 ].split ( /\s+/ ).map ( ( _, i ) => `${i + 1}` )
 }
 

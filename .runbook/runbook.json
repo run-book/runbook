@@ -7,10 +7,10 @@
       "staleness":     5000,
       "cost":          "low",
       "format":        "table",
-      "outputColumns": ["mode", "date", "length", "name"],
+      "outputColumns": ["date", "time", "length", "name"],
       "windows":       {
         "script": "dir {dir}",
-        "format": {"type": "table", "hideHeader": 7, "hideFooter":1,"headers": ["mode", "date", "length", "name"]},
+        "format": {"type": "table", "hideHeader": 7, "hideFooter": 3,"headers": ["date", "time", "length", "name"]},
         "key":    "name"
       },
       "linux":         {
