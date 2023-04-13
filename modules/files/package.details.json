@@ -1,13 +1,12 @@
 {
   "template": "typescript",
-  "name": "@runbook/loaders",
+  "name": "@runbook/files",
   "description": "",
   "packageJson": {
     "dependencies": {},
     "devDependencies": {}
   },
-  "links": ["@runbook/utils"],
-
+  "links": [],
   "guards": {
     "compile": true,
     "publish": true,

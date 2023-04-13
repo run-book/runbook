@@ -1,0 +1,13 @@
+{
+  "template":    "typescript",
+  "name":        "@runbook/variables",
+  "description": "A library that can dereference variables in strings",
+  "links":       [
+    "@runbook/utils"
+  ],
+  "guards":      {
+    "publish": true,
+    "test":    true,
+    "compile": true
+  }
+}

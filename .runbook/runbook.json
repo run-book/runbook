@@ -1,0 +1,27 @@
+{
+  "instruments": {
+    "ls": {
+      "type":          "script",
+      "description":   "A demo instrument that displays the directory contents",
+      "params":        {"dir": {"default": ".", "description": "The directory to display"}},
+      "staleness":     5000,
+      "cost":          "low",
+      "format":        "table",
+      "outputColumns": ["mode", "date", "length", "name"],
+      "windows":       {
+        "script":       "dir {dir}",
+        "format":       "table",
+        "ignoreRows":   2,
+        "key":          "name",
+        "inputColumns": ["mode", "date", "length", "name"]
+      },
+      "linux":         {
+        "script":     "ls -l {dir}",
+        "format":     "table",
+        "ignoreRows": 1,
+        "key":        "name",
+        "columns":    ["mode", "num", "group", "owner", "month", "day", "time", "name"]
+      }
+    }
+  }
+}

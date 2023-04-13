@@ -24,6 +24,7 @@ const s2 = { s: 2, a: 1, b: 2 }
 function bind ( path: string | string[], value: string | number ) {
   return { path, value }
 }
+
 describe ( 'another way of doing conditions', () => {
   it ( "should detect prod", () => {
     const condition = { "prod": {} }

@@ -1,12 +1,9 @@
 {
-  "name": "run-book",
-  "description": "",
-  "version": "0.0.2",
+  "name": "@runbook/variables",
+  "description": "A library that can dereference variables in strings",
+  "version": "0.0.4",
   "main": "dist/index",
   "types": "dist/index",
-  "bin": {
-    "runbook": "dist/index.js"
-  },
   "browserslist": {
     "development": [
       "last 1 chrome version",
@@ -20,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "commander": "^10.0.0"
+    "@runbook/utils": "0.0.4"
   },
   "devDependencies": {
     "typescript": "^4.0.5",

@@ -1,0 +1,18 @@
+{
+  "state":        {"file": ".db-auto"},
+  "environments": {
+    "dev":    {"type": "postgres", "host": "localhost", "port": 5432, "database": "postgres", "schema": "public", "username": "phil", "password": "phil", "comment": "don't store your passwords like this! This is just for tests"},
+    "oracle": {"type": "oracle", "connection": "localhost/xepdb1", "schema": "PHIL", "username": "phil", "password": "phil"}
+  },
+  "summary":      {
+    "tables": {
+      "driver": {"tableName": "drivertable"},
+      "audit":  {"tableName": "driver_aud"}
+    }
+  },
+  "scripts":      {
+    "driverMissions": {"description": "gets the missions that the driver is on", "script": "driver.mission"},
+    "driverAudit":    {"description": "gets the audit for the driver", "script": "driver.audit"},
+    "driverSql":      {"description": "demo of sql script", "script": "select * from drivertable", "comment": "This is next thing to get working"}
+  }
+}
