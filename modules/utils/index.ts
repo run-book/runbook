@@ -5,6 +5,7 @@ export * from './src/errors'
 export * from './src/json'
 export * from './src/list'
 export * from './src/nameAnd'
+export * from './src/os'
 export * from './src/partialFunctions'
 export * from './src/safe'
 export * from "./src/strings";

@@ -2,7 +2,7 @@ import { Command } from "commander";
 import { CleanConfig } from "@runbook/config";
 import { mapObjValues, NameAnd, safeObject } from "@runbook/utils";
 import { executeScriptInstrument, isVaryingScriptInstument, ScriptInstrument } from "@runbook/scriptinstruments";
-import { execute } from "@runbook/scripts";
+import { executeScriptInShell, osType } from "@runbook/scripts";
 import { bracesVarDefn, derefence } from "@runbook/variables";
 import { jsonToDisplay } from "@runbook/displayformat";
 
@@ -22,7 +22,7 @@ function addInstrumentCommand ( cwd: string, command: Command, name: string, ins
   command.action ( async () => {
     const args: any = command.optsWithGlobals ()
     if ( args.config ) return console.log ( JSON.stringify ( instrument, null, 2 ) )
-    let json = await (executeScriptInstrument ( { ...args, cwd, instrument } ) ( 'runbook', instrument ) ( args ));
+    let json = await (executeScriptInstrument ( { ...args, os: osType (), cwd, instrument, executeScript: executeScriptInShell } ) ( 'runbook', instrument ) ( args ));
 
     function optionToDisplayFormat ( args: any ) {
       if ( args.raw ) return 'raw'
