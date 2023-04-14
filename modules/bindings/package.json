@@ -1,7 +1,7 @@
 {
   "name": "@runbook/bindings",
   "description": "",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "@runbook/conditions": "0.0.9"
+    "@runbook/conditions": "0.0.10"
   },
   "devDependencies": {
     "typescript": "^4.0.5",
