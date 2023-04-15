@@ -21,11 +21,11 @@ describe ( 'another way of doing conditions', () => {
       { env: bind ( [ "junk" ], "junk" ) } ] )
 
   } )
-  it ( "should detect {prod:environment}", () => {
-    const condition = { "{prod:environment}": {} }
+  it ( "should detect {env:environment}", () => {
+    const condition = { "{env:environment}": {} }
     expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
-      { "prod": { "path": [ "prod" ], "value": "prod" } },
-      { "prod": { "path": [ "dev" ], "value": "dev" } }
+      { "env": { "path": [ "prod" ], "value": "prod", "namespace": "environment", } },
+      { "env": { "path": [ "dev" ], "value": "dev", "namespace": "environment", } }
     ] )
   } )
   it ( "should detect s:1", () => {
@@ -44,9 +44,9 @@ describe ( 'another way of doing conditions', () => {
   it ( "should detect {env:{ {ser:service} }}", () => {
     const condition = { "{env}": { "{ser:service}": {} } }
     expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
-      { "env": { "path": [ "prod" ], "value": "prod" }, "ser": { "path": [ "prod", "leo" ], "value": "leo" } },
-      { "env": { "path": [ "test" ], "value": "test" }, "ser": { "path": [ "test", "leo" ], "value": "leo" } },
-      { "env": { "path": [ "dev" ], "value": "dev" }, "ser": { "path": [ "dev", "leo" ], "value": "leo" } } ] )
+      { "env": { "path": [ "prod" ], "value": "prod" }, "ser": { "path": [ "prod", "leo" ], "value": "leo", "namespace": "service" } },
+      { "env": { "path": [ "test" ], "value": "test" }, "ser": { "path": [ "test", "leo" ], "value": "leo", "namespace": "service" } },
+      { "env": { "path": [ "dev" ], "value": "dev" }, "ser": { "path": [ "dev", "leo" ], "value": "leo", "namespace": "service" } } ] )
   } )
 
   it ( "should have a depth 3 condition", () => {
@@ -54,13 +54,13 @@ describe ( 'another way of doing conditions', () => {
     expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
       {
         "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
-        "env": { "path": [ "prod" ], "value": "prod" },
-        "ser": { "path": [ "prod", "leo" ], "value": "leo" }
+        "env": { "path": [ "prod" ], "value": "prod", "namespace": "environment" },
+        "ser": { "path": [ "prod", "leo" ], "value": "leo", "namespace": "service" }
       },
       {
         "domain": { "path": [ "dev", "leo", "domain" ], "value": "devLeo" },
-        "env": { "path": [ "dev" ], "value": "dev" },
-        "ser": { "path": [ "dev", "leo" ], "value": "leo" }
+        "env": { "path": [ "dev" ], "value": "dev", "namespace": "environment" },
+        "ser": { "path": [ "dev", "leo" ], "value": "leo", "namespace": "service" }
       }
     ] )
   } )
@@ -69,15 +69,15 @@ describe ( 'another way of doing conditions', () => {
     expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
       {
         "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
-        "env": { "path": [ "prod" ], "value": "prod" },
+        "env": { "path": [ "prod" ], "value": "prod", "namespace": "environment" },
         "port": { "path": [ "prod", "leo", "port" ], "value": 8080 },
-        "ser": { "path": [ "prod", "leo" ], "value": "leo" }
+        "ser": { "path": [ "prod", "leo" ], "value": "leo", "namespace": "service" }
       },
       {
         "domain": { "path": [ "dev", "leo", "domain" ], "value": "devLeo" },
-        "env": { "path": [ "dev" ], "value": "dev" },
+        "env": { "path": [ "dev" ], "value": "dev", "namespace": "environment" },
         "port": { "path": [ "dev", "leo", "port" ], "value": 80 },
-        "ser": { "path": [ "dev", "leo" ], "value": "leo" }
+        "ser": { "path": [ "dev", "leo" ], "value": "leo", "namespace": "service" }
       } ] )
   } )
   it ( "should have a tree in the condition - constrained", () => {
@@ -85,8 +85,8 @@ describe ( 'another way of doing conditions', () => {
     expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
       {
         "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
-        "env": { "path": [ "prod" ], "value": "prod" },
-        "ser": { "path": [ "prod", "leo" ], "value": "leo" }
+        "env": { "path": [ "prod" ], "value": "prod", "namespace": "environment" },
+        "ser": { "path": [ "prod", "leo" ], "value": "leo", "namespace": "service" }
       } ] )
   } )
 

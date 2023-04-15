@@ -1,4 +1,5 @@
 export * from './src/async'
+export * from './src/combine'
 export * from './src/descriptions'
 export * from './src/dotLanguage'
 export * from './src/errors'

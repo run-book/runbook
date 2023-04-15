@@ -1,7 +1,7 @@
 {
   "name": "@runbook/conditions",
   "description": "",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@dbpath/parser": "0.3.16",
-    "@runbook/optics": "0.0.10"
+    "@runbook/optics": "0.0.11"
   },
   "devDependencies": {
     "typescript": "^4.0.5",

@@ -1,6 +1,7 @@
 import { inheritsFromUsingParents, makeStringDag, StringDag } from "./inheritance";
 import { BindingContext } from "./binding";
-import { Mereology } from "./mereology";
+import { Mereology } from "@runbook/mereology";
+
 
 export const inheritance: StringDag = makeStringDag ( {
   "environment": [ "prod", "dev" ],
