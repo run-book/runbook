@@ -15,9 +15,9 @@ describe ( "inheritance", () => {
   it ( "should be able to bind to various animals", () => {
     const situation = { "cat": { "eats": "pigeon" } }
     const condition = { "{eater:animal}": { "eats": "{eaten:animal}" } }
-    expect ( evaluate ( thisBc, condition, situation ) ).toEqual ( [  {
+    expect ( evaluate ( thisBc, condition ) ( situation ) ).toEqual ( [ {
       "eaten": { "namespace": "animal", "path": [ "cat", "eats" ], "value": "pigeon" },
       "eater": { "namespace": "animal", "path": [ "cat" ], "value": "cat" }
-    } ]  )
+    } ] )
   } )
 } )

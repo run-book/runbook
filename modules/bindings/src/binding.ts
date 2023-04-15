@@ -48,7 +48,7 @@ interface MatchsPrimitive {
   varNameAndInheritsFrom?: VarNameAndInheritsFrom
   binding: Binding
 }
-function matchPrimitiveAndAddBindingIfNeeded ( bc: BindingContext, binding: Binding, path: string[], condition: Primitive, situation: Primitive ): MatchsPrimitive | undefined {
+const matchPrimitiveAndAddBindingIfNeeded = ( bc: BindingContext, condition: Primitive ) => ( binding: Binding, path: string[], situation: Primitive ): MatchsPrimitive | undefined => {
   if ( typeof condition === 'string' && condition.startsWith ( '{' ) && condition.endsWith ( '}' ) ) {
     const varNameAndInheritsFrom = parseBracketedString ( path, condition )
     const { varName, inheritsFrom } = varNameAndInheritsFrom
@@ -63,7 +63,7 @@ function matchPrimitiveAndAddBindingIfNeeded ( bc: BindingContext, binding: Bind
     return { binding: newBinding, varNameAndInheritsFrom }
   }
   return condition === situation ? { binding } : undefined
-}
+};
 
 type OnFoundFn = ( b: Binding[], thisBinding: Binding ) => Binding[]
 
@@ -71,56 +71,73 @@ interface MatchResult {
   bindings: Binding[]
   match: boolean
 }
-function checkSituationMatchesCondition ( oldPath: string[], sitK, bc: BindingContext, condK, condV, sitV, continuation: OnFoundFn ): OnFoundFn {
+const checkSituationMatchesCondition = ( bc: BindingContext, condK, condV, continuation: OnFoundFn ) => ( oldPath: string[], sitV, sitK ): OnFoundFn => {
+  let matchPrim = matchPrimitiveAndAddBindingIfNeeded ( bc, condK );
   return ( bindings: Binding[], thisBinding: Binding ): Binding[] => {
     if ( sitV === undefined ) return bindings;
     const path = [ ...oldPath, sitK ]
-    const matchsPrimitive: MatchsPrimitive = matchPrimitiveAndAddBindingIfNeeded ( bc, thisBinding, path, condK, sitK )
+    const matchsPrimitive: MatchsPrimitive = matchPrim ( thisBinding, path, sitK )
     if ( matchsPrimitive === undefined ) return bindings
-    let result = matchUntilLeafAndThenContinue ( bc, path, condV, sitV, bindings, matchsPrimitive.binding, continuation );
+    let result = matchUntilLeafAndThenContinue ( bc, condV, continuation ) ( path, sitV, bindings, matchsPrimitive.binding );
     if ( result.length === bindings.length && matchsPrimitive.varNameAndInheritsFrom ) {//OK we didn't match in the situation. Maybe we can match in the mereology?
       const { varName, inheritsFrom } = matchsPrimitive.varNameAndInheritsFrom
       const inMere = bc.refDataFn ( Object.values ( thisBinding ), inheritsFrom, sitK )
       if ( inMere === undefined ) return bindings
-      let mereologyResult = matchUntilLeafAndThenContinue ( bc, path, condV, inMere, bindings, matchsPrimitive.binding, continuation )
+      let mereologyResult = matchUntilLeafAndThenContinue ( bc, condV, continuation ) ( path, inMere, bindings, matchsPrimitive.binding )
       return mereologyResult === undefined ? bindings : mereologyResult;
     }
     return result
-  }
-}
-function exploreSituationForAllVariableMatches ( bc: BindingContext, oldPath: string[], situation: any, condK, condV, continuation: ( b: Binding[], thisBinding: Binding ) => Binding[] ) {
-  return ( bindings: Binding[], thisBinding ) => flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) =>
-    checkSituationMatchesCondition ( oldPath, sitK, bc, condK, condV, sitV, continuation ) ( bindings, thisBinding ) );
-}
-function makeOnFoundToExploreObject ( bc: BindingContext, oldPath: string[], condition: any, situation: any, onFound: OnFoundFn ): OnFoundFn {
+  };
+};
+const exploreSituationForAllVariableMatches = ( bc: BindingContext, condK, condV, continuation: OnFoundFn ) => {
+  let matcher = checkSituationMatchesCondition ( bc, condK, condV, continuation );
+  return ( oldPath: string[], situation: any ) =>
+    ( bindings: Binding[], thisBinding ) => flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) =>
+      matcher ( oldPath, sitV, sitK ) ( bindings, thisBinding ) );
+};
+const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any, onFound: OnFoundFn ) => {
   const bcIndented = debugAndIndent ( bc, 'makeOnFoundToExploreObject', JSON.stringify ( condition ) )
   const sortedCondition = deepSortCondition ( mereology, `condition ${JSON.stringify ( condition, null, 2 )}`, condition )
-  const onFoundForEachEntry: (( cont: OnFoundFn ) => OnFoundFn)[] = Object.entries ( sortedCondition ).map ( ( [ condK, condV ] ) =>
-    ( continuation: OnFoundFn ) => condK.startsWith ( '{' ) && condK.endsWith ( '}' )
-      ? exploreSituationForAllVariableMatches ( bcIndented, oldPath, situation, condK, condV, continuation )
-      : checkSituationMatchesCondition ( oldPath, condK, bcIndented, condK, condV, situation?.[ condK ], continuation ) )
-  let res: OnFoundFn = onFoundForEachEntry.reduce ( ( acc, v ) => v ( acc ), onFound );
-  return res
-}
+  return ( oldPath: string[], situation: any ): OnFoundFn => {
+    const onFoundForEachEntry: (( cont: OnFoundFn ) => OnFoundFn)[] = Object.entries ( sortedCondition ).map ( ( [ condK, condV ] ) =>
+      ( continuation: OnFoundFn ) => condK.startsWith ( '{' ) && condK.endsWith ( '}' )
+        ? exploreSituationForAllVariableMatches ( bcIndented, condK, condV, continuation)(oldPath, situation )
+        : checkSituationMatchesCondition ( bcIndented, condK, condV, continuation ) ( oldPath, situation?.[ condK ], condK ) )
+    let res: OnFoundFn = onFoundForEachEntry.reduce ( ( acc, v ) => v ( acc ), onFound );
+    return res
+  };
+};
 
-
-function matchUntilLeafAndThenContinue ( bc: BindingContext, path: string[], condition: any, situation: any, b: Binding[], thisBinding: Binding, onFound: OnFoundFn ): Binding[] | undefined {
-  const bcIndented = debugAndIndent ( bc, )
-  if ( isPrimitive ( condition ) ) {
-    const matches = matchPrimitiveAndAddBindingIfNeeded ( bcIndented, thisBinding, path, condition, situation )
+type MatchFn = ( path: string[], situation: any, b: Binding[], thisBinding: Binding ) => Binding[] | undefined
+function primitiveMatchFn ( bcIndented: BindingContext, condition: any, onFound: ( b: Binding[], thisBinding: Binding ) => Binding[] ) {
+  let matcher = matchPrimitiveAndAddBindingIfNeeded ( bcIndented, condition );
+  return ( path: string[], situation: any, b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
+    const matches = matcher ( thisBinding, path, situation )
     debug ( bcIndented, 'isPrimitive', JSON.stringify ( condition ), JSON.stringify ( situation ), JSON.stringify ( matches ) )
     return matches ? onFound ( b, matches.binding ) : [];
   }
-
-  if ( Array.isArray ( condition ) || Array.isArray ( situation ) ) throw new Error ( `Can't handle arrays yet` )
+}
+function objectMatchFn ( bcIndented: BindingContext, condition: any, onFound: ( b: Binding[], thisBinding: Binding ) => Binding[] ) {
+  let onFoundMaker = makeOnFoundToExploreObject ( bcIndented, condition, onFound );
+  return ( path: string[], situation: any, b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
+    if ( Array.isArray ( situation ) ) throw new Error ( `Can't handle arrays yet` )
+    let result = onFoundMaker ( path, situation ) ( b, thisBinding );
+    return result
+  };
+}
+function matchUntilLeafAndThenContinue ( bc: BindingContext, condition: any, onFound: OnFoundFn ): MatchFn {
+  const bcIndented = debugAndIndent ( bc, )
+  if ( isPrimitive ( condition ) ) return primitiveMatchFn ( bcIndented, condition, onFound );
+  if ( Array.isArray ( condition ) ) throw new Error ( `Can't handle arrays yet` )
 
   //if we matched on a new object make the code that explores it. This flattens out the iteration over the entries.
-  const newOnFound = makeOnFoundToExploreObject ( bcIndented, path, condition, situation, onFound )
-  let result = newOnFound ( b, thisBinding );
-  return result
+  return objectMatchFn ( bcIndented, condition, onFound );
 }
 
 export const finalOnBound: OnFoundFn = ( b, thisBinding ) => [ ...b, thisBinding ];
-export function evaluate ( bc: BindingContext, condition: any, situation: any ): Binding[] {
-  return safeArray ( matchUntilLeafAndThenContinue ( bc, [], condition, situation, [], {}, finalOnBound ) )
-}
+export const evaluate = ( bc: BindingContext, condition: any ) => {
+  let matcher = matchUntilLeafAndThenContinue ( bc, condition, finalOnBound );
+  return ( situation: any ): Binding[] => {
+    return safeArray ( matcher ( [], situation, [], {} ) );
+  };
+};

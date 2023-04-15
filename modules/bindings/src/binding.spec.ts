@@ -9,11 +9,11 @@ function bind ( path: string | string[], value: string | number ) {
 describe ( 'another way of doing conditions', () => {
   it ( "should detect prod", () => {
     const condition = { "prod": {} }
-    expect ( evaluate ( bc, condition, situation ) ).toEqual ( [ {} ] )
+    expect ( evaluate ( bc, condition ) ( situation ) ).toEqual ( [ {} ] )
   } )
   it ( "should detect {env}", () => {
     const condition = { "{env}": {} }
-    expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
+    expect ( evaluate ( bc, condition ) ( situation ) ).toEqual ( [
       { env: bind ( [ "prod" ], "prod" ) },
       { "env": { "path": [ "test" ], "value": "test" } },
       { env: bind ( [ "dev" ], "dev" ) },
@@ -22,7 +22,7 @@ describe ( 'another way of doing conditions', () => {
   } )
   it ( "should detect {env:environment}", () => {
     const condition = { "{env:environment}": {} }
-    expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
+    expect ( evaluate ( bc, condition ) ( situation ) ).toEqual ( [
       { "env": { "path": [ "prod" ], "value": "prod", "namespace": "environment", } },
       { "env": { "path": [ "test" ], "value": "test", "namespace": "environment", } },
       { "env": { "path": [ "dev" ], "value": "dev", "namespace": "environment", } }
@@ -30,12 +30,12 @@ describe ( 'another way of doing conditions', () => {
   } )
   it ( "should detect s:1", () => {
     const condition = { s: 1 }
-    expect ( evaluate ( bc, condition, s1 ) ).toEqual ( [ {} ] ) // matched twice but no variables
-    expect ( evaluate ( bc, condition, s2 ) ).toEqual ( [] )
+    expect ( evaluate ( bc, condition ) ( s1 ) ).toEqual ( [ {} ] ) // matched but no variables
+    expect ( evaluate ( bc, condition ) ( s2 ) ).toEqual ( [] )
   } )
   it ( "should detect {any}:{s}", () => {
     const condition = { "{any}": "{s}" }
-    expect ( evaluate ( bc, condition, s1 ) ).toEqual ( [
+    expect ( evaluate ( bc, condition ) ( s1 ) ).toEqual ( [
       { "any": { "path": [ "s" ], "value": "s" }, "s": { "path": [ "s" ], "value": 1 } },
       { "any": { "path": [ "a" ], "value": "a" }, "s": { "path": [ "a" ], "value": 1 } },
       { "any": { "path": [ "b" ], "value": "b" }, "s": { "path": [ "b" ], "value": 2 } },
@@ -43,7 +43,7 @@ describe ( 'another way of doing conditions', () => {
   } )
   it ( "should detect {env:{ {ser:service} }}", () => {
     const condition = { "{env}": { "{ser:service}": {} } }
-    expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
+    expect ( evaluate ( bc, condition ) ( situation ) ).toEqual ( [
       { "env": { "path": [ "prod" ], "value": "prod" }, "ser": { "path": [ "prod", "leo" ], "value": "leo", "namespace": "service" } },
       { "env": { "path": [ "test" ], "value": "test" }, "ser": { "path": [ "test", "leo" ], "value": "leo", "namespace": "service" } },
       { "env": { "path": [ "dev" ], "value": "dev" }, "ser": { "path": [ "dev", "leo" ], "value": "leo", "namespace": "service" } } ] )
@@ -51,7 +51,7 @@ describe ( 'another way of doing conditions', () => {
 
   it ( "should have a depth 3 condition", () => {
     const condition = { "{env:environment}": { "{ser:service}": { domain: "{domain}" } } }//, port: "{port}" } } }
-    expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
+    expect ( evaluate ( bc, condition ) ( situation ) ).toEqual ( [
       {
         "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
         "env": { "path": [ "prod" ], "value": "prod", "namespace": "environment" },
@@ -70,7 +70,7 @@ describe ( 'another way of doing conditions', () => {
   } )
   it ( "should have a tree", () => {
     const condition = { "{env:environment}": { "{ser:service}": { domain: "{domain}", port: "{port}" } } }
-    expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
+    expect ( evaluate ( bc, condition ) ( situation ) ).toEqual ( [
       {
         "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
         "env": { "path": [ "prod" ], "value": "prod", "namespace": "environment" },
@@ -92,7 +92,7 @@ describe ( 'another way of doing conditions', () => {
   } )
   it ( "should have a tree in the condition - constrained", () => {
     const condition = { "{env:environment}": { "{ser:service}": { domain: "{domain}", port: "{port}" } } }
-    expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
+    expect ( evaluate ( bc, condition ) ( situation ) ).toEqual ( [
       {
         "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" }, "env": { "namespace": "environment", "path": [ "prod" ], "value": "prod" },
         "port": { "path": [ "prod", "leo", "port" ], "value": 8080 },
@@ -115,7 +115,7 @@ describe ( 'another way of doing conditions', () => {
   it ( "should handle 'not found'", () => {
     const situation = { "leo": {} }
     const condition = { "{service:service}": { "not": { in: "{something}" } } }
-    expect ( evaluate ( bc, condition, situation ) ).toEqual ( [] )
+    expect ( evaluate ( bc, condition ) ( situation ) ).toEqual ( [] )
   } )
 
 } )
