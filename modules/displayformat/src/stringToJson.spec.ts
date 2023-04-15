@@ -53,20 +53,20 @@ describe ( "Convert Columns to json", () => {
 
 describe ( "convert stringToJson for table to json", () => {
   it ( "should convert to json when headers are specified", () => {
-    expect ( stringToJson (  text,{ type: "table", hideHeader: true, hideFooter: true, headers: [ "A", "B", "C" ] } ) )
+    expect ( stringToJson ( text, { type: "table", hideHeader: true, hideFooter: true, headers: [ "A", "B", "C" ] } ) )
       .toEqual ( [
         { "A": "1", "B": "2", "C": "3" },
         { "A": "4", "B": "5", "C": "6" }
       ] )
   } )
   it ( "should stringToJson for table when hide headers", () => {
-    expect ( stringToJson (  text,{ type: "table", hideHeader: true, hideFooter: true } ) ).toEqual ( [
+    expect ( stringToJson ( text, { type: "table", hideHeader: true, hideFooter: true } ) ).toEqual ( [
       { "a": "1", "b": "2", "c": "3" },
       { "a": "4", "b": "5", "c": "6" }
     ] )
   } )
   it ( "should stringToJson for table when nothing specified", () => {
-    expect ( stringToJson (  text ,{ type: "table" },) ).toEqual ( [
+    expect ( stringToJson ( text, { type: "table" }, ) ).toEqual ( [
       { "1": "a", "2": "b", "3": "c" },
       { "1": "1", "2": "2", "3": "3" },
       { "1": "4", "2": "5", "3": "6" },
@@ -75,13 +75,14 @@ describe ( "convert stringToJson for table to json", () => {
   } )
 
   it ( "should stringToJson for json and onelinejson", () => {
-    expect ( stringToJson (  [ `{"a":1,"b":2,"c":3}` ],"json", ) ).toEqual ( { a: 1, b: 2, c: 3 } )
-    expect ( stringToJson (  [ `{"a":1,"b":2,"c":3}`],"onelinejson"  ) ).toEqual ( { a: 1, b: 2, c: 3 } )
+    expect ( stringToJson ( [ `{"a":1,"b":2,"c":3}` ], "json", ) ).toEqual ( { a: 1, b: 2, c: 3 } )
+    expect ( stringToJson ( [ `{"a":1,"b":2,"c":3}` ], "onelinejson" ) ).toEqual ( { a: 1, b: 2, c: 3 } )
   } )
   it ( "should stringToJson for oneperlinejson", () => {
-    expect ( stringToJson (  [ `{"a":1}`, `{"b":2}`, `{"c":3}` ] ,"oneperlinejson",) ).toEqual ( [
-      { "a": 1 }, { "b": 2 }, { "c": 3 }
+    expect ( stringToJson ( [ `{"a":1}`, `{"b":2}`, `{"c":3}` ], "oneperlinejson" ) ).toEqual ( [
+      { "a": 1 },
+      { "b": 2 },
+      { "c": 3 }
     ] )
   } )
-
 } )

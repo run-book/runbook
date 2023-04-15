@@ -3,7 +3,7 @@ import { DisplayFormat, isTableFormat, TableFormat } from "./displayFormat";
 
 
 const convertOneLineToJson = ( headers: string[] ) => ( text: string ) => {
-  const matches = text.split ( /\s+/ ).map(s => s.trim()).filter ( s => s.length > 0 )
+  const matches = text.split ( /\s+/ ).map ( s => s.trim () ).filter ( s => s.length > 0 )
   if ( matches === null ) throw new Error ( `Cannot match ${text}` )
   return fromEntries ( zipAll ( headers, matches, ( h, m ) => [ h, m ] ) )
 };
@@ -36,7 +36,7 @@ export const stringToJsonForJson = ( text: string[] ) => {
   return JSON.parse ( text.join ( '\n' ) )
 }
 export function stringToJsonForOneLineJson ( text: string[] ) {
-  return text.map ( s => JSON.parse ( s ) ).join ( '\n' )
+  return text.map ( s => JSON.parse ( s ) )
 }
 export const stringToJson = chainOfResponsibility2<string[], DisplayFormat, any> (
   ( text, format ) => {throw Error ( `Unknown format: ${JSON.stringify ( format )}\n\n${text}` )},
