@@ -48,21 +48,26 @@ interface MatchsPrimitive {
   varNameAndInheritsFrom?: VarNameAndInheritsFrom
   binding: Binding
 }
-const matchPrimitiveAndAddBindingIfNeeded = ( bc: BindingContext, condition: Primitive ) => ( path: string[], situation: Primitive ) => ( binding: Binding ): MatchsPrimitive | undefined => {
-  if ( typeof condition === 'string' && condition.startsWith ( '{' ) && condition.endsWith ( '}' ) ) {
-    const varNameAndInheritsFrom = parseBracketedString ( path, condition )
-    const { varName, inheritsFrom } = varNameAndInheritsFrom
-    if ( inheritsFrom.length > 0 ) {
-      if ( typeof situation !== 'string' )
-        return undefined;
-      let inherits = bc.inheritsFrom ( situation, inheritsFrom );
-      if ( !inherits ) return undefined;
-    }
-    const newBinding: Binding = { ...binding }
-    newBinding[ varName ] = { path, value: situation, namespace: (inheritsFrom?.length > 0 ? inheritsFrom : undefined) }
-    return { binding: newBinding, varNameAndInheritsFrom }
+const matchVariable = ( bc: BindingContext, condition: string ) => ( situation: Primitive, path: string[], binding: Binding ) => {
+  const varNameAndInheritsFrom = parseBracketedString ( path, condition )
+  const { varName, inheritsFrom } = varNameAndInheritsFrom
+  if ( inheritsFrom.length > 0 ) {
+    if ( typeof situation !== 'string' )
+      return undefined;
+    let inherits = bc.inheritsFrom ( situation, inheritsFrom );
+    if ( !inherits ) return undefined;
   }
-  return condition === situation ? { binding } : undefined
+  const newBinding: Binding = { ...binding }
+  newBinding[ varName ] = { path, value: situation, namespace: (inheritsFrom?.length > 0 ? inheritsFrom : undefined) }
+  return { binding: newBinding, varNameAndInheritsFrom }
+};
+const matchPrimitiveAndAddBindingIfNeeded = ( bc: BindingContext, condition: Primitive ) => {
+  return ( path: string[], situation: Primitive ) => ( binding: Binding ): MatchsPrimitive | undefined => {
+    if ( typeof condition === 'string' && condition.startsWith ( '{' ) && condition.endsWith ( '}' ) )
+      return matchVariable ( bc, condition ) ( situation, path, binding );
+    else
+      return condition === situation ? { binding } : undefined
+  };
 };
 
 type OnFoundFn = ( b: Binding[], thisBinding: Binding ) => Binding[]
