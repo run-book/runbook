@@ -71,9 +71,9 @@ interface MatchResult {
   bindings: Binding[]
   match: boolean
 }
-const checkSituationMatchesCondition = ( bc: BindingContext, condK, condV, continuation: OnFoundFn ) => ( oldPath: string[], sitV, sitK ): OnFoundFn => {
+const checkSituationMatchesCondition = ( bc: BindingContext, condK, condV ) => ( continuation: OnFoundFn ) => ( oldPath: string[], sitV, sitK ): OnFoundFn => {
   let matchPrim = matchPrimitiveAndAddBindingIfNeeded ( bc, condK );
-  let matchAndContinue = matchUntilLeafAndThenContinue ( bc, condV, continuation );
+  let matchAndContinue = matchUntilLeafAndThenContinue ( bc, condV ) ( continuation );
   return ( bindings: Binding[], thisBinding: Binding ): Binding[] => {
     if ( sitV === undefined ) return bindings;
     const path = [ ...oldPath, sitK ]
@@ -90,20 +90,20 @@ const checkSituationMatchesCondition = ( bc: BindingContext, condK, condV, conti
     return result
   };
 };
-const checkOneKvForVariable = ( bc: BindingContext, condK, condV, continuation: OnFoundFn ) => {
-  let matcher = checkSituationMatchesCondition ( bc, condK, condV, continuation );
+const checkOneKvForVariable = ( bc: BindingContext, condK, condV ) => ( continuation: OnFoundFn ) => {
+  let matcher = checkSituationMatchesCondition ( bc, condK, condV ) ( continuation );
   return ( oldPath: string[], situation: any ) => ( bindings: Binding[], thisBinding ) =>
     flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) =>
       matcher ( oldPath, sitV, sitK ) ( bindings, thisBinding ) );
 };
-const checkOneKvForNonVariable = ( bcIndented: BindingContext, condK, condV, continuation: OnFoundFn ) => {
-  let checker = checkSituationMatchesCondition ( bcIndented, condK, condV, continuation );
+const checkOneKvForNonVariable = ( bcIndented: BindingContext, condK, condV ) => ( continuation: OnFoundFn ) => {
+  let checker = checkSituationMatchesCondition ( bcIndented, condK, condV ) ( continuation );
   return ( oldPath: string[], situation: any ) => checker ( oldPath, situation?.[ condK ], condK );
 };
 const checkOneKv = ( condK, bcIndented: BindingContext, condV ) => {
   const checker = ( continuation: OnFoundFn ) => condK.startsWith ( '{' ) && condK.endsWith ( '}' )
-    ? checkOneKvForVariable ( bcIndented, condK, condV, continuation )
-    : checkOneKvForNonVariable ( bcIndented, condK, condV, continuation );
+    ? checkOneKvForVariable ( bcIndented, condK, condV ) ( continuation )
+    : checkOneKvForNonVariable ( bcIndented, condK, condV ) ( continuation );
 
   return ( continuation: OnFoundFn ) => ( oldPath: string[], situation: any ) => checker ( continuation ) ( oldPath, situation )
 };
@@ -136,18 +136,20 @@ function objectMatchFn ( bcIndented: BindingContext, condition: any, onFound: On
     return result
   };
 }
-function matchUntilLeafAndThenContinue ( bc: BindingContext, condition: any, onFound: OnFoundFn ): MatchFn {
-  const bcIndented = debugAndIndent ( bc, )
-  if ( isPrimitive ( condition ) ) return primitiveMatchFn ( bcIndented, condition, onFound );
-  if ( Array.isArray ( condition ) ) throw new Error ( `Can't handle arrays yet` )
+function matchUntilLeafAndThenContinue ( bc: BindingContext, condition: any ): ( onFound: OnFoundFn ) => MatchFn {
+  return onFound => {
+    const bcIndented = debugAndIndent ( bc, )
+    if ( isPrimitive ( condition ) ) return primitiveMatchFn ( bcIndented, condition, onFound );
+    if ( Array.isArray ( condition ) ) throw new Error ( `Can't handle arrays yet` )
 
-  //if we matched on a new object make the code that explores it. This flattens out the iteration over the entries.
-  return objectMatchFn ( bcIndented, condition, onFound );
+    //if we matched on a new object make the code that explores it. This flattens out the iteration over the entries.
+    return objectMatchFn ( bcIndented, condition, onFound );
+  }
 }
 
 export const finalOnBound: OnFoundFn = ( b, thisBinding ) => [ ...b, thisBinding ];
 export const evaluate = ( bc: BindingContext, condition: any ) => {
-  let matcher = matchUntilLeafAndThenContinue ( bc, condition, finalOnBound );
+  let matcher = matchUntilLeafAndThenContinue ( bc, condition ) ( finalOnBound );
   return ( situation: any ): Binding[] => {
     return safeArray ( matcher ( [], situation, [], {} ) );
   };
