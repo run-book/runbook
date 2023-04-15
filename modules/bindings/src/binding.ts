@@ -120,13 +120,15 @@ const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any ) => ( c
 };
 
 type MatchFn = ( path: string[], situation: any ) => ( b: Binding[], thisBinding: Binding ) => Binding[] | undefined
-const primitiveMatchFn = ( bcIndented: BindingContext, condition: any ) => ( continuation: OnFoundFn ): MatchFn => {
+const primitiveMatchFn = ( bcIndented: BindingContext, condition: any ) => {
   let matcher = matchPrimitiveAndAddBindingIfNeeded ( bcIndented, condition );
-  return ( path: string[], situation: any ) => ( b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
-    const matches = matcher ( thisBinding, path, situation )
-    debug ( bcIndented, 'isPrimitive', JSON.stringify ( condition ), JSON.stringify ( situation ), JSON.stringify ( matches ) )
-    return matches ? continuation ( b, matches.binding ) : [];
-  }
+  return ( continuation: OnFoundFn ): MatchFn => {
+    return ( path: string[], situation: any ): OnFoundFn => ( bindings: Binding[], thisBinding: Binding ): Binding[] | undefined => {
+      const matches = matcher ( thisBinding, path, situation )
+      debug ( bcIndented, 'isPrimitive', JSON.stringify ( condition ), JSON.stringify ( situation ), JSON.stringify ( matches ) )
+      return matches ? continuation ( bindings, matches.binding ) : [];
+    }
+  };
 };
 const objectMatchFn = ( bcIndented: BindingContext, condition: any ) => {
   let maker = makeOnFoundToExploreObject ( bcIndented, condition );
@@ -139,7 +141,7 @@ const objectMatchFn = ( bcIndented: BindingContext, condition: any ) => {
     };
   };
 };
-function matchUntilLeafAndThenContinue ( bc: BindingContext, condition: any ): ( onFound: OnFoundFn ) => MatchFn {
+function matchUntilLeafAndThenContinue ( bc: BindingContext, condition: any ): ( continuation: OnFoundFn ) => MatchFn {
   const bcIndented = debugAndIndent ( bc, )
   if ( isPrimitive ( condition ) ) return primitiveMatchFn ( bcIndented, condition )
   if ( Array.isArray ( condition ) ) throw new Error ( `Can't handle arrays yet` )
