@@ -90,33 +90,43 @@ const checkSituationMatchesCondition = ( bc: BindingContext, condK, condV ) => (
     return result
   };
 };
-const checkOneKvForVariable = ( bc: BindingContext, condK, condV ) => ( continuation: OnFoundFn ) => {
-  let matcher = checkSituationMatchesCondition ( bc, condK, condV ) ( continuation );
-  return ( oldPath: string[], situation: any ) => ( bindings: Binding[], thisBinding ) =>
-    flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) =>
-      matcher ( oldPath, sitV, sitK ) ( bindings, thisBinding ) );
+const checkOneKvForVariable = ( bc: BindingContext, condK, condV ) => {
+  let matcher = checkSituationMatchesCondition ( bc, condK, condV );
+  return ( continuation: OnFoundFn ) => {
+    let withContinuation = matcher ( continuation );
+    return ( oldPath: string[], situation: any ) => ( bindings: Binding[], thisBinding ) =>
+      flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) =>
+        withContinuation ( oldPath, sitV, sitK ) ( bindings, thisBinding ) );
+  };
 };
-const checkOneKvForNonVariable = ( bcIndented: BindingContext, condK, condV ) => ( continuation: OnFoundFn ) => {
-  let checker = checkSituationMatchesCondition ( bcIndented, condK, condV ) ( continuation );
-  return ( oldPath: string[], situation: any ) => checker ( oldPath, situation?.[ condK ], condK );
+const checkOneKvForNonVariable = ( bcIndented: BindingContext, condK, condV ) => {
+  let checker = checkSituationMatchesCondition ( bcIndented, condK, condV );
+  return ( continuation: OnFoundFn ) => {
+    let withContinuation = checker ( continuation );
+    return ( oldPath: string[], situation: any ) => withContinuation ( oldPath, situation?.[ condK ], condK );
+  };
 };
 const checkOneKv = ( condK, bcIndented: BindingContext, condV ) => {
-  const checker = ( continuation: OnFoundFn ) => condK.startsWith ( '{' ) && condK.endsWith ( '}' )
-    ? checkOneKvForVariable ( bcIndented, condK, condV ) ( continuation )
-    : checkOneKvForNonVariable ( bcIndented, condK, condV ) ( continuation );
+  const checker = condK.startsWith ( '{' ) && condK.endsWith ( '}' )
+    ? checkOneKvForVariable ( bcIndented, condK, condV )
+    : checkOneKvForNonVariable ( bcIndented, condK, condV )
 
-  return ( continuation: OnFoundFn ) => ( oldPath: string[], situation: any ) => checker ( continuation ) ( oldPath, situation )
+  return ( continuation: OnFoundFn ) => {
+    let withContinuation = checker ( continuation );
+    return ( oldPath: string[], situation: any ) => withContinuation ( oldPath, situation );
+  }
 };
 export let makeCount = 0;
-const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any ) => ( continuation: OnFoundFn ) => {
+const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any ) => {
   const bcIndented = debugAndIndent ( bc, 'makeOnFoundToExploreObject', JSON.stringify ( condition ) )
   const sortedCondition = deepSortCondition ( mereology, `condition ${JSON.stringify ( condition, null, 2 )}`, condition )
   const onFoundForEachEntry: OnFoundContinuation[] = Object.entries ( sortedCondition ).map ( ( [ condK, condV ] ) => checkOneKv ( condK, bcIndented, condV ) )
-  //ideally we would do the reduction at 'compile time' i.e. above the return
-
   makeCount++
-  return ( oldPath: string[], situation: any ): OnFoundFn =>
-    onFoundForEachEntry.reduce ( ( acc: OnFoundFn, v: OnFoundContinuation ) => v ( acc ) ( oldPath, situation ), continuation )
+  return ( continuation: OnFoundFn ) => {
+    //ideally we would do the reduction at 'compile time' i.e. above the return
+    return ( oldPath: string[], situation: any ): OnFoundFn =>
+      onFoundForEachEntry.reduce ( ( acc: OnFoundFn, v: OnFoundContinuation ) => v ( acc ) ( oldPath, situation ), continuation )
+  };
 };
 
 type MatchFn = ( path: string[], situation: any ) => ( b: Binding[], thisBinding: Binding ) => Binding[] | undefined
