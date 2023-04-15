@@ -1,6 +1,5 @@
 import { mereology } from "./mereology.fixture";
-import { NameSpaceAndValue, Mereology, fromMereology } from "./mereology";
-import { deepCombineTwoObjects, flatMap, NameAnd } from "@runbook/utils";
+import { fromMereology } from "./mereology";
 
 describe ( "it should get direct objects from the mereology", () => {
   it ( "should find it if in", () => {
