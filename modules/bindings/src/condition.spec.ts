@@ -1,7 +1,5 @@
-import { compareValueForSort, deepSortCondition, getValueDataForSort, ValueData, zeroValueDepth } from "./condition";
-import { mereology } from "./binding.fixture";
-import { Mereology } from "@runbook/mereology";
-import { isDescendantOfInNameAnd } from "@runbook/utils";
+import { compareValueForSort, deepSortCondition, getValueDataForSort, zeroValueDepth } from "./condition";
+import { mereology } from "@runbook/fixtures";
 
 describe ( "getValueDataForSort", () => {
   it ( "should return the value data for a sort - primitives", () => {

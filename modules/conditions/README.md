@@ -1,3 +1,0 @@
-I think this project is redundant now...
-
-The binding project found a better way to do conditions

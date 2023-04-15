@@ -1,5 +1,5 @@
-import { ref } from "./mereology.fixture";
 import { fromMereology } from "./mereology";
+import { ref } from "@runbook/fixtures";
 
 describe ( "it should get direct objects from the mereology", () => {
   it ( "should find it if in", () => {

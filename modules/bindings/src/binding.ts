@@ -2,7 +2,6 @@ import { flatMap, isPrimitive, NameAnd, Primitive, safeArray } from "@runbook/ut
 import { InheritsFromFn } from "./inheritance";
 import { FromReferenceDataFn, Mereology, NameSpaceAndValue } from "@runbook/mereology";
 import { deepSortCondition } from "./condition";
-import { mereology } from "./binding.fixture";
 
 
 export type Binding = NameAnd<PathAndValue>
@@ -133,7 +132,7 @@ const checkOneKv = ( condK, bcIndented: BindingContext, condV, condPath: string[
 export let makeCount = 0;
 const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any, condPath: string[] ) => {
   const bcIndented = debugAndIndent ( bc, 'makeOnFoundToExploreObject', JSON.stringify ( condition ) )
-  const sortedCondition = deepSortCondition ( mereology, `condition ${JSON.stringify ( condition, null, 2 )}`, condition )
+  const sortedCondition = deepSortCondition ( bc.mereology, `condition ${JSON.stringify ( condition, null, 2 )}`, condition )
   const onFoundForEachEntry: OnFoundContinuation[] = Object.entries ( sortedCondition ).map ( ( [ condK, condV ] ) =>
     checkOneKv ( condK, bcIndented, condV, condPath ) )
   makeCount++

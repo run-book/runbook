@@ -6,7 +6,7 @@
     "dependencies":    {},
     "devDependencies": {}
   },
-  "links":       [],
+  "links":       [ "@runbook/fixtures"],
   "guards":      {
     "compile": true,
     "publish": true,

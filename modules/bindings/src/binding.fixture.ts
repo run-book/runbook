@@ -1,48 +1,12 @@
 import { BindingContext } from "./binding";
 import { fromMereology, Mereology, ReferenceData } from "@runbook/mereology";
-import { inheritsFrom, makeStringDag, StringDag } from "@runbook/utils";
+import { inheritsFrom } from "@runbook/utils";
+import { inheritance, mereology, ref } from "@runbook/fixtures";
 
 
-export const inheritance: StringDag = makeStringDag ( {
-  "environment": [ "prod", "test", "dev" ],
-  "service": [ "leo" ],
-} )
-export const mereology: Mereology = { "environment": [ "service", "server", "database" ] }
+export const checkMereology: Mereology = mereology
 
-export const ref: ReferenceData =  {
-  'bound': {
-    "environment": {
-      "dev": {
-        "direct": {
-          database: { "ngtest": {} },
-          "service": {
-            "leo": { domain: 'dev.leo', port: 80 },
-            "npx": { domain: 'dev.npx', port: 80 }
-          }
-        }
-      },
-      "test": {
-        "direct": {
-          database: { "ngtest": {} },
-          "service": {
-            "leo": { domain: 'test.leo', port: 80 },
-            "npx": { domain: 'test.npx', port: 80 }
-          }
-        }
-      }
-    }
-  },
-  direct: {
-    database: {
-      "ngprod": { url: "ngprod.url" },
-      "ngtest": { url: "ngtest.url" },
-    },
-    service: {
-      "leo": { git: { url: 'leo.git.url' } },
-      "npx": { git: { url: 'npx.git.url' } }
-    }
-  }
-}
+export const checkRef: ReferenceData = ref
 
 export const bc: BindingContext = {
   debug: false,
