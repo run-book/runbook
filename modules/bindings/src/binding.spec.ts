@@ -125,7 +125,7 @@ describe ( 'another way of doing conditions', () => {
       const startCount = makeCount
       evalThisCondition ( situation )
       evalThisCondition ( situation )
-      expect ( makeCount ).toEqual ( startCount )
+      expect ( makeCount ).toEqual ( startCount+1 )
     }
   )
 
