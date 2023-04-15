@@ -12,8 +12,10 @@ export type ReferenceData = {
   direct?: NameAnd<any>,
   bound?: NameAnd<NameAnd<ReferenceData>>
 }
-/** Actually type Mereology = NameAnd<Mereology> but typescript doesn't allow this */
-export type Mereology = NameAnd<any>
+/** for example
+ * mereology = {"environment": ["service", "database"]}
+ */
+export type Mereology = NameAnd<string[]>
 export function toMereology ( defn: MereologyDefn ): ReferenceData {
   const mereology: ReferenceData = {}
   Object.entries ( defn ).forEach ( ( [ namespace, namespaceDefn ] ) =>
@@ -22,13 +24,13 @@ export function toMereology ( defn: MereologyDefn ): ReferenceData {
   return mereology
 }
 
-export type FromMereologyFn = ( existing: NameSpaceAndValue[], searchNameSpace: string, searchValue: string ) => any
-export const fromMereology = ( mereology: ReferenceData ): FromMereologyFn => ( existing: NameSpaceAndValue[], searchNameSpace: string, searchValue: string ) => {
+export type FromReferenceDataFn = ( existing: NameSpaceAndValue[], searchNameSpace: string, searchValue: string ) => any
+export const fromMereology = ( mereology: ReferenceData ): FromReferenceDataFn => ( existing: NameSpaceAndValue[], searchNameSpace: string, searchValue: string ) => {
   if ( !mereology ) return undefined;
   const direct: NameAnd<any> = mereology.direct?.[ searchNameSpace ]?.[ searchValue ]
   const fromBindings: NameAnd<any>[] = existing.map ( ( { namespace, value } ) => {
     if ( typeof value !== 'string' ) return []
-    const childMereology: ReferenceData = mereology.bound[ namespace ]?.[ value ]
+    const childMereology: ReferenceData = mereology.bound?.[ namespace ]?.[ value ]
     const withoutMe = existing.filter ( e => e.namespace !== namespace || e.value !== value )
     const result = fromMereology ( childMereology ) ( withoutMe, searchNameSpace, searchValue );
     return result

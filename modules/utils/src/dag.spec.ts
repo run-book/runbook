@@ -30,4 +30,15 @@ describe ( "dag", () => {
     expect ( inheritsFrom ( inheritance ) ( "animal", "fish", ) ).toBe ( false )
     expect ( inheritsFrom ( inheritance ) ( "dog", "fish" ) ).toBe ( false )
   } )
+  it ( "should respect strict", () => {
+    expect ( inheritsFrom ( inheritance, true ) ( "anything", "anything" ) ).toBe ( false )
+    expect ( inheritsFrom ( inheritance, true ) ( "animal", "animal" ) ).toBe ( false )
+
+    expect ( inheritsFrom ( inheritance, true ) ( "dog", "animal", ) ).toBe ( true )
+    expect ( inheritsFrom ( inheritance, true ) ( "cat", "animal", ) ).toBe ( true )
+    expect ( inheritsFrom ( inheritance, true ) ( "animal", "fish", ) ).toBe ( false )
+    expect ( inheritsFrom ( inheritance, true ) ( "dog", "fish" ) ).toBe ( false )
+
+  } )
 } )
+

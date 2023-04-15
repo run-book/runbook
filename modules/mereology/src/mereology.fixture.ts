@@ -30,12 +30,10 @@ const mereologyDefn =
 
 const devLeoM: ReferenceData = {}
 
-export const mereology: Mereology={
-  "environment":{
-    "service":{},
-    "database":{}
-  }
+export const mereology: Mereology = {
+  "environment": [ "service", "database" ]
 }
+
 export const ref: ReferenceData = {
   'bound': {
     "environment": {

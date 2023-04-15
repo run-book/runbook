@@ -91,19 +91,25 @@ describe ( 'another way of doing conditions', () => {
       } ] )
   } )
   it ( "should have a tree in the condition - constrained", () => {
-    const condition = { "{env:environment}": { "{ser:service}": { domain: "{domain}", port: 8080 } } }
+    const condition = { "{env:environment}": { "{ser:service}": { domain: "{domain}", port: "{port}" } } }
     expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
       {
-        "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
-        "env": { "path": [ "prod" ], "value": "prod", "namespace": "environment" },
-        "ser": { "path": [ "prod", "leo" ], "value": "leo", "namespace": "service" }
-      } ,
+        "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" }, "env": { "namespace": "environment", "path": [ "prod" ], "value": "prod" },
+        "port": { "path": [ "prod", "leo", "port" ], "value": 8080 },
+        "ser": { "namespace": "service", "path": [ "prod", "leo" ], "value": "leo" }
+      },
       {
         "domain": { "path": [ "test", "leo", "domain" ], "value": "testLeo" },
-        "env": { "path": [ "test" ], "value": "test", "namespace": "environment" },
-        "ser": { "path": [ "test", "leo" ], "value": "leo", "namespace": "service" }
-      }
-    ] )
+        "env": { "namespace": "environment", "path": [ "test" ], "value": "test" },
+        "port": { "path": [ "test", "leo", "port" ], "value": 8080 },
+        "ser": { "namespace": "service", "path": [ "test", "leo" ], "value": "leo" }
+      },
+      {
+        "domain": { "path": [ "dev", "leo", "domain" ], "value": "devLeo" },
+        "env": { "namespace": "environment", "path": [ "dev" ], "value": "dev" },
+        "port": { "path": [ "dev", "leo", "port" ], "value": 80 },
+        "ser": { "namespace": "service", "path": [ "dev", "leo" ], "value": "leo" }
+      } ] )
   } )
 
   it ( "should handle 'not found'", () => {

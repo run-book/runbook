@@ -1,6 +1,8 @@
 import { flatMap, isPrimitive, NameAnd, Primitive, safeArray } from "@runbook/utils";
 import { InheritsFromFn } from "./inheritance";
-import { FromMereologyFn, NameSpaceAndValue } from "@runbook/mereology";
+import { FromReferenceDataFn, Mereology, NameSpaceAndValue } from "@runbook/mereology";
+import { deepSortCondition } from "./condition";
+import { mereology } from "./binding.fixture";
 
 
 export type Binding = NameAnd<PathAndValue>
@@ -12,7 +14,8 @@ export interface PathAndValue extends NameSpaceAndValue {
 }
 export interface BindingContext {
   inheritsFrom: InheritsFromFn
-  mereology: FromMereologyFn
+  mereology: Mereology
+  refDataFn: FromReferenceDataFn
   debug?: boolean
   debugIndent?: number
 }
@@ -77,7 +80,7 @@ function checkSituationMatchesCondition ( oldPath: string[], sitK, bc: BindingCo
     let result = matchUntilLeafAndThenContinue ( bc, path, condV, sitV, bindings, matchsPrimitive.binding, continuation );
     if ( result.length === bindings.length && matchsPrimitive.varNameAndInheritsFrom ) {//OK we didn't match in the situation. Maybe we can match in the mereology?
       const { varName, inheritsFrom } = matchsPrimitive.varNameAndInheritsFrom
-      const inMere = bc.mereology ( Object.values ( thisBinding ), inheritsFrom, sitK )
+      const inMere = bc.refDataFn ( Object.values ( thisBinding ), inheritsFrom, sitK )
       if ( inMere === undefined ) return bindings
       let mereologyResult = matchUntilLeafAndThenContinue ( bc, path, condV, inMere, bindings, matchsPrimitive.binding, continuation )
       return mereologyResult === undefined ? bindings : mereologyResult;
@@ -91,8 +94,8 @@ function exploreSituationForAllVariableMatches ( bc: BindingContext, oldPath: st
 }
 function makeOnFoundToExploreObject ( bc: BindingContext, oldPath: string[], condition: any, situation: any, onFound: OnFoundFn ): OnFoundFn {
   const bcIndented = debugAndIndent ( bc, 'makeOnFoundToExploreObject', JSON.stringify ( condition ) )
-
-  const onFoundForEachEntry: (( cont: OnFoundFn ) => OnFoundFn)[] = Object.entries ( condition ).map ( ( [ condK, condV ] ) =>
+  const sortedCondition = deepSortCondition ( mereology, `condition ${JSON.stringify ( condition, null, 2 )}`, condition )
+  const onFoundForEachEntry: (( cont: OnFoundFn ) => OnFoundFn)[] = Object.entries ( sortedCondition ).map ( ( [ condK, condV ] ) =>
     ( continuation: OnFoundFn ) => condK.startsWith ( '{' ) && condK.endsWith ( '}' )
       ? exploreSituationForAllVariableMatches ( bcIndented, oldPath, situation, condK, condV, continuation )
       : checkSituationMatchesCondition ( oldPath, condK, bcIndented, condK, condV, situation?.[ condK ], continuation ) )

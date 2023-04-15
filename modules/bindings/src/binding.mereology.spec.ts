@@ -21,6 +21,15 @@ describe ( "binding into mereology", () => {
       "giturl": { "path": [ "leo", "git", "url" ], "value": "leo.git.url" },
       "service": { "path": [ "leo" ], "value": "leo", "namespace": "service" }
     } ] )
-
+  } )
+  it ( "should be able to retrieve a value from a bound mereology when the order is different", () => {
+    const situation = { test: {}, leo: {} }
+    const condition = { "{env:environment}": {}, "{service:service}": { "git": { url: "{giturl}" }, domain: "{domain}" }, }
+    expect ( evaluate ( bc, condition, situation ) ).toEqual ( [ {
+      "domain": { "path": [ "leo", "domain" ], "value": "test.leo" },
+      "env": { "namespace": "environment", "path": [ "test" ], "value": "test" },
+      "giturl": { "path": [ "leo", "git", "url" ], "value": "leo.git.url" },
+      "service": { "path": [ "leo" ], "value": "leo", "namespace": "service" }
+    } ] )
   } )
 } )

@@ -1,5 +1,5 @@
 import { BindingContext } from "./binding";
-import { fromMereology, ReferenceData } from "@runbook/mereology";
+import { fromMereology, Mereology, ReferenceData } from "@runbook/mereology";
 import { inheritsFrom, makeStringDag, StringDag } from "@runbook/utils";
 
 
@@ -7,7 +7,9 @@ export const inheritance: StringDag = makeStringDag ( {
   "environment": [ "prod", "test", "dev" ],
   "service": [ "leo" ],
 } )
-export const mereology: ReferenceData = {
+export const mereology: Mereology = { "environment": [ "service", "server", "database" ] }
+
+export const ref: ReferenceData =  {
   'bound': {
     "environment": {
       "dev": {
@@ -44,7 +46,8 @@ export const mereology: ReferenceData = {
 
 export const bc: BindingContext = {
   debug: false,
-  mereology: fromMereology ( mereology ),
+  mereology,
+  refDataFn: fromMereology ( ref ),
   inheritsFrom: inheritsFrom ( inheritance )
 }
 export const situation = {
