@@ -79,12 +79,12 @@ const checkSituationMatchesCondition = ( bc: BindingContext, condK, condV ) => (
     const path = [ ...oldPath, sitK ]
     const matchsPrimitive: MatchsPrimitive = matchPrim ( thisBinding, path, sitK )
     if ( matchsPrimitive === undefined ) return bindings
-    let result = matchAndContinue ( path, sitV, bindings, matchsPrimitive.binding );
+    let result = matchAndContinue ( path, sitV ) ( bindings, matchsPrimitive.binding );
     if ( result.length === bindings.length && matchsPrimitive.varNameAndInheritsFrom ) {//OK we didn't match in the situation. Maybe we can match in the mereology?
       const { varName, inheritsFrom } = matchsPrimitive.varNameAndInheritsFrom
       const inMere = bc.refDataFn ( Object.values ( thisBinding ), inheritsFrom, sitK )
       if ( inMere === undefined ) return bindings
-      let mereologyResult = matchAndContinue ( path, inMere, bindings, matchsPrimitive.binding )
+      let mereologyResult = matchAndContinue ( path, inMere ) ( bindings, matchsPrimitive.binding )
       return mereologyResult === undefined ? bindings : mereologyResult;
     }
     return result
@@ -119,21 +119,24 @@ const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any ) => ( c
     onFoundForEachEntry.reduce ( ( acc: OnFoundFn, v: OnFoundContinuation ) => v ( acc ) ( oldPath, situation ), continuation )
 };
 
-type MatchFn = ( path: string[], situation: any, b: Binding[], thisBinding: Binding ) => Binding[] | undefined
-const primitiveMatchFn = ( bcIndented: BindingContext, condition: any ) => ( continuation: OnFoundFn ) => {
+type MatchFn = ( path: string[], situation: any ) => ( b: Binding[], thisBinding: Binding ) => Binding[] | undefined
+const primitiveMatchFn = ( bcIndented: BindingContext, condition: any ) => ( continuation: OnFoundFn ): MatchFn => {
   let matcher = matchPrimitiveAndAddBindingIfNeeded ( bcIndented, condition );
-  return ( path: string[], situation: any, b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
+  return ( path: string[], situation: any ) => ( b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
     const matches = matcher ( thisBinding, path, situation )
     debug ( bcIndented, 'isPrimitive', JSON.stringify ( condition ), JSON.stringify ( situation ), JSON.stringify ( matches ) )
     return matches ? continuation ( b, matches.binding ) : [];
   }
 };
-const objectMatchFn = ( bcIndented: BindingContext, condition: any ) => ( continuation: OnFoundFn ) => {
-  let onFoundMaker = makeOnFoundToExploreObject ( bcIndented, condition ) ( continuation );
-  return ( path: string[], situation: any, b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
-    if ( Array.isArray ( situation ) ) throw new Error ( `Can't handle arrays yet` )
-    let result = onFoundMaker ( path, situation ) ( b, thisBinding );
-    return result
+const objectMatchFn = ( bcIndented: BindingContext, condition: any ) => {
+  let maker = makeOnFoundToExploreObject ( bcIndented, condition );
+  return ( continuation: OnFoundFn ) => {
+    let withContinuation = maker ( continuation );
+    return ( path: string[], situation: any ): OnFoundFn => ( b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
+      if ( Array.isArray ( situation ) ) throw new Error ( `Can't handle arrays yet` )
+      let result = withContinuation ( path, situation ) ( b, thisBinding );
+      return result
+    };
   };
 };
 function matchUntilLeafAndThenContinue ( bc: BindingContext, condition: any ): ( onFound: OnFoundFn ) => MatchFn {
@@ -141,13 +144,13 @@ function matchUntilLeafAndThenContinue ( bc: BindingContext, condition: any ): (
   if ( isPrimitive ( condition ) ) return primitiveMatchFn ( bcIndented, condition )
   if ( Array.isArray ( condition ) ) throw new Error ( `Can't handle arrays yet` )
   return objectMatchFn ( bcIndented, condition )
-  
+
 }
 
 export const finalOnBound: OnFoundFn = ( b, thisBinding ) => [ ...b, thisBinding ];
 export const evaluate = ( bc: BindingContext, condition: any ) => {
   let matcher = matchUntilLeafAndThenContinue ( bc, condition ) ( finalOnBound );
   return ( situation: any ): Binding[] => {
-    return safeArray ( matcher ( [], situation, [], {} ) );
+    return safeArray ( matcher ( [], situation ) ( [], {} ) );
   };
 };
