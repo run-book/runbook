@@ -1,5 +1,6 @@
 import { flatMap, isPrimitive, NameAnd, Primitive } from "@runbook/utils";
 import { InheritsFromFn } from "./inheritance";
+import { Mereology } from "./mereology";
 
 
 export type Binding = NameAnd<PathAndValue>
@@ -10,6 +11,7 @@ export interface PathAndValue {
 }
 export interface BindingContext {
   inheritsFrom: InheritsFromFn
+  mereology: Mereology
   debug?: boolean
   debugIndent?: number
 }
@@ -53,6 +55,7 @@ type OnFoundFn = ( b: Binding[], thisBinding: Binding ) => Binding[]
 
 function checkSituationMatchesCondition ( oldPath: string[], sitK, bc: BindingContext, condK, condV, sitV, continuation: ( b: Binding[], thisBinding: Binding ) => Binding[] ) {
   return ( bindings: Binding[], thisBinding: Binding ): Binding[] => {
+    if ( sitV === undefined ) return bindings;
     const path = [ ...oldPath, sitK ]
     const newBinding: Binding = matchPrimitiveAndAddBindingIfNeeded ( bc, thisBinding, path, condK, sitK )
     if ( newBinding === undefined ) return bindings
@@ -67,11 +70,12 @@ function exploreSituationForAllVariableMatches ( bc: BindingContext, oldPath: st
 }
 function makeOnFoundToExploreObject ( bc: BindingContext, oldPath: string[], condition: any, situation: any, onFound: OnFoundFn ): OnFoundFn {
   const bcIndented = debugAndIndent ( bc, 'makeOnFoundToExploreObject', JSON.stringify ( condition ) )
+
   const onFoundForEachEntry: (( cont: OnFoundFn ) => OnFoundFn)[] = Object.entries ( condition ).map ( ( [ condK, condV ] ) =>
     ( continuation: OnFoundFn ) => condK.startsWith ( '{' ) && condK.endsWith ( '}' )
       ? exploreSituationForAllVariableMatches ( bcIndented, oldPath, situation, condK, condV, continuation )
-      : checkSituationMatchesCondition ( oldPath, condK, bcIndented, condK, condV, situation[ condK ], continuation ) )
-  let res = onFoundForEachEntry.reduce ( ( acc, v ) => v ( acc ), onFound );
+      : checkSituationMatchesCondition ( oldPath, condK, bcIndented, condK, condV, situation?.[ condK ], continuation ) )
+  let res: OnFoundFn = onFoundForEachEntry.reduce ( ( acc, v ) => v ( acc ), onFound );
   return res
 }
 function matchUntilLeafAndThenContinue ( bc: BindingContext, path: string[], condition: any, situation: any, b: Binding[], thisBinding: Binding, onFound: OnFoundFn ): Binding[] | undefined {
@@ -90,6 +94,6 @@ function matchUntilLeafAndThenContinue ( bc: BindingContext, path: string[], con
 }
 
 export const finalOnBound: OnFoundFn = ( b, thisBinding ) => [ ...b, thisBinding ];
-export function eval2 ( bc: BindingContext, condition: any, situation: any ): Binding[] {
+export function evaluate ( bc: BindingContext, condition: any, situation: any ): Binding[] {
   return matchUntilLeafAndThenContinue ( bc, [], condition, situation, [], {}, finalOnBound )
 }
