@@ -5,7 +5,7 @@ import { FromMereologyFn, NameSpaceAndValue } from "@runbook/mereology";
 
 export type Binding = NameAnd<PathAndValue>
 
-export interface PathAndValue extends NameSpaceAndValue{
+export interface PathAndValue extends NameSpaceAndValue {
   namespace?: string
   value: Primitive
   path: string[]
@@ -77,7 +77,7 @@ function checkSituationMatchesCondition ( oldPath: string[], sitK, bc: BindingCo
     let result = matchUntilLeafAndThenContinue ( bc, path, condV, sitV, bindings, matchsPrimitive.binding, continuation );
     if ( result.length === bindings.length && matchsPrimitive.varNameAndInheritsFrom ) {//OK we didn't match in the situation. Maybe we can match in the mereology?
       const { varName, inheritsFrom } = matchsPrimitive.varNameAndInheritsFrom
-      const inMere = bc.mereology([], inheritsFrom, sitK )
+      const inMere = bc.mereology ( Object.values ( thisBinding ), inheritsFrom, sitK )
       if ( inMere === undefined ) return bindings
       let mereologyResult = matchUntilLeafAndThenContinue ( bc, path, condV, inMere, bindings, matchsPrimitive.binding, continuation )
       return mereologyResult === undefined ? bindings : mereologyResult;

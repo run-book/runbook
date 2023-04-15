@@ -1,5 +1,4 @@
-import { BindingContext, evaluate } from "./binding";
-import { inheritsFromUsingParents, makeStringDag, StringDag } from "./inheritance";
+import { evaluate } from "./binding";
 import { bc, s1, s2, situation } from "./binding.fixture";
 
 
@@ -25,6 +24,7 @@ describe ( 'another way of doing conditions', () => {
     const condition = { "{env:environment}": {} }
     expect ( evaluate ( bc, condition, situation ) ).toEqual ( [
       { "env": { "path": [ "prod" ], "value": "prod", "namespace": "environment", } },
+      { "env": { "path": [ "test" ], "value": "test", "namespace": "environment", } },
       { "env": { "path": [ "dev" ], "value": "dev", "namespace": "environment", } }
     ] )
   } )
@@ -56,6 +56,10 @@ describe ( 'another way of doing conditions', () => {
         "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
         "env": { "path": [ "prod" ], "value": "prod", "namespace": "environment" },
         "ser": { "path": [ "prod", "leo" ], "value": "leo", "namespace": "service" }
+      }, {
+        "domain": { "path": [ "test", "leo", "domain" ], "value": "testLeo" },
+        "env": { "path": [ "test" ], "value": "test", "namespace": "environment" },
+        "ser": { "path": [ "test", "leo" ], "value": "leo", "namespace": "service" }
       },
       {
         "domain": { "path": [ "dev", "leo", "domain" ], "value": "devLeo" },
@@ -74,6 +78,12 @@ describe ( 'another way of doing conditions', () => {
         "ser": { "path": [ "prod", "leo" ], "value": "leo", "namespace": "service" }
       },
       {
+        "domain": { "path": [ "test", "leo", "domain" ], "value": "testLeo" },
+        "env": { "path": [ "test" ], "value": "test", "namespace": "environment" },
+        "port": { "path": [ "test", "leo", "port" ], "value": 8080 },
+        "ser": { "path": [ "test", "leo" ], "value": "leo", "namespace": "service" }
+      },
+      {
         "domain": { "path": [ "dev", "leo", "domain" ], "value": "devLeo" },
         "env": { "path": [ "dev" ], "value": "dev", "namespace": "environment" },
         "port": { "path": [ "dev", "leo", "port" ], "value": 80 },
@@ -87,7 +97,13 @@ describe ( 'another way of doing conditions', () => {
         "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
         "env": { "path": [ "prod" ], "value": "prod", "namespace": "environment" },
         "ser": { "path": [ "prod", "leo" ], "value": "leo", "namespace": "service" }
-      } ] )
+      } ,
+      {
+        "domain": { "path": [ "test", "leo", "domain" ], "value": "testLeo" },
+        "env": { "path": [ "test" ], "value": "test", "namespace": "environment" },
+        "ser": { "path": [ "test", "leo" ], "value": "leo", "namespace": "service" }
+      }
+    ] )
   } )
 
   it ( "should handle 'not found'", () => {

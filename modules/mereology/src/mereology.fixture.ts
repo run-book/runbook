@@ -1,4 +1,4 @@
-import { Mereology } from "./mereology";
+import { Mereology, ReferenceData } from "./mereology";
 
 const mereologyDefn =
         {
@@ -28,9 +28,15 @@ const mereologyDefn =
           }
         }
 
-const devLeoM: Mereology = {}
+const devLeoM: ReferenceData = {}
 
-export const mereology: Mereology = {
+export const mereology: Mereology={
+  "environment":{
+    "service":{},
+    "database":{}
+  }
+}
+export const ref: ReferenceData = {
   'bound': {
     "environment": {
       "dev": {
