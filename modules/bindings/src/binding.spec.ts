@@ -1,4 +1,4 @@
-import { evaluate } from "./binding";
+import { evaluate, makeCount } from "./binding";
 import { bc, s1, s2, situation } from "./binding.fixture";
 
 
@@ -117,5 +117,16 @@ describe ( 'another way of doing conditions', () => {
     const condition = { "{service:service}": { "not": { in: "{something}" } } }
     expect ( evaluate ( bc, condition ) ( situation ) ).toEqual ( [] )
   } )
+
+  it ( "should not keep remaking things", () => {
+      const condition = { "{env:environment}": { "{ser:service}": { domain: "{domain}", port: "{port}" } } }
+      let evalThisCondition = evaluate ( bc, condition );
+      evalThisCondition ( situation )
+      const startCount = makeCount
+      evalThisCondition ( situation )
+      evalThisCondition ( situation )
+      expect ( makeCount ).toEqual ( startCount )
+    }
+  )
 
 } )

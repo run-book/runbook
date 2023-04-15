@@ -96,8 +96,10 @@ const checkOneKvForVariable = ( bc: BindingContext, condK, condV, continuation: 
     flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) =>
       matcher ( oldPath, sitV, sitK ) ( bindings, thisBinding ) );
 };
-const checkOneKvForNonVariable = ( bcIndented: BindingContext, condK, condV, continuation: OnFoundFn ) => ( oldPath: string[], situation: any ) =>
-  checkSituationMatchesCondition ( bcIndented, condK, condV, continuation ) ( oldPath, situation?.[ condK ], condK );
+const checkOneKvForNonVariable = ( bcIndented: BindingContext, condK, condV, continuation: OnFoundFn ) => {
+  let checker = checkSituationMatchesCondition ( bcIndented, condK, condV, continuation );
+  return ( oldPath: string[], situation: any ) => checker ( oldPath, situation?.[ condK ], condK );
+};
 const checkOneKv = ( condK, bcIndented: BindingContext, condV ) => {
   const checker = ( continuation: OnFoundFn ) => condK.startsWith ( '{' ) && condK.endsWith ( '}' )
     ? checkOneKvForVariable ( bcIndented, condK, condV, continuation )
