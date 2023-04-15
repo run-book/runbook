@@ -120,14 +120,14 @@ const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any, onFound
 };
 
 type MatchFn = ( path: string[], situation: any, b: Binding[], thisBinding: Binding ) => Binding[] | undefined
-function primitiveMatchFn ( bcIndented: BindingContext, condition: any, onFound: ( b: Binding[], thisBinding: Binding ) => Binding[] ) {
+const primitiveMatchFn = ( bcIndented: BindingContext, condition: any ) => ( continuation: OnFoundFn ) => {
   let matcher = matchPrimitiveAndAddBindingIfNeeded ( bcIndented, condition );
   return ( path: string[], situation: any, b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
     const matches = matcher ( thisBinding, path, situation )
     debug ( bcIndented, 'isPrimitive', JSON.stringify ( condition ), JSON.stringify ( situation ), JSON.stringify ( matches ) )
-    return matches ? onFound ( b, matches.binding ) : [];
+    return matches ? continuation ( b, matches.binding ) : [];
   }
-}
+};
 function objectMatchFn ( bcIndented: BindingContext, condition: any, onFound: OnFoundFn ) {
   let onFoundMaker = makeOnFoundToExploreObject ( bcIndented, condition, onFound );
   return ( path: string[], situation: any, b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
@@ -137,13 +137,12 @@ function objectMatchFn ( bcIndented: BindingContext, condition: any, onFound: On
   };
 }
 function matchUntilLeafAndThenContinue ( bc: BindingContext, condition: any ): ( onFound: OnFoundFn ) => MatchFn {
-  return onFound => {
-    const bcIndented = debugAndIndent ( bc, )
-    if ( isPrimitive ( condition ) ) return primitiveMatchFn ( bcIndented, condition, onFound );
-    if ( Array.isArray ( condition ) ) throw new Error ( `Can't handle arrays yet` )
-
+  const bcIndented = debugAndIndent ( bc, )
+  if ( isPrimitive ( condition ) ) return primitiveMatchFn ( bcIndented, condition )
+  if ( Array.isArray ( condition ) ) throw new Error ( `Can't handle arrays yet` )
+  return continuation => {
     //if we matched on a new object make the code that explores it. This flattens out the iteration over the entries.
-    return objectMatchFn ( bcIndented, condition, onFound );
+    return objectMatchFn ( bcIndented, condition, continuation );
   }
 }
 
