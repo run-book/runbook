@@ -66,46 +66,52 @@ const matchPrimitiveAndAddBindingIfNeeded = ( bc: BindingContext, condition: Pri
 };
 
 type OnFoundFn = ( b: Binding[], thisBinding: Binding ) => Binding[]
-
+type OnFoundContinuation = ( onfound: OnFoundFn ) => ( oldPath: string[], situation: any ) => OnFoundFn
 interface MatchResult {
   bindings: Binding[]
   match: boolean
 }
 const checkSituationMatchesCondition = ( bc: BindingContext, condK, condV, continuation: OnFoundFn ) => ( oldPath: string[], sitV, sitK ): OnFoundFn => {
   let matchPrim = matchPrimitiveAndAddBindingIfNeeded ( bc, condK );
+  let matchAndContinue = matchUntilLeafAndThenContinue ( bc, condV, continuation );
   return ( bindings: Binding[], thisBinding: Binding ): Binding[] => {
     if ( sitV === undefined ) return bindings;
     const path = [ ...oldPath, sitK ]
     const matchsPrimitive: MatchsPrimitive = matchPrim ( thisBinding, path, sitK )
     if ( matchsPrimitive === undefined ) return bindings
-    let result = matchUntilLeafAndThenContinue ( bc, condV, continuation ) ( path, sitV, bindings, matchsPrimitive.binding );
+    let result = matchAndContinue ( path, sitV, bindings, matchsPrimitive.binding );
     if ( result.length === bindings.length && matchsPrimitive.varNameAndInheritsFrom ) {//OK we didn't match in the situation. Maybe we can match in the mereology?
       const { varName, inheritsFrom } = matchsPrimitive.varNameAndInheritsFrom
       const inMere = bc.refDataFn ( Object.values ( thisBinding ), inheritsFrom, sitK )
       if ( inMere === undefined ) return bindings
-      let mereologyResult = matchUntilLeafAndThenContinue ( bc, condV, continuation ) ( path, inMere, bindings, matchsPrimitive.binding )
+      let mereologyResult = matchAndContinue ( path, inMere, bindings, matchsPrimitive.binding )
       return mereologyResult === undefined ? bindings : mereologyResult;
     }
     return result
   };
 };
-const exploreSituationForAllVariableMatches = ( bc: BindingContext, condK, condV, continuation: OnFoundFn ) => {
+const checkOneKvForVariable = ( bc: BindingContext, condK, condV, continuation: OnFoundFn ) => {
   let matcher = checkSituationMatchesCondition ( bc, condK, condV, continuation );
-  return ( oldPath: string[], situation: any ) =>
-    ( bindings: Binding[], thisBinding ) => flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) =>
+  return ( oldPath: string[], situation: any ) => ( bindings: Binding[], thisBinding ) =>
+    flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) =>
       matcher ( oldPath, sitV, sitK ) ( bindings, thisBinding ) );
+};
+const checkOneKvForNonVariable = ( bcIndented: BindingContext, condK, condV, continuation: OnFoundFn ) => ( oldPath: string[], situation: any ) =>
+  checkSituationMatchesCondition ( bcIndented, condK, condV, continuation ) ( oldPath, situation?.[ condK ], condK );
+const checkOneKv = ( condK, bcIndented: BindingContext, condV ) => {
+  const checker = ( continuation: OnFoundFn ) => condK.startsWith ( '{' ) && condK.endsWith ( '}' )
+    ? checkOneKvForVariable ( bcIndented, condK, condV, continuation )
+    : checkOneKvForNonVariable ( bcIndented, condK, condV, continuation );
+
+  return ( continuation: OnFoundFn ) => ( oldPath: string[], situation: any ) => checker ( continuation ) ( oldPath, situation )
 };
 const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any, onFound: OnFoundFn ) => {
   const bcIndented = debugAndIndent ( bc, 'makeOnFoundToExploreObject', JSON.stringify ( condition ) )
   const sortedCondition = deepSortCondition ( mereology, `condition ${JSON.stringify ( condition, null, 2 )}`, condition )
-  return ( oldPath: string[], situation: any ): OnFoundFn => {
-    const onFoundForEachEntry: (( cont: OnFoundFn ) => OnFoundFn)[] = Object.entries ( sortedCondition ).map ( ( [ condK, condV ] ) =>
-      ( continuation: OnFoundFn ) => condK.startsWith ( '{' ) && condK.endsWith ( '}' )
-        ? exploreSituationForAllVariableMatches ( bcIndented, condK, condV, continuation)(oldPath, situation )
-        : checkSituationMatchesCondition ( bcIndented, condK, condV, continuation ) ( oldPath, situation?.[ condK ], condK ) )
-    let res: OnFoundFn = onFoundForEachEntry.reduce ( ( acc, v ) => v ( acc ), onFound );
-    return res
-  };
+  const onFoundForEachEntry: OnFoundContinuation[] = Object.entries ( sortedCondition ).map ( ( [ condK, condV ] ) => checkOneKv ( condK, bcIndented, condV ) )
+  //ideally we would do the reduction at 'compile time' i.e. above the return
+  return ( oldPath: string[], situation: any ): OnFoundFn =>
+    onFoundForEachEntry.reduce ( ( acc: OnFoundFn, v: OnFoundContinuation ) => v ( acc ) ( oldPath, situation ), onFound )
 };
 
 type MatchFn = ( path: string[], situation: any, b: Binding[], thisBinding: Binding ) => Binding[] | undefined
@@ -117,7 +123,7 @@ function primitiveMatchFn ( bcIndented: BindingContext, condition: any, onFound:
     return matches ? onFound ( b, matches.binding ) : [];
   }
 }
-function objectMatchFn ( bcIndented: BindingContext, condition: any, onFound: ( b: Binding[], thisBinding: Binding ) => Binding[] ) {
+function objectMatchFn ( bcIndented: BindingContext, condition: any, onFound: OnFoundFn ) {
   let onFoundMaker = makeOnFoundToExploreObject ( bcIndented, condition, onFound );
   return ( path: string[], situation: any, b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
     if ( Array.isArray ( situation ) ) throw new Error ( `Can't handle arrays yet` )
