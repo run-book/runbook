@@ -48,7 +48,7 @@ interface MatchsPrimitive {
   varNameAndInheritsFrom?: VarNameAndInheritsFrom
   binding: Binding
 }
-const matchPrimitiveAndAddBindingIfNeeded = ( bc: BindingContext, condition: Primitive ) => ( binding: Binding, path: string[], situation: Primitive ): MatchsPrimitive | undefined => {
+const matchPrimitiveAndAddBindingIfNeeded = ( bc: BindingContext, condition: Primitive ) => ( path: string[], situation: Primitive ) => ( binding: Binding ): MatchsPrimitive | undefined => {
   if ( typeof condition === 'string' && condition.startsWith ( '{' ) && condition.endsWith ( '}' ) ) {
     const varNameAndInheritsFrom = parseBracketedString ( path, condition )
     const { varName, inheritsFrom } = varNameAndInheritsFrom
@@ -71,23 +71,29 @@ interface MatchResult {
   bindings: Binding[]
   match: boolean
 }
-const checkSituationMatchesCondition = ( bc: BindingContext, condK, condV ) => ( continuation: OnFoundFn ) => ( oldPath: string[], sitV, sitK ): OnFoundFn => {
+const checkSituationMatchesCondition = ( bc: BindingContext, condK, condV ) => {
   let matchPrim = matchPrimitiveAndAddBindingIfNeeded ( bc, condK );
-  let matchAndContinue = matchUntilLeafAndThenContinue ( bc, condV ) ( continuation );
-  return ( bindings: Binding[], thisBinding: Binding ): Binding[] => {
-    if ( sitV === undefined ) return bindings;
-    const path = [ ...oldPath, sitK ]
-    const matchsPrimitive: MatchsPrimitive = matchPrim ( thisBinding, path, sitK )
-    if ( matchsPrimitive === undefined ) return bindings
-    let result = matchAndContinue ( path, sitV ) ( bindings, matchsPrimitive.binding );
-    if ( result.length === bindings.length && matchsPrimitive.varNameAndInheritsFrom ) {//OK we didn't match in the situation. Maybe we can match in the mereology?
-      const { varName, inheritsFrom } = matchsPrimitive.varNameAndInheritsFrom
-      const inMere = bc.refDataFn ( Object.values ( thisBinding ), inheritsFrom, sitK )
-      if ( inMere === undefined ) return bindings
-      let mereologyResult = matchAndContinue ( path, inMere ) ( bindings, matchsPrimitive.binding )
-      return mereologyResult === undefined ? bindings : mereologyResult;
-    }
-    return result
+  let matchAndContinue = matchUntilLeafAndThenContinue ( bc, condV );
+  return ( continuation: OnFoundFn ) => {
+    let matchAndContinueWithContinuation = matchAndContinue ( continuation );
+    return ( oldPath: string[], sitV, sitK ): OnFoundFn => {
+      const path = [ ...oldPath, sitK ]
+      let matchWithSituation = matchAndContinueWithContinuation ( path, sitV );
+      return ( bindings: Binding[], thisBinding: Binding ): Binding[] => {
+        if ( sitV === undefined ) return bindings;
+        const matchsPrimitive: MatchsPrimitive = matchPrim ( path, sitK ) ( thisBinding )
+        if ( matchsPrimitive === undefined ) return bindings
+        let result = matchWithSituation ( bindings, matchsPrimitive.binding );
+        if ( result.length === bindings.length && matchsPrimitive.varNameAndInheritsFrom ) {//OK we didn't match in the situation. Maybe we can match in the mereology?
+          const { varName, inheritsFrom } = matchsPrimitive.varNameAndInheritsFrom
+          const inMere = bc.refDataFn ( Object.values ( thisBinding ), inheritsFrom, sitK )
+          if ( inMere === undefined ) return bindings
+          let mereologyResult = matchAndContinueWithContinuation ( path, inMere ) ( bindings, matchsPrimitive.binding )
+          return mereologyResult === undefined ? bindings : mereologyResult;
+        }
+        return result
+      };
+    };
   };
 };
 const checkOneKvForVariable = ( bc: BindingContext, condK, condV ) => {
@@ -134,7 +140,7 @@ const primitiveMatchFn = ( bcIndented: BindingContext, condition: any ) => {
   let matcher = matchPrimitiveAndAddBindingIfNeeded ( bcIndented, condition );
   return ( continuation: OnFoundFn ): MatchFn => {
     return ( path: string[], situation: any ): OnFoundFn => ( bindings: Binding[], thisBinding: Binding ): Binding[] | undefined => {
-      const matches = matcher ( thisBinding, path, situation )
+      const matches = matcher ( path, situation ) ( thisBinding )
       debug ( bcIndented, 'isPrimitive', JSON.stringify ( condition ), JSON.stringify ( situation ), JSON.stringify ( matches ) )
       return matches ? continuation ( bindings, matches.binding ) : [];
     }
