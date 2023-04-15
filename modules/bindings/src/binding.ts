@@ -140,10 +140,8 @@ function matchUntilLeafAndThenContinue ( bc: BindingContext, condition: any ): (
   const bcIndented = debugAndIndent ( bc, )
   if ( isPrimitive ( condition ) ) return primitiveMatchFn ( bcIndented, condition )
   if ( Array.isArray ( condition ) ) throw new Error ( `Can't handle arrays yet` )
-  return continuation => {
-    //if we matched on a new object make the code that explores it. This flattens out the iteration over the entries.
-    return objectMatchFn ( bcIndented, condition ) ( continuation );
-  }
+  return objectMatchFn ( bcIndented, condition )
+  
 }
 
 export const finalOnBound: OnFoundFn = ( b, thisBinding ) => [ ...b, thisBinding ];
