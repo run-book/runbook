@@ -1,18 +1,14 @@
 import { BindingContext, eval2 } from "./binding";
+import { inheritsFromUsingParents, makeStringDag, StringDag } from "./inheritance";
 
+
+const inheritance: StringDag = makeStringDag ( {
+  "environment": [ "prod", "dev" ],
+  "service": [ "leo" ],
+} )
 const bc: BindingContext = {
   debug: false,
-  inheritance: {
-    parents: {
-      "prod": [ "environment" ],
-      "dev": [ "environment" ],
-      "leo": [ "service" ],
-    },
-    children: {
-      "environment": [ "prod", "dev" ],
-      "service": [ "leo" ],
-    }
-  }
+  inheritsFrom:inheritsFromUsingParents ( inheritance.parents )
 }
 const situation = {
   prod: { some: "data", leo: { domain: "prodLeo", port: 8080 } },
@@ -72,9 +68,8 @@ describe ( 'another way of doing conditions', () => {
     expect ( eval2 ( bc, condition, situation ) ).toEqual ( [
       {
         "domain": { "path": [ "prod", "leo", "domain" ], "value": "prodLeo" },
-        "env": { "path": [ "prod" ], "value": "prod" }, "ser": {
-          "path": [ "prod", "leo" ], "value": "leo"
-        }
+        "env": { "path": [ "prod" ], "value": "prod" },
+        "ser": { "path": [ "prod", "leo" ], "value": "leo" }
       },
       {
         "domain": { "path": [ "dev", "leo", "domain" ], "value": "devLeo" },

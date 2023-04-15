@@ -1,6 +1,5 @@
-import { flatMap, NameAnd, Primitive } from "@runbook/utils";
-import { StringDag } from "./inheritance";
-import { isPrimitive } from "@runbook/utils";
+import { flatMap, isPrimitive, NameAnd, Primitive } from "@runbook/utils";
+import { InheritsFromFn } from "./inheritance";
 
 
 export type Binding = NameAnd<PathAndValue>
@@ -10,7 +9,7 @@ export interface PathAndValue {
   value: Primitive
 }
 export interface BindingContext {
-  inheritance: StringDag
+  inheritsFrom: InheritsFromFn
   debug?: boolean
   debugIndent?: number
 }
@@ -26,7 +25,6 @@ function debugAndIndent ( bc: BindingContext, ...args: any[] ): BindingContext {
   return bc
 }
 
-
 const idAndInheritsFrom = /^\{([a-zA-Z0-9]*):?([a-zA-Z0-9]*)}$/
 function parseBracketedString ( path: string[], s: string ) {
   const matches = idAndInheritsFrom.exec ( s )
@@ -41,7 +39,7 @@ function matchPrimitiveAndAddBindingIfNeeded ( bc: BindingContext, b: Binding, p
     if ( inheritsFrom.length > 0 ) {
       if ( typeof situation !== 'string' )
         return undefined;
-      let inherits = bc.inheritance.parents[ situation ]?.includes ( inheritsFrom );
+      let inherits = bc.inheritsFrom ( situation, inheritsFrom );
       if ( !inherits ) return undefined;
     }
     const newBinding: Binding = { ...b }
@@ -53,24 +51,26 @@ function matchPrimitiveAndAddBindingIfNeeded ( bc: BindingContext, b: Binding, p
 
 type OnFoundFn = ( b: Binding[], thisBinding: Binding ) => Binding[]
 
+function checkSituationMatchesCondition ( oldPath: string[], sitK, bc: BindingContext, condK, condV, sitV, continuation: ( b: Binding[], thisBinding: Binding ) => Binding[] ) {
+  return ( bindings: Binding[], thisBinding: Binding ): Binding[] => {
+    const path = [ ...oldPath, sitK ]
+    const newBinding: Binding = matchPrimitiveAndAddBindingIfNeeded ( bc, thisBinding, path, condK, sitK )
+    if ( newBinding === undefined ) return bindings
+    let result = matchUntilLeafAndThenContinue ( bc, path, condV, sitV, bindings, newBinding, continuation );
+    if ( result === undefined ) return bindings
+    return result;
+  }
+}
+function exploreSituationForAllVariableMatches ( bc: BindingContext, oldPath: string[], situation: any, condK, condV, continuation: ( b: Binding[], thisBinding: Binding ) => Binding[] ) {
+  return ( bindings: Binding[], thisBinding ) => flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) =>
+    checkSituationMatchesCondition ( oldPath, sitK, bc, condK, condV, sitV, continuation ) ( bindings, thisBinding ) );
+}
 function makeOnFoundToExploreObject ( bc: BindingContext, oldPath: string[], condition: any, situation: any, onFound: OnFoundFn ): OnFoundFn {
   const bcIndented = debugAndIndent ( bc, 'makeOnFoundToExploreObject', JSON.stringify ( condition ) )
-  let condKVs = Object.entries ( condition );
-  // if ( condKVs.length === 0 ) return ( b, t ) => onFound ( [ ...b, t ], {} );
-  let listOfFunctionsForEachPath = condKVs.map ( ( [ condK, condV ] ) => {
-    //TODO when tests pass optimse for 'i know the binding' aka 'prod' instead of '{prod}'
-    let contFn = ( continuation: OnFoundFn ) =>
-      ( bindings: Binding[], thisBinding ) => flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) => {
-        const path = [ ...oldPath, sitK ]
-        const newBinding: Binding = matchPrimitiveAndAddBindingIfNeeded ( bc, thisBinding, path, condK, sitK )
-        if ( newBinding === undefined ) return bindings
-        let result = matchUntilLeafAndThenContinue ( bcIndented, path, condV, sitV, bindings, newBinding, continuation );
-        if ( result === undefined ) return bindings
-        return result;
-      } );
-    return contFn
-  } );
-  const onFoundForEachEntry: (( cont: OnFoundFn ) => OnFoundFn)[] = listOfFunctionsForEachPath
+  const onFoundForEachEntry: (( cont: OnFoundFn ) => OnFoundFn)[] = Object.entries ( condition ).map ( ( [ condK, condV ] ) =>
+    ( continuation: OnFoundFn ) => condK.startsWith ( '{' ) && condK.endsWith ( '}' )
+      ? exploreSituationForAllVariableMatches ( bcIndented, oldPath, situation, condK, condV, continuation )
+      : checkSituationMatchesCondition ( oldPath, condK, bcIndented, condK, condV, situation[ condK ], continuation ) )
   let res = onFoundForEachEntry.reduce ( ( acc, v ) => v ( acc ), onFound );
   return res
 }
