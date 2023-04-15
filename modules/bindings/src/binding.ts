@@ -48,8 +48,11 @@ interface MatchsPrimitive {
   varNameAndInheritsFrom?: VarNameAndInheritsFrom
   binding: Binding
 }
+
+export let makeVarNameAndInheritsFromCount = 0
 const matchVariable = ( bc: BindingContext, condition: string, condPath: string[] ) => {
   const varNameAndInheritsFrom = parseBracketedString ( condPath, condition )
+  makeVarNameAndInheritsFromCount++
   const { varName, inheritsFrom } = varNameAndInheritsFrom
   return ( path: string[], situation: Primitive, binding: Binding ) => {
     if ( inheritsFrom.length > 0 ) {
@@ -158,8 +161,7 @@ const objectMatchFn = ( bcIndented: BindingContext, condition: any, condPath: st
     let withContinuation = maker ( continuation );
     return ( path: string[], situation: any ): OnFoundFn => ( b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
       if ( Array.isArray ( situation ) ) throw new Error ( `Can't handle arrays yet` )
-      let result = withContinuation ( path, situation ) ( b, thisBinding );
-      return result
+      return withContinuation ( path, situation ) ( b, thisBinding )
     };
   };
 };
@@ -168,7 +170,6 @@ function matchUntilLeafAndThenContinue ( bc: BindingContext, condition: any, con
   if ( isPrimitive ( condition ) ) return primitiveMatchFn ( bcIndented, condition, condPath )
   if ( Array.isArray ( condition ) ) throw new Error ( `Can't handle arrays yet` )
   return objectMatchFn ( bcIndented, condition, condPath )
-
 }
 
 export const finalOnBound: OnFoundFn = ( b, thisBinding ) => [ ...b, thisBinding ];

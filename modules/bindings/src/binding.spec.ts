@@ -1,4 +1,4 @@
-import { evaluate, makeCount } from "./binding";
+import { evaluate, makeCount, makeVarNameAndInheritsFromCount } from "./binding";
 import { bc, s1, s2, situation } from "./binding.fixture";
 
 
@@ -122,11 +122,13 @@ describe ( 'another way of doing conditions', () => {
       const condition = { "{env:environment}": { "{ser:service}": { domain: "{domain}", port: "{port}" } } }
       let evalThisCondition = evaluate ( bc, condition );
       evalThisCondition ( situation )
-      const startCount = makeCount
+      const startMakeCount = makeCount
+      const startMakeVarCount = makeVarNameAndInheritsFromCount
       evalThisCondition ( situation )
       evalThisCondition ( situation )
       evalThisCondition ( situation )
-      expect ( makeCount ).toEqual ( startCount )
+      expect ( makeCount ).toEqual ( startMakeCount )
+      expect ( makeVarNameAndInheritsFromCount ).toEqual ( startMakeVarCount )
     }
   )
 
