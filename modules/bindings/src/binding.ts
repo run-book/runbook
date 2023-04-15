@@ -108,7 +108,7 @@ const checkOneKv = ( condK, bcIndented: BindingContext, condV ) => {
   return ( continuation: OnFoundFn ) => ( oldPath: string[], situation: any ) => checker ( continuation ) ( oldPath, situation )
 };
 export let makeCount = 0;
-const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any, onFound: OnFoundFn ) => {
+const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any ) => ( continuation: OnFoundFn ) => {
   const bcIndented = debugAndIndent ( bc, 'makeOnFoundToExploreObject', JSON.stringify ( condition ) )
   const sortedCondition = deepSortCondition ( mereology, `condition ${JSON.stringify ( condition, null, 2 )}`, condition )
   const onFoundForEachEntry: OnFoundContinuation[] = Object.entries ( sortedCondition ).map ( ( [ condK, condV ] ) => checkOneKv ( condK, bcIndented, condV ) )
@@ -116,7 +116,7 @@ const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any, onFound
 
   makeCount++
   return ( oldPath: string[], situation: any ): OnFoundFn =>
-    onFoundForEachEntry.reduce ( ( acc: OnFoundFn, v: OnFoundContinuation ) => v ( acc ) ( oldPath, situation ), onFound )
+    onFoundForEachEntry.reduce ( ( acc: OnFoundFn, v: OnFoundContinuation ) => v ( acc ) ( oldPath, situation ), continuation )
 };
 
 type MatchFn = ( path: string[], situation: any, b: Binding[], thisBinding: Binding ) => Binding[] | undefined
@@ -128,21 +128,21 @@ const primitiveMatchFn = ( bcIndented: BindingContext, condition: any ) => ( con
     return matches ? continuation ( b, matches.binding ) : [];
   }
 };
-function objectMatchFn ( bcIndented: BindingContext, condition: any, onFound: OnFoundFn ) {
-  let onFoundMaker = makeOnFoundToExploreObject ( bcIndented, condition, onFound );
+const objectMatchFn = ( bcIndented: BindingContext, condition: any ) => ( continuation: OnFoundFn ) => {
+  let onFoundMaker = makeOnFoundToExploreObject ( bcIndented, condition ) ( continuation );
   return ( path: string[], situation: any, b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
     if ( Array.isArray ( situation ) ) throw new Error ( `Can't handle arrays yet` )
     let result = onFoundMaker ( path, situation ) ( b, thisBinding );
     return result
   };
-}
+};
 function matchUntilLeafAndThenContinue ( bc: BindingContext, condition: any ): ( onFound: OnFoundFn ) => MatchFn {
   const bcIndented = debugAndIndent ( bc, )
   if ( isPrimitive ( condition ) ) return primitiveMatchFn ( bcIndented, condition )
   if ( Array.isArray ( condition ) ) throw new Error ( `Can't handle arrays yet` )
   return continuation => {
     //if we matched on a new object make the code that explores it. This flattens out the iteration over the entries.
-    return objectMatchFn ( bcIndented, condition, continuation );
+    return objectMatchFn ( bcIndented, condition ) ( continuation );
   }
 }
 
