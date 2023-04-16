@@ -45,3 +45,7 @@ export function findFileInParentsOrError ( directory: string, file: string ): Er
 export function readTestFile ( dir, file: string ) {
   return cleanLineEndings ( fs.readFileSync ( Path.join ( dir, file ), 'utf8' ) )
 }
+
+export function readExpected ( dir ) {
+  return readTestFile(dir, 'expected.txt')
+}

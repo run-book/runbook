@@ -1,0 +1,17 @@
+
+There were errors in the runbook config file. Use 'runbook config' to see the issues
+Usage: run-book ontology [options] [command]
+
+Commands to view the 'ontology': relationships and meanings and reference data
+
+Options:
+  -h, --help      display help for command
+
+Commands:
+  inheritance     This is the classical 'isa' relationship. For example a cat
+                  isa mammel
+  mereology       This describes 'is part of' for example a wheel is part of a
+                  car
+  reference       Reference data such as 'the git repo for this service is
+                  here'
+  help [command]  display help for command

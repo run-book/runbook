@@ -1,0 +1,15 @@
+
+There were errors in the runbook config file. Use 'runbook config' to see the issues
+Usage: run-book view [options] [command]
+
+Commands to work with views which allow you to find things out about systems
+
+Options:
+  -h, --help           display help for command
+
+Commands:
+  findDiffs [options]  This view is used find (for each env/service in the
+                       situation)  the difference in tickets between the master
+                       branch and the sha deployed
+  domain [options]     Lists the domain and port of the services
+  help [command]       display help for command

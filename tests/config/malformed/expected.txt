@@ -1,0 +1,25 @@
+Errors in config
+config.instruments.ls Ìsn't a valid script. Either
+  config.instruments.ls.windows.description is undefined
+  config.instruments.ls.windows.params is undefined
+  config.instruments.ls.windows.staleness is undefined
+  config.instruments.ls.windows.cost is undefined
+  config.instruments.ls.linux.description is undefined
+  config.instruments.ls.linux.params is undefined
+  config.instruments.ls.linux.staleness is undefined
+  config.instruments.ls.linux.cost is undefined
+or
+  config.instruments.ls.script is undefined
+config.instruments.ls Ìsn't a valid script. Either
+  config.instruments.ls.windows.description is undefined
+  config.instruments.ls.windows.params is undefined
+  config.instruments.ls.windows.staleness is undefined
+  config.instruments.ls.windows.cost is undefined
+  config.instruments.ls.linux.description is undefined
+  config.instruments.ls.linux.params is undefined
+  config.instruments.ls.linux.staleness is undefined
+  config.instruments.ls.linux.cost is undefined
+or
+  config.instruments.ls.script is undefined
+
+There were errors in the runbook config file. Use 'runbook config' to see the issues

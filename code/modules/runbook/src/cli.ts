@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { CleanConfig, validateConfig } from "@runbook/config";
-import { inheritsFrom, makeStringDag, mapObjValues, NameAnd, Primitive, safeArray, safeObject, toArray } from "@runbook/utils";
+import { inheritsFrom, makeStringDag, mapObjValues, NameAnd, nameValueToNameAndString, Primitive, safeArray, safeObject, toArray } from "@runbook/utils";
 import { executeScriptInstrument, findScriptAndDisplay, ScriptInstrument } from "@runbook/scriptinstruments";
 import { executeScriptInShell, executeScriptLinesInShell, osType } from "@runbook/scripts";
 import { jsonToDisplay } from "@runbook/displayformat";
@@ -25,6 +25,7 @@ function addInstrumentCommand ( cwd: string, command: Command, name: string, ins
   const params = instrument.params
   if ( typeof params === 'string' ) {
     if ( params !== '*' ) throw new Error ( 'Cannot handle non * if param is a string at the moment' )
+    command.option ( '-p|--params <params...>', 'a space separated name1:value1 name2:value2' )
   } else mapObjValues ( params, ( value, name ) =>
     command.option ( `--${name} <${name}>`, value.description, value.default ) )
   command.option ( '-s|--showCmd', "Show the command instead of executing it" )
@@ -32,16 +33,18 @@ function addInstrumentCommand ( cwd: string, command: Command, name: string, ins
     .option ( "-j|--json", "Show the output as json" )
     .option ( "--onelinejson", "Show the output as json" )
     .option ( "-1|--oneperlinejson", "Show the output as json" )
+    .option ( "--debug", "include debug info" )
     .option ( '--config', "Show the json representing the command in the config" )
 
   command.action ( async () => {
     const args: any = command.optsWithGlobals ()
     if ( args.config ) return console.log ( JSON.stringify ( instrument, null, 2 ) )
     const sdFn = findScriptAndDisplay ( osType () )
+    const params = instrument.params === '*' ? nameValueToNameAndString ( safeArray ( args.params ) ) : args
     let json = await (executeScriptInstrument ( {
       ...args, cwd, instrument, executeScript: executeScriptInShell,
       executeScripts: executeScriptLinesInShell
-    } ) ( 'runbook', instrument, sdFn ) ( args ));
+    } ) ( 'runbook', instrument, sdFn ) ( params ));
 
     const displayFormat = optionToDisplayFormat ( args )
     console.log ( args.raw ? json : jsonToDisplay ( json, displayFormat ) )
@@ -58,6 +61,7 @@ function addViewCommand ( command: Command, cwd: string, name: string, config: C
     .option ( "-j|--json", "Show the output as json" )
     .option ( "--onelinejson", "Show the output as json" )
     .option ( "-1|--oneperlinejson", "Show the output as json" )
+    .option ( "--debug", "include debug info" )
 
   command.description ( toArray ( view.description ).join ( " " ) ).action ( async () => {
     const opts = command.optsWithGlobals ()
@@ -106,6 +110,7 @@ function addViewCommand ( command: Command, cwd: string, name: string, config: C
 
           let json = await (executeScriptInstrument ( {
             ...opts, cwd, instrument,
+            debug: opts.debug,
             executeScript: executeScriptInShell,
             executeScripts: executeScriptLinesInShell
           } ) ( 'runbook', instrument, findScriptAndDisplay ( osType () ) ) ( paramsForExecution ));
@@ -163,7 +168,7 @@ export function makeProgram ( cwd: string, config: CleanConfig, version: string 
   const configCmd: Command = program.command ( 'config' ).description ( 'Views the config and any issues with it' )
     .action ( async () => {
       const errors = validateConfig ( 'config' ) ( config )
-      const msg = [ errors.length === 0 ? 'No errors' : 'Errors in config  ', ...errors ]
+      const msg = [ errors.length === 0 ? 'No errors' : 'Errors in config', ...errors ]
       msg.forEach ( x => console.log ( x ) )
     } )
 

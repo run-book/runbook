@@ -1,0 +1,14 @@
+
+There were errors in the runbook config file. Use 'runbook config' to see the issues
+Usage: run-book instrument [options] [command]
+
+Instruments are the raw tools that find things out
+
+Options:
+  -h, --help         display help for command
+
+Commands:
+  ls [options]       A demo instrument that displays the directory contents
+  echo [options]     A demo instrument that echos two arguments
+  getRepo [options]  This will (when working) go get or update the repo
+  help [command]     display help for command

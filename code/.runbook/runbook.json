@@ -6,10 +6,10 @@
       "params":      {"dir": {"default": ".", "description": "The directory to display"}},
       "staleness":   5000,
       "cost":        "low",
-      "format":      {"type": "table", "headers": ["date", "time", "length", "name"]},
+      "format":      {"type": "table", "headers": ["file"]},
       "windows":     {
-        "script": "dir {dir}",
-        "format": {"type": "table", "hideHeader": 7, "hideFooter": 3, "headers": ["date", "time", "length", "name"]}
+        "script": "dir /b {dir}",
+        "format": {"type": "table", "headers": ["file"]}
       },
       "linux":       {
         "script":     "ls -l {dir}",

@@ -1,0 +1,16 @@
+
+There were errors in the runbook config file. Use 'runbook config' to see the issues
+Usage: run-book ontology reference [options] [command]
+
+Reference data such as 'the git repo for this service is here'
+
+Options:
+  -h, --help      display help for command
+
+Commands:
+  all             All the reference data
+  direct          All the data that can be looked up given the namespace and
+                  name
+  bound           Data that needs more context. Such as 'this service in this
+                  environment'
+  help [command]  display help for command

@@ -1,0 +1,40 @@
+{
+  "environment": {
+    "dev": {
+      "direct": {
+        "database": {
+          "ngtest": {}
+        },
+        "service": {
+          "leo": {
+            "domain": "dev.leo",
+            "port": 80
+          },
+          "npx": {
+            "domain": "dev.npx",
+            "port": 80
+          }
+        }
+      }
+    },
+    "test": {
+      "direct": {
+        "database": {
+          "ngtest": {}
+        },
+        "service": {
+          "leo": {
+            "domain": "test.leo",
+            "port": 80
+          },
+          "npx": {
+            "domain": "test.npx",
+            "port": 80
+          }
+        }
+      }
+    }
+  }
+}
+
+There were errors in the runbook config file. Use 'runbook config' to see the issues

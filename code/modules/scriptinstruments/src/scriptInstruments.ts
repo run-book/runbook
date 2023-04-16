@@ -2,7 +2,8 @@ import { CleanInstrumentParam, CommonInstrument, ExecuteInstrumentK, ScriptAndDi
 import { bracesVarDefn, derefence } from "@runbook/variables";
 import { ExecuteScriptFn, ExecuteScriptLinesFn } from "@runbook/scripts";
 import { DisplayFormat, stringToJson } from "@runbook/displayformat";
-import { composeNameAndValidators, mapObjToArray, NameAnd, NameAndValidator, orValidators, OS, toArray, validateArray, validateChild, validateChildNumber, validateChildString, validateChildValue, validateItemOrArray, validateNameAnd, validateString } from "@runbook/utils";
+import { composeNameAndValidators, mapObjToArray, NameAnd, NameAndValidator, orValidators, OS, toArray, validateArray, validateChild, validateChildItemOrArray, validateChildNumber, validateChildString, validateChildValue, validateItemOrArray, validateNameAnd, validateString, validateValue } from "@runbook/utils";
+import { TableFormat } from "@runbook/displayformat/dist/src/displayFormat";
 
 /** This is when the script is shared on both linux and windows */
 export interface SharedScriptInstrument extends CommonScript, ScriptAndDisplay {
@@ -32,6 +33,7 @@ export interface CommonScript extends CommonInstrument {
 }
 
 export interface ExecuteOptions {
+  debug?: boolean
   executeScript: ExecuteScriptFn,
   executeScripts: ExecuteScriptLinesFn,
   instrument: ScriptInstrument,
@@ -42,21 +44,32 @@ export interface ExecuteOptions {
 
 export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumentK<ScriptInstrument> =>
   ( context: string, i: ScriptInstrument, sdFn ) => async ( params ) => {
+
+    if ( opt.debug ) console.log ( 'executeSharedScriptInstrument', JSON.stringify ( i ) )
+    if ( opt.debug ) console.log ( '  opt', JSON.stringify ( opt ) )
     if ( i === undefined ) throw new Error ( `Instrument is undefined` )
     const sd = sdFn ( i )
+    if ( opt.debug ) console.log ( '   sd', JSON.stringify ( sd ) )
     const allArgs = mapObjToArray ( params, p => p ).join ( ' ' )
     const argsNames = mapObjToArray ( params, ( p, n ) => n ).join ( ' ' )
 
-    let dic = { params, allArgs, argsNames };
+    let dic = { ...params, allArgs, argsNames };
+    if ( opt.debug ) console.log ( '   dic', JSON.stringify ( dic ) )
     const cmds = toArray ( sd.script ).map ( script => derefence ( context, dic, script, { variableDefn: bracesVarDefn } ) );
     const { cwd, showCmd, raw } = opt
     if ( showCmd ) return cmds.join ( '\n' )
+    if ( opt.debug ) console.log ( '   cmds', JSON.stringify ( cmds ) )
     let res = await opt.executeScripts ( cwd, cmds );
-    let lines = res.split ( '\n' ).filter ( l => l.length > 0 );
+    if ( opt.debug ) console.log ( '   res', JSON.stringify ( res ) )
+    let lines = res.split ( '\n' ).map ( t => t.trim () ).filter ( l => l.length > 0 );
     let dispOpt: DisplayFormat = raw ? "raw" : sd.format ? sd.format : { type: "table" };
-    return stringToJson ( lines, dispOpt )
+    if ( opt.debug ) console.log ( '   lines', JSON.stringify ( lines ) )
+    if ( opt.debug ) console.log ( '   dispOpt', JSON.stringify ( dispOpt ) )
+    let result = stringToJson ( lines, dispOpt );
+    if ( opt.debug ) console.log ( '   result', result )
+    return result
   }
-export const findScriptAndDisplay = ( os: OS) =>(s: ScriptInstrument ): ScriptAndDisplay => {
+export const findScriptAndDisplay = ( os: OS ) => ( s: ScriptInstrument ): ScriptAndDisplay => {
   function check ( s: ScriptAndDisplay ) {
     if ( s?.script === undefined ) throw new Error ( `OS is ${os}. No script for instrument ${s}` )
     return s
@@ -92,14 +105,29 @@ export const validateCommonScriptIntrument: NameAndValidator<CommonInstrument> =
   validateChildNumber ( 'staleness', true ),
   validateChildValue ( 'cost', "low", "medium", "high" )
 )
+
+const validateTableFormat: NameAndValidator<TableFormat> = composeNameAndValidators<TableFormat> (
+  validateChildString ( 'type' ),
+  validateChild ( 'headers', validateArray ( validateString () ), true ),
+  validateChildString ( 'hideFooter', true ),
+  validateChildString ( 'hideHeader', true ) )
+
+
+const validateDisplayFormat: NameAndValidator<DisplayFormat> = orValidators<DisplayFormat> ( `Ìsn't a valid display format`,
+  validateTableFormat, validateValue ( 'raw', 'json', 'onelinejson', 'oneperlinejson' ) )
+export const validateScriptAndDisplay: NameAndValidator<ScriptAndDisplay> = composeNameAndValidators (
+  validateChild ( 'script', validateItemOrArray ( validateString () ) ),
+  validateChild ( 'format', validateDisplayFormat, true )
+)
 export const validateSharedScriptInstrument: NameAndValidator<SharedScriptInstrument> = composeNameAndValidators<SharedScriptInstrument> (
   validateCommonScriptIntrument,
-  validateChild ( 'script', validateItemOrArray ( validateString () ) ),
+  validateScriptAndDisplay,
   validateChild ( 'outputColumns', validateArray ( validateString () ), true )
 )
+
 export const validateVaryingScriptInstrument: NameAndValidator<VaryingScriptInstrument> = composeNameAndValidators<VaryingScriptInstrument> (
   validateCommonScriptIntrument,
-  validateChild ( 'windows', validateSharedScriptInstrument ),
-  validateChild ( 'linux', validateSharedScriptInstrument )
+  validateChild ( 'windows', validateScriptAndDisplay ),
+  validateChild ( 'linux', validateScriptAndDisplay )
 )
 export const validateScriptInstrument: NameAndValidator<ScriptInstrument> = orValidators<ScriptInstrument> ( `Ìsn't a valid script`, validateVaryingScriptInstrument, validateSharedScriptInstrument )

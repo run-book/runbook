@@ -1,0 +1,24 @@
+{
+  "database": {
+    "ngprod": {
+      "url": "ngprod.url"
+    },
+    "ngtest": {
+      "url": "ngtest.url"
+    }
+  },
+  "service": {
+    "leo": {
+      "git": {
+        "url": "leo.git.url"
+      }
+    },
+    "npx": {
+      "git": {
+        "url": "npx.git.url"
+      }
+    }
+  }
+}
+
+There were errors in the runbook config file. Use 'runbook config' to see the issues
