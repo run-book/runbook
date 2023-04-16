@@ -1,4 +1,5 @@
 import { NameAnd } from "@runbook/utils";
+import { Binding } from "@runbook/bindings";
 
 export type Fetchers = NameAnd<Fetcher>
 
@@ -7,6 +8,9 @@ export interface IfTrue {
   "name": string,
   "params": NameAnd<string>
   "addTo": any
+}
+export interface IfTrueBound extends IfTrue{
+  binding: Binding
 }
 export interface Fetcher {
   condition: any;

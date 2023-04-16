@@ -1,11 +1,12 @@
 import { Command } from "commander";
 import { CleanConfig } from "@runbook/config";
-import { mapObjValues, safeObject, toArray } from "@runbook/utils";
+import { inheritsFrom, makeStringDag, mapObjValues, safeArray, safeObject, toArray } from "@runbook/utils";
 import { executeScriptInstrument, ScriptInstrument } from "@runbook/scriptinstruments";
 import { executeScriptInShell, osType } from "@runbook/scripts";
 import { jsonToDisplay } from "@runbook/displayformat";
-import { View } from "@runbook/views";
-import { ReferenceData } from "@runbook/mereology";
+import { applyTrueConditions, evaluateViewConditions, View } from "@runbook/views";
+import { fromMereology, ReferenceData } from "@runbook/mereology";
+import { BindingContext } from "@runbook/bindings";
 
 function optionToDisplayFormat ( args: any ) {
   if ( args.raw ) return 'raw'
@@ -37,10 +38,17 @@ function addInstrumentCommand ( cwd: string, command: Command, name: string, ins
     console.log ( args.raw ? json : jsonToDisplay ( json, displayFormat ) )
   } )
 }
-function addViewCommand ( command: Command, name: string, view: View ) {
-  command.option ( '-s|--showCmd', "Show the command instead of executing it" )
+function addViewCommand ( command: Command, cwd: string, name: string, config: CleanConfig, view: View ) {
+  command
     .option ( '-c|--config', "Show the json representing the command in the config" )
     .option ( '-d|--doc', "Show the documentation for this command" )
+    .option ( '-b|--bindings', "Just show the bindings for this command" )
+    .option ( '-i|--instruments', "Just show the instruments that would be called" )
+    .option ( '-s|--showCmd', "Show the command instead of executing it" )
+    .option ( '-r|--raw', "Show the raw output instead of formatting it" )
+    .option ( "-j|--json", "Show the output as json" )
+    .option ( "--onelinejson", "Show the output as json" )
+    .option ( "-1|--oneperlinejson", "Show the output as json" )
 
   command.description ( toArray ( view.description ).join ( " " ) ).action ( async () => {
     const opts = command.optsWithGlobals ()
@@ -52,6 +60,47 @@ function addViewCommand ( command: Command, name: string, view: View ) {
       [ 'Description', ...toArray ( view.description ), '', 'Preconditions', ...toArray ( view.preconditions ), '', 'usage', ...toArray ( view.usage ) ]
         .forEach ( x => console.log ( x ) )
     }
+    const bc: BindingContext = {
+      debug: false,
+      mereology: config.mereology,
+      refDataFn: fromMereology ( config.reference ),
+      inheritsFrom: inheritsFrom ( makeStringDag ( config.inheritance ) )
+    }
+    const bindings = evaluateViewConditions ( bc, view ) ( config.situation )
+    if ( opts.bindings ) {
+      console.log ( 'Bindings for view', name )
+      mapObjValues ( bindings, ( bs, name ) => {
+        console.log ( name )
+        if ( bs?.length === 0 ) console.log ( '  nothing' )
+        bs.forEach ( b => console.log ( '  ' + JSON.stringify ( b ) ) )
+      } )
+    }
+    const trueConditions = applyTrueConditions ( view ) ( bindings )
+    if ( opts.instruments ) {
+      mapObjValues ( trueConditions, ( ifTrues, name ) => {
+        console.log ( 'Instrument', name )
+        if ( ifTrues.length === 0 ) console.log ( '  nothing' )
+        ifTrues.forEach ( ifTrue =>
+          console.log ( '  params', JSON.stringify ( ifTrue.params ), '==>', ifTrue.addTo, '/', safeArray ( ifTrue.binding[ ifTrue.addTo ]?.path ).join ( '.' ) )
+        )
+      } )
+    }
+    if ( opts.bindings || opts.instruments ) return
+    mapObjValues ( trueConditions, async ( ifTrues, name ) => {
+      for ( let iftName in ifTrues ) {
+        const ift = ifTrues[ iftName ]
+        const instrument = config.instruments[ ift.name ]
+        if ( instrument === undefined ) console.log ( 'cannot find instrument ', ift.name )
+        else {
+          let json = await (executeScriptInstrument ( {
+            ...opts, os: osType (), cwd, instrument,
+            executeScript: executeScriptInShell
+          } ) ( 'runbook', instrument ) ( ift.params ));
+          const displayFormat = optionToDisplayFormat ( opts )
+          console.log ( opts.raw ? json : jsonToDisplay ( json, displayFormat ) )
+        }
+      }
+    } )
   } )
 }
 
@@ -73,6 +122,11 @@ function addAllReferenceCommands ( ontology: Command, name: string, reference: R
   addReferenceCommand ( ontCmd, 'direct', reference?.direct, 'All the data that can be looked up given the namespace and name' )
   addReferenceCommand ( ontCmd, 'bound', reference?.bound, `Data that needs more context. Such as 'this service in this environment'` )
 }
+function addSituationCommand ( command: Command, config: CleanConfig ) {
+  command.action ( async () => {
+    console.log ( JSON.stringify ( config.situation ) )
+  } )
+}
 export function makeProgram ( cwd: string, config: CleanConfig, version: string ): Command {
   let program = new Command ()
     .name ( 'run-book' )
@@ -80,18 +134,18 @@ export function makeProgram ( cwd: string, config: CleanConfig, version: string 
     // .allowUnknownOption ( true )
     .version ( version )
 
-  const instruments = program.command ( 'instrument' )
+  const instruments = program.command ( 'instrument' ).description ( `Instruments are the raw tools that find things out` )
   mapObjValues ( safeObject ( config?.instruments ), ( instrument, name ) =>
     addInstrumentCommand ( cwd, instruments.command ( name ), name, instrument ) )
 
-  const views: Command = program.command ( 'view' )
-  mapObjValues ( safeObject ( config?.views ), ( view, name ) => {
-    addViewCommand ( views.command ( name ), name, view )
-  } )
-  const ontology: Command = program.command ( 'ontology' )
+  const views: Command = program.command ( 'view' ).description ( 'Commands to work with views which allow you to find things out about systems' )
+  mapObjValues ( safeObject ( config?.views ), ( view, name ) => addViewCommand ( views.command ( name ), cwd, name, config, view ) )
+  const ontology: Command = program.command ( 'ontology' ).description ( `Commands to view the 'ontology': relationships and meanings and reference data` )
   addOntologyCommand ( ontology, 'inheritance', config.inheritance, `This is the classical 'isa' relationship. For example a cat isa mammel` )
   addOntologyCommand ( ontology, 'mereology', config.mereology, `This describes 'is part of' for example a wheel is part of a car` )
   addAllReferenceCommands ( ontology, 'reference', config.reference, `Reference data such as 'the git repo for this service is here'` )
+
+  addSituationCommand ( program.command ( 'situation' ).description ( 'Commands about the current situation: the ticket you are working on, or a playground' ), config )
   return program
 }
 
