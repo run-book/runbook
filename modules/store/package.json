@@ -1,7 +1,7 @@
 {
   "name": "@runbook/store",
   "description": "",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,8 +17,8 @@
     ]
   },
   "dependencies": {
-    "@runbook/utils": "0.0.16",
-    "@runbook/optics": "0.0.16"
+    "@runbook/utils": "0.0.17",
+    "@runbook/optics": "0.0.17"
   },
   "devDependencies": {
     "typescript": "^4.0.5",
