@@ -15,6 +15,7 @@ export function validateIsType ( expected: string, allowUndefined?: true ): Name
 }
 export const validateString = ( allowUndefined?: true ): NameAndValidator<string> => validateIsType ( 'string' );
 export const validateNumber = ( allowUndefined?: true ): NameAndValidator<number> => validateIsType ( 'number' );
+export const validateBoolean = ( allowUndefined?: true ): NameAndValidator<number> => validateIsType ( 'boolean' );
 
 export const validateDefined: NameAndValidator<any> = ( name ) => ( value ) => value === undefined ? [ `${name} is undefined` ] : [];
 export function validateValue<T> ( ...values: T[] ): NameAndValidator<T> {

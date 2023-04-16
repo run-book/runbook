@@ -1,5 +1,4 @@
 
-There were errors in the runbook config file. Use 'runbook config' to see the issues
 Usage: run-book instrument [options] [command]
 
 Instruments are the raw tools that find things out

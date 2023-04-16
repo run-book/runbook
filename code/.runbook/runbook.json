@@ -12,11 +12,8 @@
         "format": {"type": "table", "headers": ["file"]}
       },
       "linux":       {
-        "script":     "ls -l {dir}",
-        "format":     "table",
-        "ignoreRows": 1,
-        "key":        "name",
-        "columns":    ["mode", "num", "group", "owner", "month", "day", "time", "name"]
+        "script": "ls -l {dir}",
+        "format": {"type": "table", "headers": ["notdoneyet"]}
       }
     },
     "echo":    {
@@ -32,8 +29,8 @@
       "type":        "script",
       "description": "This will (when working) go get or update the repo",
       "params":      {
-        "service": {"description": "The service for the repo"},
-        "repoUrl": {"description": "The url holding the git repo"}
+        "service": {"description": "The service for the repo", "default": "leo"},
+        "repoUrl": {"description": "The url holding the git repo", "default": "leo.git.url"}
       },
       "staleness":   5000,
       "cost":        "low",

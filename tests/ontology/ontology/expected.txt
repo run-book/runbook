@@ -1,5 +1,4 @@
 
-There were errors in the runbook config file. Use 'runbook config' to see the issues
 Usage: run-book ontology [options] [command]
 
 Commands to view the 'ontology': relationships and meanings and reference data

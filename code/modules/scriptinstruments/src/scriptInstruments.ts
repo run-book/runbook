@@ -2,7 +2,7 @@ import { CleanInstrumentParam, CommonInstrument, ExecuteInstrumentK, ScriptAndDi
 import { bracesVarDefn, derefence } from "@runbook/variables";
 import { ExecuteScriptFn, ExecuteScriptLinesFn } from "@runbook/scripts";
 import { DisplayFormat, stringToJson } from "@runbook/displayformat";
-import { composeNameAndValidators, mapObjToArray, NameAnd, NameAndValidator, orValidators, OS, toArray, validateArray, validateChild, validateChildItemOrArray, validateChildNumber, validateChildString, validateChildValue, validateItemOrArray, validateNameAnd, validateString, validateValue } from "@runbook/utils";
+import { composeNameAndValidators, mapObjToArray, NameAnd, NameAndValidator, orValidators, OS, toArray, validateArray, validateBoolean, validateChild, validateChildItemOrArray, validateChildNumber, validateChildString, validateChildValue, validateItemOrArray, validateNameAnd, validateNumber, validateString, validateValue } from "@runbook/utils";
 import { TableFormat } from "@runbook/displayformat/dist/src/displayFormat";
 
 /** This is when the script is shared on both linux and windows */
@@ -109,8 +109,8 @@ export const validateCommonScriptIntrument: NameAndValidator<CommonInstrument> =
 const validateTableFormat: NameAndValidator<TableFormat> = composeNameAndValidators<TableFormat> (
   validateChildString ( 'type' ),
   validateChild ( 'headers', validateArray ( validateString () ), true ),
-  validateChildString ( 'hideFooter', true ),
-  validateChildString ( 'hideHeader', true ) )
+  validateChild ( 'hideFooter', orValidators<boolean | number> ( '', validateNumber (), validateBoolean() ), true ),
+  validateChild ( 'hideHeader', orValidators<boolean | number> ( '', validateNumber (), validateBoolean() ), true ) )
 
 
 const validateDisplayFormat: NameAndValidator<DisplayFormat> = orValidators<DisplayFormat> ( `Ìsn't a valid display format`,

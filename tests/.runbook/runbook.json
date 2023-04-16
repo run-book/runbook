@@ -12,8 +12,8 @@
         "format": {"type": "table", "headers": ["file"]}
       },
       "linux":       {
-        "script":     "ls -l {dir}",
-        "format": {"type": "table", "headers": ["notdoneyet"]},
+        "script": "ls -l {dir}",
+        "format": {"type": "tableó", "headers": ["notdoneyet"]}
       }
     },
     "echo":    {

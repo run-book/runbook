@@ -1,3 +1,1 @@
 {"leo":{},"npx":{},"test":{},"prod":{}}
-
-There were errors in the runbook config file. Use 'runbook config' to see the issues

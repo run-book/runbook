@@ -1,4 +1,2 @@
 {"env":"test","ser":"leo","port":"80","domain":"test.leo"}
 {"env":"test","ser":"npx","port":"80","domain":"test.npx"}
-
-There were errors in the runbook config file. Use 'runbook config' to see the issues

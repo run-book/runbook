@@ -1,7 +1,7 @@
 {
   "name": "@runbook/config",
   "description": "",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,8 +17,8 @@
     ]
   },
   "dependencies": {
-    "@runbook/scriptinstruments": "0.0.19",
-    "@runbook/views": "0.0.19"
+    "@runbook/scriptinstruments": "0.0.20",
+    "@runbook/views": "0.0.20"
   },
   "devDependencies": {
     "typescript": "^4.0.5",

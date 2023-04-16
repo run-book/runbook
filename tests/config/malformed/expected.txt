@@ -1,24 +1,22 @@
 Errors in config
 config.instruments.ls Ìsn't a valid script. Either
-  config.instruments.ls.windows.description is undefined
-  config.instruments.ls.windows.params is undefined
-  config.instruments.ls.windows.staleness is undefined
-  config.instruments.ls.windows.cost is undefined
-  config.instruments.ls.linux.description is undefined
-  config.instruments.ls.linux.params is undefined
-  config.instruments.ls.linux.staleness is undefined
-  config.instruments.ls.linux.cost is undefined
+  config.instruments.ls.linux.format Ìsn't a valid display format. Either
+    config.instruments.ls.linux.format does not have type as it is of type string and not an object
+    config.instruments.ls.linux.format does not have headers as it is of type string and not an object
+    config.instruments.ls.linux.format does not have hideFooter as it is of type string and not an object
+    config.instruments.ls.linux.format does not have hideHeader as it is of type string and not an object
+  or
+    config.instruments.ls.linux.format is ["table"] not one of ["raw","json","onelinejson","oneperlinejson"]
 or
   config.instruments.ls.script is undefined
 config.instruments.ls Ìsn't a valid script. Either
-  config.instruments.ls.windows.description is undefined
-  config.instruments.ls.windows.params is undefined
-  config.instruments.ls.windows.staleness is undefined
-  config.instruments.ls.windows.cost is undefined
-  config.instruments.ls.linux.description is undefined
-  config.instruments.ls.linux.params is undefined
-  config.instruments.ls.linux.staleness is undefined
-  config.instruments.ls.linux.cost is undefined
+  config.instruments.ls.linux.format Ìsn't a valid display format. Either
+    config.instruments.ls.linux.format does not have type as it is of type string and not an object
+    config.instruments.ls.linux.format does not have headers as it is of type string and not an object
+    config.instruments.ls.linux.format does not have hideFooter as it is of type string and not an object
+    config.instruments.ls.linux.format does not have hideHeader as it is of type string and not an object
+  or
+    config.instruments.ls.linux.format is ["table"] not one of ["raw","json","onelinejson","oneperlinejson"]
 or
   config.instruments.ls.script is undefined
 

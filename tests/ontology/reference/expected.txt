@@ -1,5 +1,4 @@
 
-There were errors in the runbook config file. Use 'runbook config' to see the issues
 Usage: run-book ontology reference [options] [command]
 
 Reference data such as 'the git repo for this service is here'
