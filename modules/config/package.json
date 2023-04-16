@@ -17,7 +17,8 @@
     ]
   },
   "dependencies": {
-    "@runbook/scriptinstruments": "0.0.12"
+    "@runbook/scriptinstruments": "0.0.12",
+    "@runbook/views": "0.0.12"
   },
   "devDependencies": {
     "typescript": "^4.0.5",

@@ -20,7 +20,6 @@ describe ( "evaluateViews", () => {
       expect ( evaluateViewConditions ( bc, fixtureView ) ( situation1 ) ).toEqual ( bindings1 )
     } )
     it ( "should work out which instruments to load, and their arguments - situation 1", () => {
-
       expect ( evaluateViewConditions ( bc, fixtureView ) ( situation2 ) ).toEqual ( bindings2 )
     } )
   } )
@@ -41,18 +40,8 @@ describe ( "evaluateViews", () => {
       expect ( applyTrueConditions ( fixtureView ) ( bindings1 ) ).toEqual ( {
         "findDiffs": [],
         "getRepo": [
-          {
-            "type": "instrument",
-            "name": "getRepo",
-            "addTo": "{ser}",
-            "params": { "repoUrl": "leo.git.url", "service": "leo" },
-          },
-          {
-            "addTo": "{ser}",
-            "name": "getRepo",
-            "params": { "repoUrl": "npx.git.url", "service": "npx" },
-            "type": "instrument"
-          }
+          { "type": "instrument", "name": "getRepo", "addTo": "{ser}", "params": { "repoUrl": "leo.git.url", "service": "leo" }, },
+          { "addTo": "{ser}", "name": "getRepo", "params": { "repoUrl": "npx.git.url", "service": "npx" }, "type": "instrument" }
         ]
       } )
     } )

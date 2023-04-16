@@ -6,7 +6,7 @@
     "dependencies":    {},
     "devDependencies": {}
   },
-  "links":       ["@runbook/scriptinstruments"],
+  "links":       ["@runbook/scriptinstruments", "@runbook/views"],
   "guards":      {
     "compile": true,
     "publish": true,
