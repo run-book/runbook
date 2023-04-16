@@ -6,7 +6,7 @@ import { makeProgram, processProgram } from "./src/cli";
 
 
 export function findVersion () {
-  let packageJsonFileName = "../../package.json";
+  let packageJsonFileName = "../package.json";
   try {
     return require ( packageJsonFileName ).version
   } catch ( e ) {

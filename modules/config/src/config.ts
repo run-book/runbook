@@ -20,6 +20,7 @@ export interface CleanConfig {
   reference: ReferenceData
   inheritance: NameAnd<string[]>
   views: NameAnd<View>
+  situation: any
 }
 
 
