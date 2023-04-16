@@ -6,7 +6,7 @@ export type Fetchers = NameAnd<Fetcher>
 export interface IfTrue {
   "type": string,
   "name": string,
-  "params": NameAnd<string>
+  "params": NameAnd<string> | '*'
   "addTo": any
 }
 export interface IfTrueBound extends IfTrue{

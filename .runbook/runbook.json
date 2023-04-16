@@ -22,14 +22,11 @@
     "echo": {
       "type":        "script",
       "description": "A demo instrument that echos two arguments",
-      "params":      {
-        "one": {"default": "1", "description": "A demo argument"},
-        "two": {"default": "2", "description": "A demo argument"}
-      },
+      "params":      "*",
       "staleness":   5000,
       "cost":        "low",
-      "script":      "echo  {one} {two}",
-      "format":      {"type": "table", "headers": ["one", "two"]}
+      "script":      ["echo {argsNames}", "echo {allArgs}"],
+      "format":      {"type": "table", "hideHeader": 1}
     }
   },
   "mereology":   {
@@ -133,7 +130,7 @@
           "ifTrue":    {
             "type":   "instrument",
             "name":   "echo",
-            "params": {"one": "{domain}", "two": "{port}"},
+            "params": "*",
             "addTo":  "ser"
           }
         }

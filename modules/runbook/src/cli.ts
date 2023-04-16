@@ -1,8 +1,8 @@
 import { Command } from "commander";
 import { CleanConfig } from "@runbook/config";
-import { inheritsFrom, makeStringDag, mapObjValues, safeArray, safeObject, toArray } from "@runbook/utils";
+import { inheritsFrom, makeStringDag, mapObjValues, NameAnd, Primitive, safeArray, safeObject, toArray } from "@runbook/utils";
 import { executeScriptInstrument, ScriptInstrument } from "@runbook/scriptinstruments";
-import { executeScriptInShell, osType } from "@runbook/scripts";
+import { executeScriptInShell, executeScriptLinesInShell, osType } from "@runbook/scripts";
 import { jsonToDisplay } from "@runbook/displayformat";
 import { applyTrueConditions, evaluateViewConditions, View } from "@runbook/views";
 import { fromMereology, ReferenceData } from "@runbook/mereology";
@@ -21,14 +21,20 @@ function argumentsForInstrument ( command: Command, instrument: ScriptInstrument
 }
 function addInstrumentCommand ( cwd: string, command: Command, name: string, instrument: ScriptInstrument ) {
   command.description ( instrument.description )
-  mapObjValues ( instrument.params, ( value, name ) =>
-    command.option ( `--${name} <${name}>`, value.description, value.default )
-      .option ( '-s|--showCmd', "Show the command instead of executing it" )
-      .option ( '-r|--raw', "Show the raw output instead of formatting it" )
-      .option ( "-j|--json", "Show the output as json" )
-      .option ( "--onelinejson", "Show the output as json" )
-      .option ( "-1|--oneperlinejson", "Show the output as json" )
-      .option ( '--config', "Show the json representing the command in the config" ) )
+
+  const params = instrument.params
+  if ( typeof params === 'string' ) {
+    if ( params !== '*' ) throw new Error ( 'Cannot handle non * if param is a string at the moment' )
+
+  } else mapObjValues ( params, ( value, name ) =>
+    command.option ( `--${name} <${name}>`, value.description, value.default ) )
+  command.option ( '-s|--showCmd', "Show the command instead of executing it" )
+    .option ( '-r|--raw', "Show the raw output instead of formatting it" )
+    .option ( "-j|--json", "Show the output as json" )
+    .option ( "--onelinejson", "Show the output as json" )
+    .option ( "-1|--oneperlinejson", "Show the output as json" )
+    .option ( '--config', "Show the json representing the command in the config" )
+
   command.action ( async () => {
     const args: any = command.optsWithGlobals ()
     if ( args.config ) return console.log ( JSON.stringify ( instrument, null, 2 ) )
@@ -78,10 +84,10 @@ function addViewCommand ( command: Command, cwd: string, name: string, config: C
     const trueConditions = applyTrueConditions ( view ) ( bindings )
     if ( opts.instruments ) {
       mapObjValues ( trueConditions, ( ifTrues, name ) => {
-        console.log ( 'Instrument', name )
+        console.log (  name )
         if ( ifTrues.length === 0 ) console.log ( '  nothing' )
         ifTrues.forEach ( ifTrue =>
-          console.log ( '  params', JSON.stringify ( ifTrue.params ), '==>', ifTrue.addTo, '/', safeArray ( ifTrue.binding[ ifTrue.addTo ]?.path ).join ( '.' ) )
+          console.log ( '  ', ifTrue.name, JSON.stringify ( ifTrue.params ), '==>', ifTrue.addTo, '/', safeArray ( ifTrue.binding[ ifTrue.addTo ]?.path ).join ( '.' ) )
         )
       } )
     }
@@ -92,10 +98,13 @@ function addViewCommand ( command: Command, cwd: string, name: string, config: C
         const instrument = config.instruments[ ift.name ]
         if ( instrument === undefined ) console.log ( 'cannot find instrument ', ift.name )
         else {
+          let params = ift.params;
+          const paramsForExecution: NameAnd<Primitive> = params === '*' ? mapObjValues ( ift.binding, b => b.value ) : params
           let json = await (executeScriptInstrument ( {
             ...opts, os: osType (), cwd, instrument,
-            executeScript: executeScriptInShell
-          } ) ( 'runbook', instrument ) ( ift.params ));
+            executeScript: executeScriptInShell,
+            executeScripts: executeScriptLinesInShell
+          } ) ( 'runbook', instrument ) ( paramsForExecution ));
           const displayFormat = optionToDisplayFormat ( opts )
           console.log ( opts.raw ? json : jsonToDisplay ( json, displayFormat ) )
         }

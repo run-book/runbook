@@ -37,6 +37,7 @@ describe ( 'executeSharedScriptInstrument', function () {
   const opt: ExecuteOptions = {
     os: 'Windows_NT',
     executeScript: ( cwd, cmd ) => Promise.resolve ( `${cwd} ${cmd}` ),
+    executeScripts: ( cwd, cmd ) => Promise.resolve ( `${cwd} ${cmd}` ),
     instrument: si,
     cwd: 'theCwd',
     showCmd: false,
@@ -60,7 +61,7 @@ describe ( 'executeSharedScriptInstrument', function () {
     let actual = await executeSharedScriptInstrument ( { ...opt, raw: true } ) ( 'context', si ) ( {} );
     console.log ( 'actual', typeof actual, actual )
     expect ( actual ).toEqual ( `theCwd A B
-1 2 3
-4 5 6` )
+    1 2 3
+    4 5 6` )
   } )
 } );

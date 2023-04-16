@@ -6,14 +6,19 @@ import { bracesVarDefn, derefence } from "@runbook/variables";
 export interface TrueCondition {
 
 }
+function makeParams ( ifTrue: IfTrue, context: string, binding: Binding ) {
+  const params = ifTrue.params
+  return params === '*'
+    ? params
+    : mapObjValues ( params, param => derefence ( context, bindingsToDictionary ( binding ), param, { variableDefn: bracesVarDefn } ) );
+}
 export const applyTrueConditions = ( fixtureView: View ) => ( bindings: NameAnd<Binding[]> ): NameAnd<IfTrueBound[]> => {
   const ifTrues = mapObjValues ( fixtureView.fetchers, fetcher => fetcher.ifTrue )
   let result: NameAnd<IfTrueBound[]> = mapObjValues ( ifTrues, ( ifTrue, name ) => {
     const trueBindings = safeArray ( bindings[ name ] )
     const context = `Applying true condition ${name}`
     return trueBindings.map ( binding => ({
-      ...ifTrue, binding, params: mapObjValues ( ifTrue.params, param =>
-        derefence ( context, bindingsToDictionary ( binding ), param, { variableDefn: bracesVarDefn } ) )
+      ...ifTrue, binding, params: makeParams ( ifTrue, context, binding )
     }) )
   } );
   return result

@@ -1,11 +1,11 @@
 import { CommonInstrument, ExecuteInstrumentK } from "@runbook/instruments";
 import { bracesVarDefn, derefence } from "@runbook/variables";
-import { executeScriptInShell, ExecuteScriptFn } from "@runbook/scripts";
+import { ExecuteScriptFn, ExecuteScriptLinesFn } from "@runbook/scripts";
 import { DisplayFormat, stringToJson } from "@runbook/displayformat";
-import { OS } from "@runbook/utils";
+import { mapObjToArray, OS, toArray } from "@runbook/utils";
 
 export interface SharedScriptInstrument extends CommonScript {
-  script: string
+  script: string | string[]
   outputColumns?: string[],
 }
 export function isSharedScriptInstrument ( instrument: CommonInstrument ): instrument is SharedScriptInstrument {
@@ -30,6 +30,7 @@ export interface CommonScript extends CommonInstrument {
 export interface ExecuteOptions {
   os: OS
   executeScript: ExecuteScriptFn,
+  executeScripts: ExecuteScriptLinesFn,
   instrument: ScriptInstrument,
   cwd: string
   showCmd?: boolean
@@ -38,11 +39,15 @@ export interface ExecuteOptions {
 
 export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumentK<SharedScriptInstrument> => ( context: string, si: SharedScriptInstrument ) => async ( params ) => {
   if ( si === undefined ) throw new Error ( `Instrument is undefined` )
-  const cmd = derefence ( context, params, si.script, { variableDefn: bracesVarDefn } );
+  const allArgs = mapObjToArray ( params, p => p ).join ( ' ' )
+  const argsNames = mapObjToArray ( params, ( p, n ) => n ).join ( ' ' )
+
+  let dic = { params, allArgs, argsNames };
+  const cmds = toArray ( si.script ).map ( script => derefence ( context, dic, script, { variableDefn: bracesVarDefn } ) );
   const { cwd, showCmd, raw } = opt
-  if ( showCmd ) return cmd
-  let res = await opt.executeScript ( cwd, cmd );
-  let lines = res.split ( '\n' ).filter(l => l.length>0);
+  if ( showCmd ) return cmds.join ( '\n' )
+  let res = await opt.executeScripts ( cwd, cmds);
+  let lines = res.split ( '\n' ).filter ( l => l.length > 0 );
   let dispOpt: DisplayFormat = raw ? "raw" : si.format ? si.format : { type: "table" };
   return stringToJson ( lines, dispOpt )
 }

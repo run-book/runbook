@@ -3,7 +3,7 @@ import { DisplayFormat } from "@runbook/displayformat";
 
 export interface CommonInstrument {
   description: string,
-  params: NameAnd<CleanInstrumentParam>,
+  params: string | NameAnd<CleanInstrumentParam>,
   staleness: number,
   cost: InstrumentCost,
   "format": DisplayFormat,
