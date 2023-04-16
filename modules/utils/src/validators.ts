@@ -1,5 +1,6 @@
 import { flatMap } from "./list";
 import { flatMapEntries, NameAnd } from "./nameAnd";
+import { isPrimitive } from "./types";
 
 
 export type Validator<T> = ( value: T ) => string[]
@@ -43,12 +44,24 @@ export function validateItemOrArray<T> ( validator: NameAndValidator<T>, allowUn
     return validator ( name ) ( value );
   };
 }
+export function validateArray<T> ( validate: NameAndValidator<T>, allowUndefined?: true ): NameAndValidator<T[]> {
+  return ( name ) => ( value: T[] ) => {
+    if ( value === undefined ) return allowUndefined ? [] : [ `${name} is undefined` ];
+    if ( isPrimitive ( value ) ) return [ `${name} is of type ${typeof value} and not an array` ]
+    let i = 0;
+    if ( Array.isArray ( value ) ) return flatMap ( value, validate ( `${name}[${i++}]` ) );
+    return [ `${name} is not an array` ];
+
+  }
+}
+
 export function validateChildItemOrArray<Main, K extends keyof Main> ( key: K, validator: NameAndValidator<Main[K]>, allowUndefined?: true ): NameAndValidator<Main> {
   return validateChild ( key, validateItemOrArray ( validator ), allowUndefined );
 }
 
 export function validateChild<Main, K extends keyof Main> ( key: K, validator: NameAndValidator<Main[K]>, allowUndefined?: true ): NameAndValidator<Main> {
   return ( name ) => ( value: Main ) => {
+    if ( isPrimitive ( value ) ) return [ `${name} does not have ${key.toString ()} as it is of type ${typeof value} and not an object` ]
     let child = value[ key ];
     let newName = name + '.' + key.toString ();
     if ( child === undefined ) return allowUndefined ? [] : [ `${newName} is undefined` ];
@@ -56,10 +69,16 @@ export function validateChild<Main, K extends keyof Main> ( key: K, validator: N
   };
 }
 export function validateNameAnd<T> ( validator: NameAndValidator<T> ): NameAndValidator<NameAnd<T>> {
-  return name => ( value: NameAnd<T> ) => value === undefined
-    ? []
-    : flatMapEntries ( value, ( t, n ) => validator ( name + '.' + n ) ( t ) );
+  return name => ( value: NameAnd<T> ) => {
+    if ( value === undefined ) return []
+    if ( isPrimitive ( value ) ) return [ `${name} is of type ${typeof value} and not an array` ]
+    return flatMapEntries ( value, ( t, n ) => validator ( name + '.' + n ) ( t ) );
+  };
 }
+export function validateAny<T> (): NameAndValidator<T> {
+  return name => value => []
+}
+
 export const validateChildString = <Main, K extends keyof Main> ( key: K, allowUndefined?: true ) => {
   return validateChild<Main, K> ( key, validateString () as any, allowUndefined );
 }

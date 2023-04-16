@@ -1,4 +1,5 @@
-import { deepCombineTwoObjects, NameAnd, Primitive } from "@runbook/utils";
+import { deepCombineTwoObjects, NameAnd, NameAndValidator, Primitive, validateArray, validateNameAnd, validateString } from "@runbook/utils";
+import { ReferenceData } from "./reference.data";
 
 
 /** the first name is the name of the namespace, the second name is the name of the thing in that namespace,
@@ -7,11 +8,6 @@ export type MereologyDefn = NameAnd<NameAnd<any>>
 
 export type NameSpaceAndValue = { namespace?: string, value: Primitive } //the value is the name...
 
-/** The mereology is just 'if we see this name, then we use the reference data about the name' */
-export type ReferenceData = {
-  direct?: NameAnd<any>,
-  bound?: NameAnd<NameAnd<ReferenceData>>
-}
 /** for example
  * mereology = {"environment": ["service", "database"]}
  */
@@ -24,16 +20,5 @@ export function toMereology ( defn: MereologyDefn ): ReferenceData {
   return mereology
 }
 
-export type FromReferenceDataFn = ( existing: NameSpaceAndValue[], searchNameSpace: string, searchValue: string ) => any
-export const fromMereology = ( mereology: ReferenceData ): FromReferenceDataFn => ( existing: NameSpaceAndValue[], searchNameSpace: string, searchValue: string ) => {
-  if ( !mereology ) return undefined;
-  const direct: NameAnd<any> = mereology.direct?.[ searchNameSpace ]?.[ searchValue ]
-  const fromBindings: NameAnd<any>[] = existing.map ( ( { namespace, value } ) => {
-    if ( typeof value !== 'string' ) return []
-    const childMereology: ReferenceData = mereology.bound?.[ namespace ]?.[ value ]
-    const withoutMe = existing.filter ( e => e.namespace !== namespace || e.value !== value )
-    const result = fromMereology ( childMereology ) ( withoutMe, searchNameSpace, searchValue );
-    return result
-  } )
-  return fromBindings.reduce ( ( acc, val ) => deepCombineTwoObjects ( acc, val ), direct )
-};
+
+export const validateMereology: NameAndValidator<Mereology> = validateNameAnd ( validateArray ( validateString () ) )

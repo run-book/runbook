@@ -10,8 +10,8 @@ export interface CommonInstrument {
 }
 export interface CleanInstrumentParam {
   type: string,
-  description: string,
-  default: string
+  description?: string,
+  default?: string
 }
 type InstrumentCost = "low" | "medium" | "high"
 

@@ -1,23 +1,21 @@
-import { fromMereology } from "./mereology";
-import { ref } from "@runbook/fixtures";
+import { validateMereology } from "./mereology";
+import { mereology, ref } from "@runbook/fixtures";
+import { fromReferenceData } from "./reference.data";
 
-describe ( "it should get direct objects from the mereology", () => {
-  it ( "should find it if in", () => {
-    expect ( fromMereology ( ref ) ( [], 'service', 'leo' ) ).toEqual ( {
-      "git": { "url": "leo.git.url" }
-    } )
-  } )
-  it ( "shouldn't find it if not in", () => {
-    expect ( fromMereology ( ref ) ( [], 'service', 'notAService' ) ).toEqual ( undefined )
-  } )
-} )
 
-describe ( "it should merge the data knowledge of the bound things", () => {
-  it ( "should find leo in the test environment", () => {
-    expect ( fromMereology ( ref ) ( [ { namespace: 'environment', value: 'test' } ], 'service', 'leo' ) ).toEqual ( {
-      "domain": "test.leo",
-      "git": { "url": "leo.git.url" },
-      "port": 80
-    } )
+describe ( "validateMereology", () => {
+  it ( "should return no issues with the fixture mereology", () => {
+    expect ( validateMereology ( 'prefix' ) ( mereology ) ).toEqual ( [] )
+  } )
+  it ( "should return issues with the data", () => {
+    expect ( validateMereology ( 'prefix' ) ( '123' as any ) ).toEqual ( [
+      "prefix is of type string and not an array"
+    ] )
+    expect ( validateMereology ( 'prefix' ) ( { a: 1 } as any ) ).toEqual ( [
+      "prefix.a is of type number and not an array"
+    ] )
+    expect ( validateMereology ( 'prefix' ) ( { a: [ 1 ] } as any ) ).toEqual ( [
+      "prefix.a[0] is [1] which is a number and not a string"
+    ] )
   } )
 } )

@@ -1,5 +1,5 @@
 import { BindingContext } from "./binding";
-import { fromMereology, Mereology, ReferenceData } from "@runbook/mereology";
+import { fromReferenceData, Mereology, ReferenceData } from "@runbook/mereology";
 import { inheritsFrom } from "@runbook/utils";
 import { inheritance, mereology, ref } from "@runbook/fixtures";
 
@@ -11,7 +11,7 @@ export const checkRef: ReferenceData = ref
 export const bc: BindingContext = {
   debug: false,
   mereology,
-  refDataFn: fromMereology ( ref ),
+  refDataFn: fromReferenceData ( ref ),
   inheritsFrom: inheritsFrom ( inheritance )
 }
 export const situation = {

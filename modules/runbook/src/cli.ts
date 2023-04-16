@@ -5,7 +5,7 @@ import { executeScriptInstrument, ScriptInstrument } from "@runbook/scriptinstru
 import { executeScriptInShell, executeScriptLinesInShell, osType } from "@runbook/scripts";
 import { jsonToDisplay } from "@runbook/displayformat";
 import { applyTrueConditions, evaluateViewConditions, View } from "@runbook/views";
-import { fromMereology, ReferenceData } from "@runbook/mereology";
+import { fromReferenceData, ReferenceData } from "@runbook/mereology";
 import { BindingContext } from "@runbook/bindings";
 
 function optionToDisplayFormat ( args: any ) {
@@ -69,7 +69,7 @@ function addViewCommand ( command: Command, cwd: string, name: string, config: C
     const bc: BindingContext = {
       debug: false,
       mereology: config.mereology,
-      refDataFn: fromMereology ( config.reference ),
+      refDataFn: fromReferenceData ( config.reference ),
       inheritsFrom: inheritsFrom ( makeStringDag ( config.inheritance ) )
     }
     const bindings = evaluateViewConditions ( bc, view ) ( config.situation )

@@ -1,6 +1,7 @@
-import { makeStringDag, StringDag } from "@runbook/utils";
+import { makeStringDag, NameAnd, StringDag } from "@runbook/utils";
 
-export const inheritance: StringDag = makeStringDag ( {
+export const inheritanceDefn: NameAnd<string[]> = {
   "environment": [ "prod", "test", "dev" ],
   "service": [ "leo", "npx" ],
-} )
+};
+export const inheritance: StringDag = makeStringDag ( inheritanceDefn )

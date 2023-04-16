@@ -1,15 +1,16 @@
 import { fixtureView, inheritance, mereology, ref } from "@runbook/fixtures";
 import { inheritsFrom, mapObjValues } from "@runbook/utils";
 import { BindingContext } from "@runbook/bindings";
-import { fromMereology } from "@runbook/mereology";
+import { fromReferenceData } from "@runbook/mereology";
 import { applyTrueConditions, bindingsToDictionary, evaluateViewConditions } from "./evaluateViews";
 import { bindings2, bindings1, situation1, situation2 } from "./views.fixture";
+import { validateView } from "./views";
 
 
 export const bc: BindingContext = {
   debug: false,
   mereology,
-  refDataFn: fromMereology ( ref ),
+  refDataFn: fromReferenceData ( ref ),
   inheritsFrom: inheritsFrom ( inheritance )
 }
 
@@ -40,13 +41,31 @@ describe ( "evaluateViews", () => {
       expect ( applyTrueConditions ( fixtureView ) ( bindings1 ) ).toEqual ( {
         "findDiffs": [],
         "getRepo": [
-          { "type": "instrument", "name": "getRepo", "addTo": "{ser}", "params": { "repoUrl": "leo.git.url", "service": "leo" }, },
-          { "addTo": "{ser}", "name": "getRepo", "params": { "repoUrl": "npx.git.url", "service": "npx" }, "type": "instrument" }
+          {
+            "addTo": "{ser}",
+            "binding": {
+              "repoUrl": { "path": [ "leo", "git", "url" ], "value": "leo.git.url" },
+              "ser": { "namespace": "service", "path": [ "leo" ], "value": "leo" }
+            },
+            "name": "getRepo", "params": { "repoUrl": "leo.git.url", "service": "leo" }, "type": "instrument"
+          },
+          {
+            "addTo": "{ser}",
+            "binding": {
+              "repoUrl": { "path": [ "npx", "git", "url" ], "value": "npx.git.url" },
+              "ser": { "namespace": "service", "path": [ "npx" ], "value": "npx" }
+            },
+            "name": "getRepo",
+            "params": { "repoUrl": "npx.git.url", "service": "npx" },
+            "type": "instrument"
+          }
         ]
       } )
     } )
     it ( "should work out which instruments are to fire, and what the arguments are -sit2", () => {
-      expect ( applyTrueConditions ( fixtureView ) ( bindings2 ) ).toEqual ( {
+      let actual = applyTrueConditions ( fixtureView ) ( bindings2 );
+      const withoutBindings = mapObjValues ( actual, bs => bs.map ( b => ({ ...b, binding: undefined }) ) )
+      expect ( withoutBindings ).toEqual ( {
         "findDiffs": [
           { "addTo": "{env}", "name": "findDiffs", "params": { "git": "leo", "tag": "prod" }, "type": "instrument" },
           { "addTo": "{env}", "name": "findDiffs", "params": { "git": "npx", "tag": "prod" }, "type": "instrument" },
@@ -59,5 +78,21 @@ describe ( "evaluateViews", () => {
           { "addTo": "{ser}", "name": "getRepo", "params": { "repoUrl": "npx.git.url", "service": "npx" }, "type": "instrument" } ]
       } )
     } )
+  } )
+} )
+
+describe ( 'validateView', () => {
+  it ( 'should validate the view in the fixture', () => {
+    expect ( validateView ( 'prefix' ) ( fixtureView ) ).toEqual ( [] )
+  } )
+  it ( "should report issues with a blank view", () => {
+    expect ( validateView ( 'prefix' ) ( {} as any ) ).toEqual ( [
+      "prefix.type is undefined",
+      "prefix.description is undefined",
+      "prefix.usage is undefined",
+      "prefix.preconditions is undefined",
+      "prefix.fetchers is undefined"
+    ] )
+
   } )
 } )

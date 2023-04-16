@@ -1,8 +1,8 @@
-import { CommonInstrument, ExecuteInstrumentK } from "@runbook/instruments";
+import { CleanInstrumentParam, CommonInstrument, ExecuteInstrumentK } from "@runbook/instruments";
 import { bracesVarDefn, derefence } from "@runbook/variables";
 import { ExecuteScriptFn, ExecuteScriptLinesFn } from "@runbook/scripts";
 import { DisplayFormat, stringToJson } from "@runbook/displayformat";
-import { mapObjToArray, OS, toArray } from "@runbook/utils";
+import { composeNameAndValidators, mapObjToArray, NameAnd, NameAndValidator, orValidators, OS, toArray, validateArray, validateChild, validateChildNumber, validateChildString, validateChildValue, validateItemOrArray, validateNameAnd, validateString } from "@runbook/utils";
 
 export interface SharedScriptInstrument extends CommonScript {
   script: string | string[]
@@ -46,7 +46,7 @@ export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteIns
   const cmds = toArray ( si.script ).map ( script => derefence ( context, dic, script, { variableDefn: bracesVarDefn } ) );
   const { cwd, showCmd, raw } = opt
   if ( showCmd ) return cmds.join ( '\n' )
-  let res = await opt.executeScripts ( cwd, cmds);
+  let res = await opt.executeScripts ( cwd, cmds );
   let lines = res.split ( '\n' ).filter ( l => l.length > 0 );
   let dispOpt: DisplayFormat = raw ? "raw" : si.format ? si.format : { type: "table" };
   return stringToJson ( lines, dispOpt )
@@ -71,3 +71,31 @@ export const executeScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumen
     return async ( params ) =>
       executeSharedScriptInstrument ( opt ) ( context, sharedScriptInstrument ) ( params );
   }
+
+//  description: string,
+//   params: string | NameAnd<CleanInstrumentParam>,
+//   staleness: number,
+//   cost: InstrumentCost,
+const validateCleanInstrumentParam: NameAndValidator<CleanInstrumentParam> = composeNameAndValidators (
+  validateChildString ( 'type' ),
+  validateChildString ( 'description' ),
+  validateChildString ( 'default', true ),
+)
+//   "format": DisplayFormat,
+export const validateCommonScriptIntrument: NameAndValidator<CommonInstrument> = composeNameAndValidators<CommonInstrument> (
+  validateChildString ( 'description' ),
+  validateChild ( 'params', orValidators<string | NameAnd<CleanInstrumentParam>> ( 'illegal params', validateString (), validateNameAnd ( validateCleanInstrumentParam ) ) ),
+  validateChildNumber ( 'staleness', true ),
+  validateChildValue ( 'cost', "low", "medium", "high" )
+)
+export const validateSharedScriptInstrument: NameAndValidator<SharedScriptInstrument> = composeNameAndValidators<SharedScriptInstrument> (
+  validateCommonScriptIntrument,
+  validateChild ( 'script', validateItemOrArray ( validateString () ) ),
+  validateChild ( 'outputColumns', validateArray ( validateString () ), true )
+)
+export const validateVaryingScriptInstrument: NameAndValidator<VaryingScriptInstrument> = composeNameAndValidators<VaryingScriptInstrument> (
+  validateCommonScriptIntrument,
+  validateChild ( 'windows', validateSharedScriptInstrument ),
+  validateChild ( 'linux', validateSharedScriptInstrument )
+)
+export const validateScriptInstrument: NameAndValidator<ScriptInstrument> = orValidators<ScriptInstrument> ( `Ìsn't a valid script`, validateSharedScriptInstrument, validateVaryingScriptInstrument )

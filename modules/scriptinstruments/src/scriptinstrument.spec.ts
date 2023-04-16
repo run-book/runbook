@@ -1,4 +1,5 @@
-import { ExecuteOptions, executeSharedScriptInstrument, findShared, SharedScriptInstrument, VaryingScriptInstrument } from "./scriptInstruments";
+import { ExecuteOptions, executeSharedScriptInstrument, findShared, SharedScriptInstrument, validateScriptInstrument, VaryingScriptInstrument } from "./scriptInstruments";
+import { validate } from "@runbook/utils";
 
 const sharedI = ( script: string ): SharedScriptInstrument => ({
   type: "script",
@@ -61,7 +62,27 @@ describe ( 'executeSharedScriptInstrument', function () {
     let actual = await executeSharedScriptInstrument ( { ...opt, raw: true } ) ( 'context', si ) ( {} );
     console.log ( 'actual', typeof actual, actual )
     expect ( actual ).toEqual ( `theCwd A B
-    1 2 3
-    4 5 6` )
+1 2 3
+4 5 6` )
   } )
 } );
+
+describe ( 'validateScriptInstrument', () => {
+  it ( 'should validate the fixture script instruments', () => {
+    expect ( validateScriptInstrument ( 'prefix' ) ( sharedI ( 'someScript' ) ) ).toEqual ( [
+      "prefix Ìsn't a valid script prefix.params is undefined,prefix.cost is undefined"
+    ] )
+    expect ( validateScriptInstrument ( 'prefix' ) ( varying ( 'win', 'linux' ) ) ).toEqual ( [
+      "prefix Ìsn't a valid script prefix.params is undefined,prefix.cost is undefined,prefix.script is undefined"
+    ] )
+  } )
+  it ( "should report errors", () => {
+    expect ( validateScriptInstrument ( 'prefix' ) ( {} as any ) ).toEqual ( [
+      "prefix Ìsn't a valid script prefix.description is undefined,prefix.params is undefined,prefix.staleness is undefined,prefix.cost is undefined,prefix.script is undefined"
+    ] )
+    expect ( validateScriptInstrument ( 'prefix' ) ( { windows: 1, linux1: 1 } as any ) ).toEqual ( [
+      "prefix Ìsn't a valid script prefix.description is undefined,prefix.params is undefined,prefix.staleness is undefined,prefix.cost is undefined,prefix.script is undefined"
+    ] )
+
+  } )
+} )
