@@ -1,7 +1,7 @@
 {
   "name": "@runbook/scriptinstruments",
   "description": "",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,8 +17,8 @@
     ]
   },
   "dependencies": {
-    "@runbook/instruments": "0.0.21",
-    "@runbook/displayformat": "0.0.21"
+    "@runbook/instruments": "0.0.22",
+    "@runbook/displayformat": "0.0.22"
   },
   "devDependencies": {
     "typescript": "^4.0.5",

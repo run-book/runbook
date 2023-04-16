@@ -12,6 +12,7 @@ export const columnsToJson = ( headers: string[], text: string[] ) => {
 };
 
 export const findHeaders = ( tableFormat: TableFormat, text: string[] ) => {
+  if ( text.length === 0 ) return []
   if ( Array.isArray ( tableFormat.headers ) ) return tableFormat.headers;
   if ( tableFormat.hideHeader ) return text[ 0 ].split ( /\s+/ ).filter ( s => s.length > 0 )
   return text[ 0 ].split ( /\s+/ ).map ( ( _, i ) => `${i + 1}` )
