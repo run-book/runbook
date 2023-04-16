@@ -1,0 +1,15 @@
+{
+  "template": "typescript",
+  "name": "@runbook/views",
+  "description": "",
+  "packageJson": {
+    "dependencies": {},
+    "devDependencies": {}
+  },
+  "links": ["@runbook/utils", "@runbook/fixtures", "@runbook/bindings", "@runbook/variables"],
+  "guards": {
+    "compile": true,
+    "publish": true,
+    "test": true
+  }
+}

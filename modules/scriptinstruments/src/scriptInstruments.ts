@@ -42,7 +42,7 @@ export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteIns
   const { cwd, showCmd, raw } = opt
   if ( showCmd ) return cmd
   let res = await opt.executeScript ( cwd, cmd );
-  let lines = res.split ( '\n' );
+  let lines = res.split ( '\n' ).filter(l => l.length>0);
   let dispOpt: DisplayFormat = raw ? "raw" : si.format ? si.format : { type: "table" };
   return stringToJson ( lines, dispOpt )
 }
