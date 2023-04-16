@@ -13,6 +13,10 @@ export function allButLastSegment ( s: string, marker: string | RegExp = pathMar
   let result = parts.slice ( 0, -1 ).join ( '/' );
   return result
 }
+
+export function indentAll(s:string[]): string[]{
+  return s.map(s => '  ' + s)
+}
 export function firstSegment ( s: string, marker: string | RegExp = pathMarker ) {
   if ( s === undefined ) return undefined
   const parts = s.split ( marker ).filter(s => s.length> 0)

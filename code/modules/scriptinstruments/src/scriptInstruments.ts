@@ -1,19 +1,23 @@
-import { CleanInstrumentParam, CommonInstrument, ExecuteInstrumentK } from "@runbook/instruments";
+import { CleanInstrumentParam, CommonInstrument, ExecuteInstrumentK, ScriptAndDisplay } from "@runbook/instruments";
 import { bracesVarDefn, derefence } from "@runbook/variables";
 import { ExecuteScriptFn, ExecuteScriptLinesFn } from "@runbook/scripts";
 import { DisplayFormat, stringToJson } from "@runbook/displayformat";
 import { composeNameAndValidators, mapObjToArray, NameAnd, NameAndValidator, orValidators, OS, toArray, validateArray, validateChild, validateChildNumber, validateChildString, validateChildValue, validateItemOrArray, validateNameAnd, validateString } from "@runbook/utils";
 
-export interface SharedScriptInstrument extends CommonScript {
-  script: string | string[]
-  outputColumns?: string[],
+/** This is when the script is shared on both linux and windows */
+export interface SharedScriptInstrument extends CommonScript, ScriptAndDisplay {
+
 }
+
+
 export function isSharedScriptInstrument ( instrument: CommonInstrument ): instrument is SharedScriptInstrument {
   return (instrument as any).script !== undefined
 }
+
+
 export interface VaryingScriptInstrument extends CommonScript {
-  windows: SharedScriptInstrument,
-  linux: SharedScriptInstrument,
+  windows: ScriptAndDisplay,
+  linux: ScriptAndDisplay,
 }
 export function isVaryingScriptInstument ( instrument: CommonInstrument ): instrument is VaryingScriptInstrument {
   return (instrument as any).windows !== undefined
@@ -28,7 +32,6 @@ export interface CommonScript extends CommonInstrument {
 }
 
 export interface ExecuteOptions {
-  os: OS
   executeScript: ExecuteScriptFn,
   executeScripts: ExecuteScriptLinesFn,
   instrument: ScriptInstrument,
@@ -37,22 +40,24 @@ export interface ExecuteOptions {
   raw?: boolean
 }
 
-export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumentK<SharedScriptInstrument> => ( context: string, si: SharedScriptInstrument ) => async ( params ) => {
-  if ( si === undefined ) throw new Error ( `Instrument is undefined` )
-  const allArgs = mapObjToArray ( params, p => p ).join ( ' ' )
-  const argsNames = mapObjToArray ( params, ( p, n ) => n ).join ( ' ' )
+export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumentK<ScriptInstrument> =>
+  ( context: string, i: ScriptInstrument, sdFn ) => async ( params ) => {
+    if ( i === undefined ) throw new Error ( `Instrument is undefined` )
+    const sd = sdFn ( i )
+    const allArgs = mapObjToArray ( params, p => p ).join ( ' ' )
+    const argsNames = mapObjToArray ( params, ( p, n ) => n ).join ( ' ' )
 
-  let dic = { params, allArgs, argsNames };
-  const cmds = toArray ( si.script ).map ( script => derefence ( context, dic, script, { variableDefn: bracesVarDefn } ) );
-  const { cwd, showCmd, raw } = opt
-  if ( showCmd ) return cmds.join ( '\n' )
-  let res = await opt.executeScripts ( cwd, cmds );
-  let lines = res.split ( '\n' ).filter ( l => l.length > 0 );
-  let dispOpt: DisplayFormat = raw ? "raw" : si.format ? si.format : { type: "table" };
-  return stringToJson ( lines, dispOpt )
-}
-export function findShared ( os: OS, s: ScriptInstrument ): SharedScriptInstrument {
-  function check ( s: SharedScriptInstrument ) {
+    let dic = { params, allArgs, argsNames };
+    const cmds = toArray ( sd.script ).map ( script => derefence ( context, dic, script, { variableDefn: bracesVarDefn } ) );
+    const { cwd, showCmd, raw } = opt
+    if ( showCmd ) return cmds.join ( '\n' )
+    let res = await opt.executeScripts ( cwd, cmds );
+    let lines = res.split ( '\n' ).filter ( l => l.length > 0 );
+    let dispOpt: DisplayFormat = raw ? "raw" : sd.format ? sd.format : { type: "table" };
+    return stringToJson ( lines, dispOpt )
+  }
+export const findScriptAndDisplay = ( os: OS) =>(s: ScriptInstrument ): ScriptAndDisplay => {
+  function check ( s: ScriptAndDisplay ) {
     if ( s?.script === undefined ) throw new Error ( `OS is ${os}. No script for instrument ${s}` )
     return s
   }
@@ -62,14 +67,13 @@ export function findShared ( os: OS, s: ScriptInstrument ): SharedScriptInstrume
     if ( os === 'Linux' ) if ( s.linux ) return check ( s.linux ); else throw new Error ( `No linux script for instrument ${s}` )
     if ( os === 'Darwin' ) if ( s.linux ) return check ( s.linux ); else throw new Error ( `No linux script for instrument ${s}` )
   } else throw new Error ( `OS is ${os}. Cannot execute instrument type${s}` )
-}
+};
 
 export const executeScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumentK<ScriptInstrument> =>
-  ( context, instrument ) => {
-    let sharedScriptInstrument = findShared ( opt.os, instrument );
-    if ( sharedScriptInstrument === undefined ) throw new Error ( `Instrument is undefined. OS ${opt.os}. Raw was ${JSON.stringify ( instrument, null, 2 )}` )
+  ( context, i, sdFn ) => {
+    if ( i === undefined ) throw new Error ( `Instrument is undefined. Raw was ${JSON.stringify ( i, null, 2 )}` )
     return async ( params ) =>
-      executeSharedScriptInstrument ( opt ) ( context, sharedScriptInstrument ) ( params );
+      executeSharedScriptInstrument ( opt ) ( context, i, sdFn ) ( params );
   }
 
 //  description: string,
@@ -77,14 +81,14 @@ export const executeScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumen
 //   staleness: number,
 //   cost: InstrumentCost,
 const validateCleanInstrumentParam: NameAndValidator<CleanInstrumentParam> = composeNameAndValidators (
-  validateChildString ( 'type' ),
+  validateChildString ( 'type', true ),
   validateChildString ( 'description' ),
   validateChildString ( 'default', true ),
 )
 //   "format": DisplayFormat,
 export const validateCommonScriptIntrument: NameAndValidator<CommonInstrument> = composeNameAndValidators<CommonInstrument> (
   validateChildString ( 'description' ),
-  validateChild ( 'params', orValidators<string | NameAnd<CleanInstrumentParam>> ( 'illegal params', validateString (), validateNameAnd ( validateCleanInstrumentParam ) ) ),
+  validateChild ( 'params', orValidators<string | NameAnd<CleanInstrumentParam>> ( '', validateNameAnd ( validateCleanInstrumentParam ), validateString (), ) ),
   validateChildNumber ( 'staleness', true ),
   validateChildValue ( 'cost', "low", "medium", "high" )
 )
@@ -98,4 +102,4 @@ export const validateVaryingScriptInstrument: NameAndValidator<VaryingScriptInst
   validateChild ( 'windows', validateSharedScriptInstrument ),
   validateChild ( 'linux', validateSharedScriptInstrument )
 )
-export const validateScriptInstrument: NameAndValidator<ScriptInstrument> = orValidators<ScriptInstrument> ( `Ìsn't a valid script`, validateSharedScriptInstrument, validateVaryingScriptInstrument )
+export const validateScriptInstrument: NameAndValidator<ScriptInstrument> = orValidators<ScriptInstrument> ( `Ìsn't a valid script`, validateVaryingScriptInstrument, validateSharedScriptInstrument )

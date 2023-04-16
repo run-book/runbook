@@ -71,7 +71,12 @@ describe ( "validators", () => {
       expect ( validate ( 'prefix' ) ( { c: "str" } as any ) ).toEqual ( [] )
       expect ( validate ( 'prefix' ) ( data ) ).toEqual ( [] )
 
-      expect ( validate ( 'prefix' ) ( {} as any ) ).toEqual ( [ "prefix someMsg prefix.a is undefined" ] )
+      expect ( validate ( 'prefix' ) ( {} as any ) ).toEqual ( [
+        "prefix someMsg. Either",
+        "  prefix.a is undefined",
+        "or",
+        "  prefix.c is undefined"
+      ] )
     } )
   } )
 

@@ -1,6 +1,6 @@
 {
   "instruments": {
-    "ls":   {
+    "ls":      {
       "type":        "script",
       "description": "A demo instrument that displays the directory contents",
       "params":      {"dir": {"default": ".", "description": "The directory to display"}},
@@ -19,10 +19,22 @@
         "columns":    ["mode", "num", "group", "owner", "month", "day", "time", "name"]
       }
     },
-    "echo": {
+    "echo":    {
       "type":        "script",
       "description": "A demo instrument that echos two arguments",
       "params":      "*",
+      "staleness":   5000,
+      "cost":        "low",
+      "script":      ["echo {argsNames}", "echo {allArgs}"],
+      "format":      {"type": "table", "hideHeader": 1}
+    },
+    "getRepo": {
+      "type":        "script",
+      "description": "This will (when working) go get or update the repo",
+      "params":      {
+        "service": {"description": "The service for the repo"},
+        "repoUrl": {"description": "The url holding the git repo"}
+      },
       "staleness":   5000,
       "cost":        "low",
       "script":      ["echo {argsNames}", "echo {allArgs}"],

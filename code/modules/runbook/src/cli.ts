@@ -1,7 +1,7 @@
 import { Command } from "commander";
-import { CleanConfig } from "@runbook/config";
+import { CleanConfig, validateConfig } from "@runbook/config";
 import { inheritsFrom, makeStringDag, mapObjValues, NameAnd, Primitive, safeArray, safeObject, toArray } from "@runbook/utils";
-import { executeScriptInstrument, ScriptInstrument } from "@runbook/scriptinstruments";
+import { executeScriptInstrument, findScriptAndDisplay, ScriptInstrument } from "@runbook/scriptinstruments";
 import { executeScriptInShell, executeScriptLinesInShell, osType } from "@runbook/scripts";
 import { jsonToDisplay } from "@runbook/displayformat";
 import { applyTrueConditions, evaluateViewConditions, View } from "@runbook/views";
@@ -25,7 +25,6 @@ function addInstrumentCommand ( cwd: string, command: Command, name: string, ins
   const params = instrument.params
   if ( typeof params === 'string' ) {
     if ( params !== '*' ) throw new Error ( 'Cannot handle non * if param is a string at the moment' )
-
   } else mapObjValues ( params, ( value, name ) =>
     command.option ( `--${name} <${name}>`, value.description, value.default ) )
   command.option ( '-s|--showCmd', "Show the command instead of executing it" )
@@ -38,7 +37,11 @@ function addInstrumentCommand ( cwd: string, command: Command, name: string, ins
   command.action ( async () => {
     const args: any = command.optsWithGlobals ()
     if ( args.config ) return console.log ( JSON.stringify ( instrument, null, 2 ) )
-    let json = await (executeScriptInstrument ( { ...args, os: osType (), cwd, instrument, executeScript: executeScriptInShell } ) ( 'runbook', instrument ) ( args ));
+    const sdFn = findScriptAndDisplay ( osType () )
+    let json = await (executeScriptInstrument ( {
+      ...args, cwd, instrument, executeScript: executeScriptInShell,
+      executeScripts: executeScriptLinesInShell
+    } ) ( 'runbook', instrument, sdFn ) ( args ));
 
     const displayFormat = optionToDisplayFormat ( args )
     console.log ( args.raw ? json : jsonToDisplay ( json, displayFormat ) )
@@ -84,7 +87,7 @@ function addViewCommand ( command: Command, cwd: string, name: string, config: C
     const trueConditions = applyTrueConditions ( view ) ( bindings )
     if ( opts.instruments ) {
       mapObjValues ( trueConditions, ( ifTrues, name ) => {
-        console.log (  name )
+        console.log ( name )
         if ( ifTrues.length === 0 ) console.log ( '  nothing' )
         ifTrues.forEach ( ifTrue =>
           console.log ( '  ', ifTrue.name, JSON.stringify ( ifTrue.params ), '==>', ifTrue.addTo, '/', safeArray ( ifTrue.binding[ ifTrue.addTo ]?.path ).join ( '.' ) )
@@ -100,11 +103,12 @@ function addViewCommand ( command: Command, cwd: string, name: string, config: C
         else {
           let params = ift.params;
           const paramsForExecution: NameAnd<Primitive> = params === '*' ? mapObjValues ( ift.binding, b => b.value ) : params
+
           let json = await (executeScriptInstrument ( {
-            ...opts, os: osType (), cwd, instrument,
+            ...opts, cwd, instrument,
             executeScript: executeScriptInShell,
             executeScripts: executeScriptLinesInShell
-          } ) ( 'runbook', instrument ) ( paramsForExecution ));
+          } ) ( 'runbook', instrument, findScriptAndDisplay ( osType () ) ) ( paramsForExecution ));
           const displayFormat = optionToDisplayFormat ( opts )
           console.log ( opts.raw ? json : jsonToDisplay ( json, displayFormat ) )
         }
@@ -155,6 +159,14 @@ export function makeProgram ( cwd: string, config: CleanConfig, version: string 
   addAllReferenceCommands ( ontology, 'reference', config.reference, `Reference data such as 'the git repo for this service is here'` )
 
   addSituationCommand ( program.command ( 'situation' ).description ( 'Commands about the current situation: the ticket you are working on, or a playground' ), config )
+
+  const configCmd: Command = program.command ( 'config' ).description ( 'Views the config and any issues with it' )
+    .action ( async () => {
+      const errors = validateConfig ( 'config' ) ( config )
+      const msg = [ errors.length === 0 ? 'No errors' : 'Errors in config  ', ...errors ]
+      msg.forEach ( x => console.log ( x ) )
+    } )
+
   return program
 }
 

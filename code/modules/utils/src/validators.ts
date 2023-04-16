@@ -1,6 +1,7 @@
 import { flatMap } from "./list";
 import { flatMapEntries, NameAnd } from "./nameAnd";
 import { isPrimitive } from "./types";
+import { indentAll } from "./strings";
 
 
 export type Validator<T> = ( value: T ) => string[]
@@ -29,11 +30,18 @@ export function composeNameAndValidators<T> ( ...fns: NameAndValidator<T>[] ): N
 export function orValidators<T> ( msg: string, ...fns: NameAndValidator<T>[] ): NameAndValidator<T> {
   return ( name: string ) => ( value: T ) => {
     if ( fns.length === 0 ) return []
+    const errors = fns.map ( fn => fn ( name ) ( value ) )
+    const ok = errors.some ( e => e.length === 0 )
+    if ( ok ) return []
+    return flatMap ( errors, ( e, i ) => {
+      const thisMsg = i === 0 ? `${name} ${msg}. Either` : `or`;
+      return e.length === 0 ? [] : [ thisMsg, ...indentAll ( e ) ];
+    } )
     for ( const fn of fns ) {
       const errors = fn ( name ) ( value );
       if ( errors.length === 0 ) return [];
     }
-    return [ `${name} ${msg} ${fns[ 0 ] ( name ) ( value )}` ];
+    return [ `${name} ${msg}`, ...fns[ 0 ] ( name ) ( value ) ];
   };
 }
 export function validateItemOrArray<T> ( validator: NameAndValidator<T>, allowUndefined?: true ): NameAndValidator<T | T[]> {

@@ -1,6 +1,7 @@
 import { KleisliWithErrors, NameAnd, Primitive } from "@runbook/utils";
 import { DisplayFormat } from "@runbook/displayformat";
 
+
 export interface CommonInstrument {
   description: string,
   params: string | NameAnd<CleanInstrumentParam>,
@@ -15,4 +16,9 @@ export interface CleanInstrumentParam {
 }
 type InstrumentCost = "low" | "medium" | "high"
 
-export type ExecuteInstrumentK<I extends CommonInstrument> = ( context: string, instrument: I ) => KleisliWithErrors<NameAnd<Primitive>, any>
+export interface ScriptAndDisplay {
+  script: string | string[]
+  format: DisplayFormat
+  outputColumns?: string[],
+}
+export type ExecuteInstrumentK<I extends CommonInstrument> = ( context: string, i: I, sdFn: ( i: I ) => ScriptAndDisplay ) => KleisliWithErrors<NameAnd<Primitive>, any>
