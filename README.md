@@ -20,7 +20,7 @@ Currently no real support for this. You need to do it manually
 
 * Create a folder .runbook in your project directory
 * Put a file there called runbook.json
-    * Copy it from [here](https://raw.githubusercontent.com/run-book/runbook/master/tests/.runbook/runbook.json)
+  * Copy it from [here](https://raw.githubusercontent.com/run-book/runbook/master/tests/.runbook/runbook.json)
 * Now run `runbook` in your project directory (from the CLI) and play with it.
 
 
