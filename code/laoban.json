@@ -1,22 +1,42 @@
 {
   "packageManager": "yarn",
-  "parents": [
+  "parents":        [
     "@laoban@/laoban.json/core.laoban.json",
     "@laoban@/laoban.json/javascript.laoban.json",
     "@laoban@/laoban.json/typescript.laoban.json",
     "@laoban@/laoban.json/typescript.publish.laoban.json",
     "@laoban@/laoban.json/react.laoban.json"
   ],
-  "properties": {
-    "license": "MIT",
+  "properties":     {
+    "license":    "MIT",
     "repository": "LICENSE.md"
   },
-  "templates": {
-    "javascript": "@laoban@/templates/javascript",
-    "typescript": "@laoban@/templates/typescript_405",
+  "templates":      {
+    "javascript":       "@laoban@/templates/javascript",
+    "typescript":       "@laoban@/templates/typescript_405",
     "typescript_react": "@laoban@/templates/typescript_react"
   },
-  "defaultEnv": {
+  "defaultEnv":     {
     "NPM_TOKEN": ""
+  },
+  "scripts":        {
+    "ls-react": {
+      "description": "Lists all the react projects",
+      "commands":    [
+        {
+          "guard":   "${packageDetails.guards.react}",
+          "command": "js:process.cwd()"
+        }
+      ]
+    },
+    "react-package": {
+      "description": "Packages the react projects",
+      "commands":    [
+        {
+          "guard":   "${packageDetails.guards.react}",
+          "command": "echo going to do something with react"
+        }
+      ]
+    }
   }
 }
