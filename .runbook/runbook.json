@@ -1,5 +1,5 @@
 {
-  "instruments": {
+  "instrument": {
     "ls":      {
       "type":        "script",
       "description": "A demo instrument that displays the directory contents",
@@ -93,7 +93,7 @@
       }
     }
   },
-  "views":       {
+  "view":       {
     "findDiffs": {
       "type":          "view",
       "description":   [

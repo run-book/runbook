@@ -1,23 +1,23 @@
 Errors in config
-config.instruments.ls Ìsn't a valid script. Either
-  config.instruments.ls.linux.format Ìsn't a valid display format. Either
-    config.instruments.ls.linux.format does not have type as it is of type string and not an object
-    config.instruments.ls.linux.format does not have headers as it is of type string and not an object
-    config.instruments.ls.linux.format does not have hideFooter as it is of type string and not an object
-    config.instruments.ls.linux.format does not have hideHeader as it is of type string and not an object
+config.instrument.ls Ìsn't a valid script. Either
+  config.instrument.ls.linux.format Ìsn't a valid display format. Either
+    config.instrument.ls.linux.format does not have type as it is of type string and not an object
+    config.instrument.ls.linux.format does not have headers as it is of type string and not an object
+    config.instrument.ls.linux.format does not have hideFooter as it is of type string and not an object
+    config.instrument.ls.linux.format does not have hideHeader as it is of type string and not an object
   or
-    config.instruments.ls.linux.format is ["table"] not one of ["raw","json","onelinejson","oneperlinejson"]
+    config.instrument.ls.linux.format is ["table"] not one of ["raw","json","onelinejson","oneperlinejson"]
 or
-  config.instruments.ls.script is undefined
-config.instruments.ls Ìsn't a valid script. Either
-  config.instruments.ls.linux.format Ìsn't a valid display format. Either
-    config.instruments.ls.linux.format does not have type as it is of type string and not an object
-    config.instruments.ls.linux.format does not have headers as it is of type string and not an object
-    config.instruments.ls.linux.format does not have hideFooter as it is of type string and not an object
-    config.instruments.ls.linux.format does not have hideHeader as it is of type string and not an object
+  config.instrument.ls.script is undefined
+config.instrument.ls Ìsn't a valid script. Either
+  config.instrument.ls.linux.format Ìsn't a valid display format. Either
+    config.instrument.ls.linux.format does not have type as it is of type string and not an object
+    config.instrument.ls.linux.format does not have headers as it is of type string and not an object
+    config.instrument.ls.linux.format does not have hideFooter as it is of type string and not an object
+    config.instrument.ls.linux.format does not have hideHeader as it is of type string and not an object
   or
-    config.instruments.ls.linux.format is ["table"] not one of ["raw","json","onelinejson","oneperlinejson"]
+    config.instrument.ls.linux.format is ["table"] not one of ["raw","json","onelinejson","oneperlinejson"]
 or
-  config.instruments.ls.script is undefined
+  config.instrument.ls.script is undefined
 
 There were errors in the runbook config file. Use 'runbook config' to see the issues

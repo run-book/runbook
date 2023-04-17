@@ -15,23 +15,23 @@ export type CleanInstrument = ScriptInstrument
 
 
 export interface CleanConfig {
-  instruments: NameAnd<CleanInstrument>
+  instrument: NameAnd<CleanInstrument>
   mereology: Mereology
   reference: ReferenceData
   inheritance: NameAnd<string[]>
-  views: NameAnd<View>
+  view: NameAnd<View>
   situation: any
 }
 export const validateCleanInstrument = validateScriptInstrument
 
 
 export const validateConfig: NameAndValidator<CleanConfig> = composeNameAndValidators (
-  validateChild ( 'instruments', validateNameAnd ( validateCleanInstrument ) ),
+  validateChild ( 'instrument', validateNameAnd ( validateCleanInstrument ) ),
   validateChild ( 'mereology', validateMereology ),
-  validateChild ( 'views', validateNameAnd ( validateView ) ),
+  validateChild ( 'view', validateNameAnd ( validateView ) ),
   validateChild ( 'inheritance', validateNameAnd ( validateArray ( validateString () ) ) ),
   validateChild ( 'reference', validateReferenceData ),
-  validateChild ( 'instruments', validateNameAnd ( validateCleanInstrument ) )
+  validateChild ( 'instrument', validateNameAnd ( validateCleanInstrument ) )
 )
 
 

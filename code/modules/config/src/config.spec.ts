@@ -9,12 +9,12 @@ describe ( "validate config", () => {
   } )
   it ( "should report issues with an empty object ", () => {
     expect ( validateConfig ( 'prefix' ) ( {} as any ) ).toEqual ( [
-      "prefix.instruments is undefined",
+      "prefix.instrument is undefined",
       "prefix.mereology is undefined",
-      "prefix.views is undefined",
+      "prefix.view is undefined",
       "prefix.inheritance is undefined",
       "prefix.reference is undefined",
-      "prefix.instruments is undefined"
+      "prefix.instrument is undefined"
     ])
 
   } )

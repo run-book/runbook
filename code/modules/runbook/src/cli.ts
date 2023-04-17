@@ -102,7 +102,7 @@ function addViewCommand ( command: Command, cwd: string, name: string, config: C
     mapObjValues ( trueConditions, async ( ifTrues, name ) => {
       for ( let iftName in ifTrues ) {
         const ift = ifTrues[ iftName ]
-        const instrument = config.instruments[ ift.name ]
+        const instrument = config.instrument[ ift.name ]
         if ( instrument === undefined ) console.log ( 'cannot find instrument ', ift.name )
         else {
           let params = ift.params;
@@ -153,11 +153,11 @@ export function makeProgram ( cwd: string, config: CleanConfig, version: string 
     .version ( version )
 
   const instruments = program.command ( 'instrument' ).description ( `Instruments are the raw tools that find things out` )
-  mapObjValues ( safeObject ( config?.instruments ), ( instrument, name ) =>
+  mapObjValues ( safeObject ( config?.instrument ), ( instrument, name ) =>
     addInstrumentCommand ( cwd, instruments.command ( name ), name, instrument ) )
 
   const views: Command = program.command ( 'view' ).description ( 'Commands to work with views which allow you to find things out about systems' )
-  mapObjValues ( safeObject ( config?.views ), ( view, name ) => addViewCommand ( views.command ( name ), cwd, name, config, view ) )
+  mapObjValues ( safeObject ( config?.view ), ( view, name ) => addViewCommand ( views.command ( name ), cwd, name, config, view ) )
   const ontology: Command = program.command ( 'ontology' ).description ( `Commands to view the 'ontology': relationships and meanings and reference data` )
   addOntologyCommand ( ontology, 'inheritance', config.inheritance, `This is the classical 'isa' relationship. For example a cat isa mammel` )
   addOntologyCommand ( ontology, 'mereology', config.mereology, `This describes 'is part of' for example a wheel is part of a car` )

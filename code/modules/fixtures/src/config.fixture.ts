@@ -12,6 +12,6 @@ export const config = ({
     "test": {},
     "prod": {}
   },
-  instruments: {},
-  views: {}
+  instrument: {},
+  view: {}
 })
