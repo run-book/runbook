@@ -1,0 +1,155 @@
+{
+  "instrument": {
+    "ls":      {
+      "type":        "script",
+      "description": "A demo instrument that displays the directory contents",
+      "params":      {"dir": {"default": ".", "description": "The directory to display"}},
+      "staleness":   5000,
+      "cost":        "low",
+      "format":      {"type": "table", "headers": ["file"]},
+      "windows":     {
+        "script": "dir /b {dir}",
+        "format": {"type": "table", "headers": ["file"]}
+      },
+      "linux":       {
+        "script": "ls -l {dir}",
+        "format": {"type": "tableó", "headers": ["notdoneyet"]}
+      }
+    },
+    "echo":    {
+      "type":        "script",
+      "description": "A demo instrument that echos two arguments",
+      "params":      "*",
+      "staleness":   5000,
+      "cost":        "low",
+      "script":      ["echo {argsNames}", "echo {allArgs}"],
+      "format":      {"type": "table", "hideHeader": 1}
+    },
+    "getRepo": {
+      "type":        "script",
+      "description": "This will (when working) go get or update the repo",
+      "params":      {
+        "service": {"description": "The service for the repo", "default": "leo"},
+        "repoUrl": {"description": "The url holding the git repo", "default": "leo.git.url"}
+      },
+      "staleness":   5000,
+      "cost":        "low",
+      "script":      ["echo {argsNames}", "echo {allArgs}"],
+      "format":      {"type": "table", "hideHeader": 1}
+    }
+  },
+  "mereology":   {
+    "environment": ["service", "database"]
+  },
+  "inheritance": {
+    "environment": ["prod", "test", "dev"],
+    "service":     ["leo", "npx"]
+  },
+  "reference":   {
+    "bound":  {
+      "environment": {
+        "dev":  {
+          "direct": {
+            "database": {"ngtest": {}},
+            "service":  {
+              "leo": {"domain": "dev.leo", "port": 80},
+              "npx": {"domain": "dev.npx", "port": 80}
+            }
+          }
+        },
+        "test": {
+          "direct": {
+            "database": {"ngtest": {}},
+            "service":  {
+              "leo": {"domain": "test.leo", "port": 80},
+              "npx": {"domain": "test.npx", "port": 80}
+            }
+          }
+        }
+      }
+    },
+    "direct": {
+      "database": {
+        "ngprod": {"url": "ngprod.url"},
+        "ngtest": {"url": "ngtest.url"}
+      },
+      "service":  {
+        "leo": {"git": {"url": "leo.git.url"}},
+        "npx": {"git": {"url": "npx.git.url"}}
+      }
+    }
+  },
+  "view":       {
+    "findDiffs": {
+      "type":          "view",
+      "description":   [
+        "This view is used find (for each env/service in the situation)",
+        " the difference in tickets between the master branch and the sha deployed"
+      ],
+      "usage":         [
+        "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
+      ],
+      "preconditions": [
+        "The environments and services need to be in the ontology",
+        "The domain and statusendpoint need to be in the reference data",
+        "the status endpoint needs a 'gitsha' field"
+      ],
+      "fetchers":      {
+        "getRepo":   {
+          "condition": {
+            "{ser:service}": {"git": {"url": "{repoUrl}"}}
+          },
+          "ifTrue":    {
+            "type":   "instrument",
+            "name":   "getRepo",
+            "params": {"service": "{ser}", "repoUrl": "{repoUrl}"},
+            "addTo":  "ser"
+          }
+        },
+        "findDiffs": {
+          "condition": {
+            "{env:environment}": {},
+            "{ser:service}":     {"git": {"directory": "{git}"}}
+          },
+          "ifTrue":    {
+            "type":   "instrument",
+            "name":   "findDiffs",
+            "params": {"git": "{git}", "tag": "{env}"},
+            "addTo":  "env"
+          }
+        }
+      }
+    },
+    "domain":    {
+      "type":          "view",
+      "description":   "Lists the domain and port of the services",
+      "usage":         [
+        "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
+      ],
+      "preconditions": [
+        "The environments and services need to be in the ontology",
+        "The domain and port need to be in the reference data"
+      ],
+      "fetchers":      {
+        "domainAndPort": {
+          "condition": {
+            "{env:environment}": {},
+            "{ser:service}":     {"domain": "{domain}", "port": "{port}"}
+          },
+          "ifTrue":    {
+            "type":   "instrument",
+            "name":   "echo",
+            "params": "*",
+            "addTo":  "ser"
+          }
+        }
+      }
+    }
+  },
+  "situation":   {
+    "leo":  {},
+    "npx":  {},
+    "test": {},
+    "prod": {}
+  }
+}

@@ -1,6 +1,7 @@
-import { findDirectoryHoldingFileOrThrow, readExpected } from "@runbook/files";
+import { findDirectoryHoldingFileOrThrow, readExpected, readTestFile } from "@runbook/files";
 import { executeScriptInShell } from "@runbook/scripts";
 import * as path from "path";
+import * as fs from "fs";
 
 export const inCi = process.env[ 'CI' ] === 'true'
 export const codeRootDir = findDirectoryHoldingFileOrThrow ( process.cwd (), "laoban.json" );
@@ -14,15 +15,36 @@ export function executeRunbook ( cwd: string, cmd: string ): Promise<string> {
 }
 
 describe ( 'runbook', () => {
-  describe ( 'config', () => {
+  describe ( 'config issues', () => {
     const configDir = path.resolve ( testRoot, 'config' )
     it ( 'happy', async () => {
       const testDir = path.resolve ( configDir, 'happy' )
-      expect ( await executeRunbook ( testDir, 'config' ) ).toEqual ( readExpected ( testDir ) )
+      expect ( await executeRunbook ( testDir, 'config issues' ) ).toEqual ( readExpected ( testDir ) )
     } )
     it ( 'malformed', async () => {
       const testDir = path.resolve ( configDir, 'malformed' )
-      expect ( await executeRunbook ( testDir, 'config' ) ).toEqual ( readExpected ( testDir ) )
+      expect ( await executeRunbook ( testDir, 'config issues' ) ).toEqual ( readExpected ( testDir ) )
+    } )
+  } )
+  describe ( "config compose in walkDirectories folder", () => {
+    const configDir = path.resolve ( testRoot, 'walkDirectories' )
+    it ( 'happy', async () => {
+      const testDir = path.resolve ( configDir, 'happy' )
+      const runbookDir = path.join ( testDir, '.runbook' )
+      let runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      fs.rmSync ( runbookFileName, { force: true } )
+      expect ( await executeRunbook ( testDir, 'config compose' ) ).toEqual ( readExpected ( testDir ) )
+      expect ( readTestFile ( runbookDir, 'runbook.json' ) ).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
+      fs.rmSync ( runbookFileName, { force: true } )
+    } )
+    it ( 'malformed', async () => {
+
+      const testDir = path.resolve ( configDir, 'malformed' )
+      const runbookDir = path.join ( testDir, '.runbook' )
+      let runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      fs.rmSync ( runbookFileName, { force: true } )
+      expect ( await executeRunbook ( testDir, 'config compose' ) ).toEqual ( readExpected ( testDir ) )
+      expect ( fs.existsSync ( runbookFileName ) ).toBeFalsy ()
     } )
   } )
   describe ( 'instrument', () => {
