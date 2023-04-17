@@ -1,5 +1,5 @@
 {
-  "template": "typescript_react",
+  "template": "typescript",
   "name": "@runbook/gui",
   "description": "",
   "packageJson": {
@@ -9,7 +9,7 @@
   "links": [],
   "guards": {
     "compile": true,
-    "publish": false,
+    "publish": true,
     "test": true
   }
 }
