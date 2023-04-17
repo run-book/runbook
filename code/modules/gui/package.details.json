@@ -1,6 +1,6 @@
 {
-  "template": "typescript",
-  "name": "gui",
+  "template": "typescript_react",
+  "name": "@runbook/gui",
   "description": "",
   "packageJson": {
     "dependencies": {},
