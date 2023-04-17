@@ -172,6 +172,11 @@ export function makeProgram ( cwd: string, config: CleanConfig, version: string 
       msg.forEach ( x => console.log ( x ) )
     } )
 
+  const gui: Command = program.command('gui').description('Starts the gui').action(() =>{
+
+    console.log('starting gui')
+  })
+
   return program
 }
 

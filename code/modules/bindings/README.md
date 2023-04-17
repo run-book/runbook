@@ -20,13 +20,11 @@ continuation passing style' and at the bottom of the tree we carry on with the n
 call.
 
 This has the potential to blow the stack if the condition was horribly complicated, but the vast majority of conditions
-are
-simple and this goes very fast.
+are simple and this goes very fast.
 
 We also separate 'compilation time' from the 'run time' although this is mostly invisible to the caller. All the data
 about the condition is resolved 'up front'. So for example if the condition is '{service: service}' then we do the
-detection
-and parsing of this only once (before the first run). This is a big performance win.
+detection +and parsing of this only once (before the first run). This is a big performance win.
 
 # Optimisations
 
@@ -38,6 +36,7 @@ When we have a condition that is an object we:
 * Prefer branches with a small number of variables over a large number of variables
 
 # Examples
+
 See the tests
 
 
