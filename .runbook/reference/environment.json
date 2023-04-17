@@ -1,7 +1,0 @@
-{
-  "environment": {
-    "dev":  {"git": {"gittag": "dev"}},
-    "test": {"git": {"gittag": "test"}},
-    "prod": {"git": {"gittag": "prod"}}
-  }
-}

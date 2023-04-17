@@ -1,12 +1,14 @@
 import { Command } from "commander";
 import { CleanConfig, validateConfig } from "@runbook/config";
-import { inheritsFrom, makeStringDag, mapObjValues, NameAnd, nameValueToNameAndString, Primitive, safeArray, safeObject, toArray } from "@runbook/utils";
+import { inheritsFrom, isErrors, makeStringDag, mapObjValues, NameAnd, nameValueToNameAndString, Primitive, safeArray, safeObject, toArray } from "@runbook/utils";
 import { executeScriptInstrument, findScriptAndDisplay, ScriptInstrument } from "@runbook/scriptinstruments";
 import { executeScriptInShell, executeScriptLinesInShell, osType } from "@runbook/scripts";
 import { jsonToDisplay } from "@runbook/displayformat";
 import { applyTrueConditions, evaluateViewConditions, View } from "@runbook/views";
 import { fromReferenceData, ReferenceData } from "@runbook/mereology";
 import { BindingContext } from "@runbook/bindings";
+import { findDirectoryHoldingFileOrThrow, mergeJsonFiles } from "@runbook/files";
+import * as fs from "fs";
 
 function optionToDisplayFormat ( args: any ) {
   if ( args.raw ) return 'raw'
@@ -166,16 +168,31 @@ export function makeProgram ( cwd: string, config: CleanConfig, version: string 
   addSituationCommand ( program.command ( 'situation' ).description ( 'Commands about the current situation: the ticket you are working on, or a playground' ), config )
 
   const configCmd: Command = program.command ( 'config' ).description ( 'Views the config and any issues with it' )
+  const configIssuesCmd = configCmd.command ( 'issues' ).description ( 'Shows issues with the current config' )
     .action ( async () => {
       const errors = validateConfig ( 'config' ) ( config )
       const msg = [ errors.length === 0 ? 'No errors' : 'Errors in config', ...errors ]
       msg.forEach ( x => console.log ( x ) )
     } )
+  const configComposeCmd: Command = configCmd.command ( 'compose' ).description ( 'Merges all the files in the .runbook directory to make the .runbook.json' )
+    .action ( async () => {
+      const dir = findDirectoryHoldingFileOrThrow ( cwd, '.runbook' ) + '/.runbook'
+      console.log ( 'looking in', dir )
+      const newConfig = await mergeJsonFiles ( dir )
+      if ( isErrors ( newConfig ) ) {
+        console.log ( 'Errors composing' )
+        newConfig.errors.forEach ( x => console.log ( x ) )
+        process.exit ( 1 )
+      }
+      console.log ( JSON.stringify ( newConfig, null, 2 ) )
+      fs.writeFileSync ( dir + '/runbook.json', JSON.stringify ( newConfig, null, 2 ) )
 
-  const gui: Command = program.command('gui').description('Starts the gui').action(() =>{
+    } )
 
-    console.log('starting gui')
-  })
+  const gui: Command = program.command ( 'gui' ).description ( 'Starts the gui' ).action ( () => {
+
+    console.log ( 'starting gui' )
+  } )
 
   return program
 }
