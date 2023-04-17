@@ -1,0 +1,163 @@
+{
+  "inheritance": {
+    "environment": [
+      "prod",
+      "test",
+      "dev",
+      "local"
+    ],
+    "service": [
+      "leo",
+      "npx"
+    ]
+  },
+  "instrument": {
+    "type": "script",
+    "description": "This will (when working) go get or update the repo",
+    "params": {
+      "service": {
+        "description": "The service for the repo",
+        "default": "leo"
+      },
+      "repoUrl": {
+        "description": "The url holding the git repo",
+        "default": "leo.git.url"
+      }
+    },
+    "staleness": 5000,
+    "cost": "low",
+    "script": [
+      "echo {argsNames}",
+      "echo {allArgs}",
+      "echo {argsNames}",
+      "echo {allArgs}"
+    ],
+    "format": {
+      "type": "table",
+      "hideHeader": 1
+    },
+    "ls": {
+      "type": "script",
+      "description": "A demo instrument that displays the directory contents",
+      "params": {
+        "dir": {
+          "default": ".",
+          "description": "The directory to display"
+        }
+      },
+      "staleness": 5000,
+      "cost": "low",
+      "format": {
+        "type": "table",
+        "headers": [
+          "file"
+        ]
+      },
+      "windows": {
+        "script": "dir /b {dir}",
+        "format": {
+          "type": "table",
+          "headers": [
+            "file"
+          ]
+        }
+      },
+      "linux": {
+        "script": "ls -l {dir}",
+        "format": {
+          "type": "table",
+          "headers": [
+            "notdoneyet"
+          ]
+        }
+      }
+    }
+  },
+  "mereology": {
+    "environment": [
+      "service",
+      "database"
+    ]
+  },
+  "environment": {
+    "dev": {
+      "git": {
+        "gittag": "dev"
+      }
+    },
+    "test": {
+      "git": {
+        "gittag": "test"
+      }
+    },
+    "prod": {
+      "git": {
+        "gittag": "prod"
+      }
+    }
+  },
+  "view": {
+    "displayGit": {
+      "type": "view",
+      "description": "Lists the git properties of the services",
+      "usage": [
+        "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
+      ],
+      "preconditions": [
+        "The environments and services need to be in the ontology",
+        "The domain and port need to be in the reference data"
+      ],
+      "fetchers": {
+        "gitClone": {
+          "condition": {
+            "{env:environment}": {
+              "git": {
+                "gittag": "{tag}"
+              }
+            },
+            "{ser:service}": {
+              "git": {
+                "url": "{url}",
+                "directory": "{dir}"
+              }
+            }
+          },
+          "ifTrue": {
+            "type": "instrument",
+            "name": "echo",
+            "params": "*",
+            "addTo": "ser"
+          }
+        }
+      }
+    },
+    "domain": {
+      "type": "view",
+      "description": "Lists the domain and port of the services",
+      "usage": [
+        "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
+      ],
+      "preconditions": [
+        "The environments and services need to be in the ontology",
+        "The domain and port need to be in the reference data"
+      ],
+      "fetchers": {
+        "domainAndPort": {
+          "condition": {
+            "{env:environment}": {},
+            "{ser:service}": {
+              "domain": "{domain}",
+              "port": "{port}"
+            }
+          },
+          "ifTrue": {
+            "type": "instrument",
+            "name": "echo",
+            "params": "*",
+            "addTo": "ser"
+          }
+        }
+      }
+    }
+  }
+}

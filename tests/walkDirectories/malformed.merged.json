@@ -1,0 +1,6 @@
+{
+  "errors": [
+    "Malformed JSON in C://git//runbook//tests//walkDirectories//malformed//instruments//ls.instrument.json. Error SyntaxError: Unexpected end of JSON input",
+    "Malformed JSON in C://git//runbook//tests//walkDirectories//malformed//reference//environment.json. Error SyntaxError: Unexpected token s in JSON at position 150"
+  ]
+}

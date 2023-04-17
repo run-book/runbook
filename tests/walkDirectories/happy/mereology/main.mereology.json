@@ -1,0 +1,5 @@
+{
+  "mereology": {
+    "environment": ["service", "database"]
+  }
+}

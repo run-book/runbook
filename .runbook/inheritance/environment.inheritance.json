@@ -1,0 +1,5 @@
+{
+  "inheritance": {
+    "environment": ["prod", "test", "dev", "local"]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "instrument": {
+    "type":        "script",
+    "description": "This will (when working) go get or update the repo",
+    "params":      {
+      "service": {"description": "The service for the repo", "default": "leo"},
+      "repoUrl": {"description": "The url holding the git repo", "default": "leo.git.url"}
+    },
+    "staleness":   5000,
+    "cost":        "low",
+    "script":      ["echo {argsNames}", "echo {allArgs}"],
+    "format":      {"type": "table", "hideHeader": 1}
+  }
+}

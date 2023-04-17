@@ -1,0 +1,29 @@
+{
+  "view": {
+    "displayGit": {
+      "type":          "view",
+      "description":   "Lists the git properties of the services",
+      "usage":         [
+        "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
+      ],
+      "preconditions": [
+        "The environments and services need to be in the ontology",
+        "The domain and port need to be in the reference data"
+      ],
+      "fetchers":      {
+        "gitClone": {
+          "condition": {
+            "{env:environment}": {"git": {"gittag": "{tag}"}},
+            "{ser:service}":     {"git": {"url": "{url}", "directory": "{dir}"}}
+          },
+          "ifTrue":    {
+            "type":   "instrument",
+            "name":   "echo",
+            "params": "*",
+            "addTo":  "ser"
+          }
+        }
+      }
+    }
+  }
+}
