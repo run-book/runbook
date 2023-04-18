@@ -11,6 +11,11 @@ export const executeScriptInShell: ExecuteScriptFn = ( cwd: string, cmd: string 
   } )
 } );
 
+
+export const startShell = ( cwd: string, file: string ): Promise<string> => new Promise<string> ( resolve => {
+  return executeScriptInShell ( cwd, `start ${file}` )
+} )
+
 export const executeScriptLinesInShell: ExecuteScriptLinesFn = ( cwd, cmds ) => {
   return cmds.reduce ( ( acc, cmd ) => acc.then ( async s => s + '\n' + await executeScriptInShell ( cwd, cmd ) ), Promise.resolve ( '' ) )
 }

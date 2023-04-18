@@ -9,6 +9,8 @@ Options:
   -j|--json                Show the output as json
   --onelinejson            Show the output as json
   -1|--oneperlinejson      Show the output as json
+  -e|--edit                Open an editor for the instrument
+  -v|--view                Display the json for the instrument
   --debug                  include debug info
   --config                 Show the json representing the command in the config
   -h, --help               display help for command

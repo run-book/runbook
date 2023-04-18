@@ -26,10 +26,10 @@ export function makeProgram ( cwd: string, withFromsConfig: CleanConfig, cleanCo
 
   const instruments = program.command ( 'instrument' ).description ( `Instruments are the raw tools that find things out` )
   mapObjValues ( safeObject ( cleanConfig?.instrument ), ( instrument, name ) =>
-    addInstrumentCommand ( cwd, instruments.command ( name ), name, instrument ) )
+    addInstrumentCommand ( cwd, instruments.command ( name ), name, instrument, withFromsConfig ) )
 
   const views: Command = program.command ( 'view' ).description ( 'Commands to work with views which allow you to find things out about systems' )
-  mapObjValues ( safeObject ( cleanConfig?.view ), ( view, name ) => addViewCommand ( views.command ( name ), cwd, name, cleanConfig, view ) )
+  mapObjValues ( safeObject ( cleanConfig?.view ), ( view, name ) => addViewCommand ( views.command ( name ), cwd, name, withFromsConfig, cleanConfig, view ) )
   const ontology: Command = program.command ( 'ontology' ).description ( `Commands to view the 'ontology': relationships and meanings and reference data` )
   addOntologyCommand ( ontology, 'inheritance', cleanConfig.inheritance, `This is the classical 'isa' relationship. For example a cat isa mammel` )
   addOntologyCommand ( ontology, 'mereology', cleanConfig.mereology, `This describes 'is part of' for example a wheel is part of a car` )

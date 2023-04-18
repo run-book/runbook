@@ -8,9 +8,10 @@ import { executeScriptInstrument, findScriptAndDisplay } from "@runbook/scriptin
 import { executeScriptInShell, executeScriptLinesInShell, osType } from "@runbook/scripts";
 import { jsonToDisplay } from "@runbook/displayformat";
 import { addDisplayOptions, optionToDisplayFormat } from "./display";
+import { addEditViewOptions, executeAndEditViewAndExit } from "./editView";
 
-export function addViewCommand ( command: Command, cwd: string, name: string, config: CleanConfig, view: View ) {
-  addDisplayOptions ( command )
+export function addViewCommand ( command: Command, cwd: string, name: string, configWithFroms: CleanConfig, config: CleanConfig, view: View ) {
+  addEditViewOptions ( 'view', addDisplayOptions ( command ) )
     .option ( '-c|--config', "Show the json representing the command in the config" )
     .option ( '-d|--doc', "Show the documentation for this command" )
     .option ( '-b|--bindings', "Just show the bindings for this command" )
@@ -18,6 +19,7 @@ export function addViewCommand ( command: Command, cwd: string, name: string, co
     .option ( "--debug", "include debug info" )
 
   command.description ( toArray ( view.description ).join ( " " ) ).action ( async () => {
+    await executeAndEditViewAndExit ( cwd, command.optsWithGlobals (), configWithFroms.view?. [ name ], view )
     const opts = command.optsWithGlobals ()
     if ( opts.config ) {
       console.log ( JSON.stringify ( view, null, 2 ) )
