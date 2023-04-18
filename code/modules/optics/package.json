@@ -1,7 +1,7 @@
 {
   "name": "@runbook/optics",
   "description": "",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "@runbook/utils": "0.0.24"
+    "@runbook/utils": "0.0.25"
   },
   "devDependencies": {
     "typescript": "^4.0.5",

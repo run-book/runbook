@@ -1,7 +1,7 @@
 {
   "name": "@runbook/runbook",
   "description": "",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "main": "dist/index",
   "types": "dist/index",
   "bin": {
@@ -21,12 +21,12 @@
   },
   "dependencies": {
     "commander": "^10.0.0",
-    "@runbook/config": "0.0.24",
-    "@runbook/utils": "0.0.24",
-    "@runbook/files": "0.0.24",
-    "@runbook/variables": "0.0.24",
-    "@runbook/scripts": "0.0.24",
-    "@runbook/gui": "0.0.24"
+    "@runbook/config": "0.0.25",
+    "@runbook/utils": "0.0.25",
+    "@runbook/files": "0.0.25",
+    "@runbook/variables": "0.0.25",
+    "@runbook/scripts": "0.0.25",
+    "@runbook/gui": "0.0.25"
   },
   "devDependencies": {
     "typescript": "^4.0.5",
