@@ -1,147 +1,17 @@
 import { Command } from "commander";
-import { CleanConfig, validateConfig } from "@runbook/config";
-import { inheritsFrom, isErrors, makeStringDag, mapObjValues, NameAnd, nameValueToNameAndString, Primitive, safeArray, safeObject, toArray } from "@runbook/utils";
-import { executeScriptInstrument, findScriptAndDisplay, ScriptInstrument } from "@runbook/scriptinstruments";
-import { executeScriptInShell, executeScriptLinesInShell, osType } from "@runbook/scripts";
-import { jsonToDisplay } from "@runbook/displayformat";
-import { applyTrueConditions, evaluateViewConditions, View } from "@runbook/views";
-import { fromReferenceData, ReferenceData } from "@runbook/mereology";
-import { BindingContext } from "@runbook/bindings";
-import { addFromMutator, defaultMergeAccept, findDirectoryHoldingFileOrThrow, mergeJsonFiles, validateJsonFiles } from "@runbook/files";
-import * as fs from "fs";
-
-function optionToDisplayFormat ( args: any ) {
-  if ( args.raw ) return 'raw'
-  if ( args.json ) return 'json'
-  if ( args.onelinejson ) return 'onelinejson'
-  if ( args.oneperlinejson ) return 'oneperlinejson'
-  return 'oneperlinejson'
-}
+import { CleanConfig } from "@runbook/config";
+import { mapObjValues, safeObject } from "@runbook/utils";
+import { ScriptInstrument } from "@runbook/scriptinstruments";
+import { addAllReferenceCommands, addOntologyCommand } from "./reference.command";
+import { addViewCommand } from "./view.command";
+import { addInstrumentCommand } from "./instrument.command";
+import { addConfigCommand } from "./config.command";
 
 
 function argumentsForInstrument ( command: Command, instrument: ScriptInstrument ) {
 }
-function addInstrumentCommand ( cwd: string, command: Command, name: string, instrument: ScriptInstrument ) {
-  command.description ( instrument.description )
-
-  const params = instrument.params
-  if ( typeof params === 'string' ) {
-    if ( params !== '*' ) throw new Error ( 'Cannot handle non * if param is a string at the moment' )
-    command.option ( '-p|--params <params...>', 'a space separated name1:value1 name2:value2' )
-  } else mapObjValues ( params, ( value, name ) =>
-    command.option ( `--${name} <${name}>`, value.description, value.default ) )
-  command.option ( '-s|--showCmd', "Show the command instead of executing it" )
-    .option ( '-r|--raw', "Show the raw output instead of formatting it" )
-    .option ( "-j|--json", "Show the output as json" )
-    .option ( "--onelinejson", "Show the output as json" )
-    .option ( "-1|--oneperlinejson", "Show the output as json" )
-    .option ( "--debug", "include debug info" )
-    .option ( '--config', "Show the json representing the command in the config" )
-
-  command.action ( async () => {
-    const args: any = command.optsWithGlobals ()
-    if ( args.config ) return console.log ( JSON.stringify ( instrument, null, 2 ) )
-    const sdFn = findScriptAndDisplay ( osType () )
-    const params = instrument.params === '*' ? nameValueToNameAndString ( safeArray ( args.params ) ) : args
-    let json = await (executeScriptInstrument ( {
-      ...args, cwd, instrument, executeScript: executeScriptInShell,
-      executeScripts: executeScriptLinesInShell
-    } ) ( 'runbook', instrument, sdFn ) ( params ));
-
-    const displayFormat = optionToDisplayFormat ( args )
-    console.log ( args.raw ? json : jsonToDisplay ( json, displayFormat ) )
-  } )
-}
-function addViewCommand ( command: Command, cwd: string, name: string, config: CleanConfig, view: View ) {
-  command
-    .option ( '-c|--config', "Show the json representing the command in the config" )
-    .option ( '-d|--doc', "Show the documentation for this command" )
-    .option ( '-b|--bindings', "Just show the bindings for this command" )
-    .option ( '-i|--instruments', "Just show the instruments that would be called" )
-    .option ( '-s|--showCmd', "Show the command instead of executing it" )
-    .option ( '-r|--raw', "Show the raw output instead of formatting it" )
-    .option ( "-j|--json", "Show the output as json" )
-    .option ( "--onelinejson", "Show the output as json" )
-    .option ( "-1|--oneperlinejson", "Show the output as json" )
-    .option ( "--debug", "include debug info" )
-
-  command.description ( toArray ( view.description ).join ( " " ) ).action ( async () => {
-    const opts = command.optsWithGlobals ()
-    if ( opts.config ) {
-      console.log ( JSON.stringify ( view, null, 2 ) )
-      return
-    }
-    if ( opts.doc ) {
-      [ 'Description', ...toArray ( view.description ), '', 'Preconditions', ...toArray ( view.preconditions ), '', 'usage', ...toArray ( view.usage ) ]
-        .forEach ( x => console.log ( x ) )
-    }
-    const bc: BindingContext = {
-      debug: false,
-      mereology: config.mereology,
-      refDataFn: fromReferenceData ( config.reference ),
-      inheritsFrom: inheritsFrom ( makeStringDag ( config.inheritance ) )
-    }
-    const bindings = evaluateViewConditions ( bc, view ) ( config.situation )
-    if ( opts.bindings ) {
-      console.log ( 'Bindings for view', name )
-      mapObjValues ( bindings, ( bs, name ) => {
-        console.log ( name )
-        if ( bs?.length === 0 ) console.log ( '  nothing' )
-        bs.forEach ( b => console.log ( '  ' + JSON.stringify ( b ) ) )
-      } )
-    }
-    const trueConditions = applyTrueConditions ( view ) ( bindings )
-    if ( opts.instruments ) {
-      mapObjValues ( trueConditions, ( ifTrues, name ) => {
-        console.log ( name )
-        if ( ifTrues.length === 0 ) console.log ( '  nothing' )
-        ifTrues.forEach ( ifTrue =>
-          console.log ( '  ', ifTrue.name, JSON.stringify ( ifTrue.params ), '==>', ifTrue.addTo, '/', safeArray ( ifTrue.binding[ ifTrue.addTo ]?.path ).join ( '.' ) )
-        )
-      } )
-    }
-    if ( opts.bindings || opts.instruments ) return
-    mapObjValues ( trueConditions, async ( ifTrues, name ) => {
-      for ( let iftName in ifTrues ) {
-        const ift = ifTrues[ iftName ]
-        const instrument = config.instrument[ ift.name ]
-        if ( instrument === undefined ) console.log ( 'cannot find instrument ', ift.name )
-        else {
-          let params = ift.params;
-          const paramsForExecution: NameAnd<Primitive> = params === '*' ? mapObjValues ( ift.binding, b => b.value ) : params
-
-          let json = await (executeScriptInstrument ( {
-            ...opts, cwd, instrument,
-            debug: opts.debug,
-            executeScript: executeScriptInShell,
-            executeScripts: executeScriptLinesInShell
-          } ) ( 'runbook', instrument, findScriptAndDisplay ( osType () ) ) ( paramsForExecution ));
-          const displayFormat = optionToDisplayFormat ( opts )
-          console.log ( opts.raw ? json : jsonToDisplay ( json, displayFormat ) )
-        }
-      }
-    } )
-  } )
-}
 
 
-function addOntologyCommand ( command: Command, name: string, thing: any, description: string ) {
-  return command.command ( name ).description ( description )
-    .action ( async () => {
-      console.log ( JSON.stringify ( thing, null, 2 ) )
-    } )
-
-
-}
-function addReferenceCommand ( refCmd: Command, name: string, data: any, description: string ) {
-  refCmd.command ( name ).description ( description ).action ( () => console.log ( JSON.stringify ( data, null, 2 ) ) )
-}
-function addAllReferenceCommands ( ontology: Command, name: string, reference: ReferenceData, description: string ) {
-  const ontCmd = ontology.command ( name ).description ( description )
-  addReferenceCommand ( ontCmd, 'all', reference, 'All the reference data' )
-  addReferenceCommand ( ontCmd, 'direct', reference?.direct, 'All the data that can be looked up given the namespace and name' )
-  addReferenceCommand ( ontCmd, 'bound', reference?.bound, `Data that needs more context. Such as 'this service in this environment'` )
-}
 function addSituationCommand ( command: Command, config: CleanConfig ) {
   command.action ( async () => {
     console.log ( JSON.stringify ( config.situation ) )
@@ -167,53 +37,7 @@ export function makeProgram ( cwd: string, withFromsConfig: CleanConfig, cleanCo
 
   addSituationCommand ( program.command ( 'situation' ).description ( 'Commands about the current situation: the ticket you are working on, or a playground' ), cleanConfig )
 
-  const configCmd: Command = program.command ( 'config' ).description ( 'Views the cleanConfig and any issues with it' )
-  const configIssuesCmd = configCmd.command ( 'issues' )
-    .description ( 'Shows issues with the current cleanConfig' )
-    .action ( async () => {
-      const errors = validateConfig () ( 'config' ) ( cleanConfig )
-      const msg = [ errors.length === 0 ? 'No errors' : 'Errors in config', ...errors ]
-      msg.forEach ( x => console.log ( x ) )
-    } )
-  const validateBeforeComposeCmd = configCmd.command ( 'validateBeforeCompose' )
-    .description ( 'validates the small files that will be merged into the compose' )
-    .action ( async () => {
-      const dir = findDirectoryHoldingFileOrThrow ( cwd, '.runbook' ) + '/.runbook'
-      const validation = await validateJsonFiles ( dir, defaultMergeAccept, validateConfig ( true ) )
-
-      console.log ( JSON.stringify ( validation, null, 2 ) )
-    } )
-  const configComposeCmd: Command = configCmd.command ( 'compose' )
-    .description ( 'Merges all the files in the .runbook directory to make the .runbook.json' )
-    .option ( '-f|--force', 'force the merge even if there are errors' )
-    .action ( async () => {
-      const dir = findDirectoryHoldingFileOrThrow ( cwd, '.runbook' ) + '/.runbook'
-      const validation = await validateJsonFiles ( dir, defaultMergeAccept, validateConfig ( true ) )
-      if ( isErrors ( validation ) ) {
-        console.log ( 'Errors composing' )
-        validation.errors.forEach ( x => console.log ( x ) )
-        process.exit ( 1 )
-      }
-      const validationIssues = validation.filter ( v => v?.result?.length > 0 )
-      if ( validationIssues.length > 0 ) {
-        console.log ( 'Validation issues' )
-        console.log ( validationIssues )
-        if ( !configComposeCmd.optsWithGlobals ().force ) {
-          console.log ( 'Use --force to force the merge' )
-          process.exit ( 1 )
-        }
-      }
-      const newConfig = await mergeJsonFiles ( dir, addFromMutator )
-      if ( isErrors ( newConfig ) ) {
-        console.log ( 'Errors composing' )
-        newConfig.errors.forEach ( x => console.log ( x ) )
-        process.exit ( 1 )
-      }
-      let filename = dir + '/runbook.json';
-      fs.writeFileSync ( filename, JSON.stringify ( newConfig, null, 2 ) )
-      console.log ( 'created new', filename )
-
-    } )
+  addConfigCommand ( program.command ( 'config' ).description ( 'Views the cleanConfig and any issues with it' ), cleanConfig, cwd );
 
   const gui: Command = program.command ( 'gui' ).description ( 'Starts the gui' ).action ( () => {
 
