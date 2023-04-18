@@ -1,7 +1,7 @@
 {
   "name": "@runbook/fixtures",
   "description": "",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "@runbook/utils": "0.0.23"
+    "@runbook/utils": "0.0.24"
   },
   "devDependencies": {
     "typescript": "^4.0.5",
