@@ -2,7 +2,8 @@
   "environment": [
     "prod",
     "test",
-    "dev"
+    "dev",
+    "local"
   ],
   "service": [
     "leo",

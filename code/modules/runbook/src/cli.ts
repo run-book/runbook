@@ -7,7 +7,7 @@ import { jsonToDisplay } from "@runbook/displayformat";
 import { applyTrueConditions, evaluateViewConditions, View } from "@runbook/views";
 import { fromReferenceData, ReferenceData } from "@runbook/mereology";
 import { BindingContext } from "@runbook/bindings";
-import { findDirectoryHoldingFileOrThrow, mergeJsonFiles } from "@runbook/files";
+import { addFromMutator, defaultMergeAccept, findDirectoryHoldingFileOrThrow, mergeJsonFiles, validateJsonFiles } from "@runbook/files";
 import * as fs from "fs";
 
 function optionToDisplayFormat ( args: any ) {
@@ -147,7 +147,7 @@ function addSituationCommand ( command: Command, config: CleanConfig ) {
     console.log ( JSON.stringify ( config.situation ) )
   } )
 }
-export function makeProgram ( cwd: string, config: CleanConfig, version: string ): Command {
+export function makeProgram ( cwd: string, withFromsConfig: CleanConfig, cleanConfig: CleanConfig, version: string ): Command {
   let program = new Command ()
     .name ( 'run-book' )
     .usage ( '<command> [options]' )
@@ -155,37 +155,63 @@ export function makeProgram ( cwd: string, config: CleanConfig, version: string 
     .version ( version )
 
   const instruments = program.command ( 'instrument' ).description ( `Instruments are the raw tools that find things out` )
-  mapObjValues ( safeObject ( config?.instrument ), ( instrument, name ) =>
+  mapObjValues ( safeObject ( cleanConfig?.instrument ), ( instrument, name ) =>
     addInstrumentCommand ( cwd, instruments.command ( name ), name, instrument ) )
 
   const views: Command = program.command ( 'view' ).description ( 'Commands to work with views which allow you to find things out about systems' )
-  mapObjValues ( safeObject ( config?.view ), ( view, name ) => addViewCommand ( views.command ( name ), cwd, name, config, view ) )
+  mapObjValues ( safeObject ( cleanConfig?.view ), ( view, name ) => addViewCommand ( views.command ( name ), cwd, name, cleanConfig, view ) )
   const ontology: Command = program.command ( 'ontology' ).description ( `Commands to view the 'ontology': relationships and meanings and reference data` )
-  addOntologyCommand ( ontology, 'inheritance', config.inheritance, `This is the classical 'isa' relationship. For example a cat isa mammel` )
-  addOntologyCommand ( ontology, 'mereology', config.mereology, `This describes 'is part of' for example a wheel is part of a car` )
-  addAllReferenceCommands ( ontology, 'reference', config.reference, `Reference data such as 'the git repo for this service is here'` )
+  addOntologyCommand ( ontology, 'inheritance', cleanConfig.inheritance, `This is the classical 'isa' relationship. For example a cat isa mammel` )
+  addOntologyCommand ( ontology, 'mereology', cleanConfig.mereology, `This describes 'is part of' for example a wheel is part of a car` )
+  addAllReferenceCommands ( ontology, 'reference', cleanConfig.reference, `Reference data such as 'the git repo for this service is here'` )
 
-  addSituationCommand ( program.command ( 'situation' ).description ( 'Commands about the current situation: the ticket you are working on, or a playground' ), config )
+  addSituationCommand ( program.command ( 'situation' ).description ( 'Commands about the current situation: the ticket you are working on, or a playground' ), cleanConfig )
 
-  const configCmd: Command = program.command ( 'config' ).description ( 'Views the config and any issues with it' )
-  const configIssuesCmd = configCmd.command ( 'issues' ).description ( 'Shows issues with the current config' )
+  const configCmd: Command = program.command ( 'config' ).description ( 'Views the cleanConfig and any issues with it' )
+  const configIssuesCmd = configCmd.command ( 'issues' )
+    .description ( 'Shows issues with the current cleanConfig' )
     .action ( async () => {
-      const errors = validateConfig ( 'config' ) ( config )
+      const errors = validateConfig () ( 'config' ) ( cleanConfig )
       const msg = [ errors.length === 0 ? 'No errors' : 'Errors in config', ...errors ]
       msg.forEach ( x => console.log ( x ) )
     } )
-  const configComposeCmd: Command = configCmd.command ( 'compose' ).description ( 'Merges all the files in the .runbook directory to make the .runbook.json' )
+  const validateBeforeComposeCmd = configCmd.command ( 'validateBeforeCompose' )
+    .description ( 'validates the small files that will be merged into the compose' )
     .action ( async () => {
       const dir = findDirectoryHoldingFileOrThrow ( cwd, '.runbook' ) + '/.runbook'
-      console.log ( 'looking in', dir )
-      const newConfig = await mergeJsonFiles ( dir )
+      const validation = await validateJsonFiles ( dir, defaultMergeAccept, validateConfig ( true ) )
+
+      console.log ( JSON.stringify ( validation, null, 2 ) )
+    } )
+  const configComposeCmd: Command = configCmd.command ( 'compose' )
+    .description ( 'Merges all the files in the .runbook directory to make the .runbook.json' )
+    .option ( '-f|--force', 'force the merge even if there are errors' )
+    .action ( async () => {
+      const dir = findDirectoryHoldingFileOrThrow ( cwd, '.runbook' ) + '/.runbook'
+      const validation = await validateJsonFiles ( dir, defaultMergeAccept, validateConfig ( true ) )
+      if ( isErrors ( validation ) ) {
+        console.log ( 'Errors composing' )
+        validation.errors.forEach ( x => console.log ( x ) )
+        process.exit ( 1 )
+      }
+      const validationIssues = validation.filter ( v => v?.result?.length > 0 )
+      if ( validationIssues.length > 0 ) {
+        console.log ( 'Validation issues' )
+        console.log ( validationIssues )
+        if ( !configComposeCmd.optsWithGlobals ().force ) {
+          console.log ( 'Use --force to force the merge' )
+          process.exit ( 1 )
+        }
+      }
+      const newConfig = await mergeJsonFiles ( dir, addFromMutator )
       if ( isErrors ( newConfig ) ) {
         console.log ( 'Errors composing' )
         newConfig.errors.forEach ( x => console.log ( x ) )
         process.exit ( 1 )
       }
-      console.log ( JSON.stringify ( newConfig, null, 2 ) )
-      fs.writeFileSync ( dir + '/runbook.json', JSON.stringify ( newConfig, null, 2 ) )
+      let filename = dir + '/runbook.json';
+      fs.writeFileSync ( filename, JSON.stringify ( newConfig, null, 2 ) )
+      console.log ( 'created new', filename )
 
     } )
 

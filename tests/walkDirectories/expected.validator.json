@@ -1,0 +1,56 @@
+[
+  {
+    "file": ".runbook\\inheritance\\environment.inheritance.json",
+    "result": [
+      ".runbook\\inheritance\\environment.inheritance.json:inheritance"
+    ]
+  },
+  {
+    "file": ".runbook\\inheritance\\service.inheritance.json",
+    "result": [
+      ".runbook\\inheritance\\service.inheritance.json:inheritance"
+    ]
+  },
+  {
+    "file": ".runbook\\instruments\\echo.instrument.json",
+    "result": [
+      ".runbook\\instruments\\echo.instrument.json:instrument"
+    ]
+  },
+  {
+    "file": ".runbook\\instruments\\git\\cloneOrFetch.instrument.json",
+    "result": [
+      ".runbook\\instruments\\git\\cloneOrFetch.instrument.json:instrument"
+    ]
+  },
+  {
+    "file": ".runbook\\instruments\\ls.instrument.json",
+    "result": [
+      ".runbook\\instruments\\ls.instrument.json:instrument"
+    ]
+  },
+  {
+    "file": ".runbook\\mereology\\main.mereology.json",
+    "result": [
+      ".runbook\\mereology\\main.mereology.json:mereology"
+    ]
+  },
+  {
+    "file": ".runbook\\reference\\environment.json",
+    "result": [
+      ".runbook\\reference\\environment.json:environment"
+    ]
+  },
+  {
+    "file": ".runbook\\views\\debug\\displayGit.view.json",
+    "result": [
+      ".runbook\\views\\debug\\displayGit.view.json:view"
+    ]
+  },
+  {
+    "file": ".runbook\\views\\debug\\domain.view.json",
+    "result": [
+      ".runbook\\views\\debug\\domain.view.json:view"
+    ]
+  }
+]

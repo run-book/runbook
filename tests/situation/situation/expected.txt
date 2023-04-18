@@ -1,1 +1,1 @@
-{"leo":{},"npx":{},"test":{},"prod":{}}
+{"leo":{},"local":{},"npx":{},"test":{},"dev":{}}

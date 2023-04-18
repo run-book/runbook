@@ -1,5 +1,18 @@
 {
   "mereology": {
     "environment": ["service", "database"]
+  },
+  "setup":     {
+    "environment": {
+      "gittag": {"description": "The tag that will be in each service's git repo for the code that is in this environment", "default": "${this.name}"}
+    },
+    "service":     {
+      "gitrepo": {"description": ""},
+      "_per environment": {
+        "protocol": "The protocol that this service will use in this environment",
+        "domain": "The domain name for this service in this environment",
+        "port": "The port that this service will listen on in this environment"
+      }
+    }
   }
 }

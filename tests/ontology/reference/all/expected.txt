@@ -18,6 +18,23 @@
           }
         }
       },
+      "local": {
+        "direct": {
+          "database": {
+            "ngtest": {}
+          },
+          "service": {
+            "leo": {
+              "domain": "localhost",
+              "port": 8080
+            },
+            "npx": {
+              "domain": "localhost",
+              "port": 8090
+            }
+          }
+        }
+      },
       "test": {
         "direct": {
           "database": {
@@ -38,6 +55,23 @@
     }
   },
   "direct": {
+    "environment": {
+      "dev": {
+        "git": {
+          "gittag": "dev"
+        }
+      },
+      "test": {
+        "git": {
+          "gittag": "test"
+        }
+      },
+      "prod": {
+        "git": {
+          "gittag": "prod"
+        }
+      }
+    },
     "database": {
       "ngprod": {
         "url": "ngprod.url"
@@ -49,12 +83,14 @@
     "service": {
       "leo": {
         "git": {
-          "url": "leo.git.url"
+          "url": "leo.git.url",
+          "directory": "c:\\git\\leo"
         }
       },
       "npx": {
         "git": {
-          "url": "npx.git.url"
+          "url": "npx.git.url",
+          "directory": "c:\\git\\npx"
         }
       }
     }

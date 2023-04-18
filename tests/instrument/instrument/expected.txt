@@ -7,7 +7,7 @@ Options:
   -h, --help         display help for command
 
 Commands:
-  ls [options]       A demo instrument that displays the directory contents
-  echo [options]     A demo instrument that echos two arguments
+  echo [options]     An instrument that sends its arguments to standard output
   getRepo [options]  This will (when working) go get or update the repo
+  ls [options]       A demo instrument that displays the directory contents
   help [command]     display help for command

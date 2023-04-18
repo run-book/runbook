@@ -1,2 +1,0 @@
-{"service":"leo","repoUrl":"leo.git.url"}
-{"service":"npx","repoUrl":"npx.git.url"}

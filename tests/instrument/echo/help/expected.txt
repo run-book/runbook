@@ -1,6 +1,6 @@
 Usage: run-book instrument echo [options]
 
-A demo instrument that echos two arguments
+An instrument that sends its arguments to standard output
 
 Options:
   -p|--params <params...>  a space separated name1:value1 name2:value2

@@ -25,13 +25,13 @@ export interface CleanConfig {
 export const validateCleanInstrument = validateScriptInstrument
 
 
-export const validateConfig: NameAndValidator<CleanConfig> = composeNameAndValidators (
-  validateChild ( 'instrument', validateNameAnd ( validateCleanInstrument ) ),
-  validateChild ( 'mereology', validateMereology ),
-  validateChild ( 'view', validateNameAnd ( validateView ) ),
-  validateChild ( 'inheritance', validateNameAnd ( validateArray ( validateString () ) ) ),
-  validateChild ( 'reference', validateReferenceData ),
-  validateChild ( 'instrument', validateNameAnd ( validateCleanInstrument ) )
+export const validateConfig = (partial?: true): NameAndValidator<CleanConfig> => composeNameAndValidators (
+  validateChild ( 'instrument', validateNameAnd ( validateCleanInstrument ) ,partial),
+  validateChild ( 'mereology', validateMereology ,partial),
+  validateChild ( 'view', validateNameAnd ( validateView ) ,partial ),
+  validateChild ( 'inheritance', validateNameAnd ( validateArray ( validateString () ) )  ,partial),
+  validateChild ( 'reference', validateReferenceData ,partial ),
+  validateChild ( 'instrument', validateNameAnd ( validateCleanInstrument ) ,partial )
 )
 
 

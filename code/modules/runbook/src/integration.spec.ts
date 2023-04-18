@@ -15,28 +15,19 @@ export function executeRunbook ( cwd: string, cmd: string ): Promise<string> {
 }
 
 describe ( 'runbook', () => {
-  describe ( 'config issues', () => {
-    const configDir = path.resolve ( testRoot, 'config' )
-    it ( 'happy', async () => {
-      const testDir = path.resolve ( configDir, 'happy' )
-      expect ( await executeRunbook ( testDir, 'config issues' ) ).toEqual ( readExpected ( testDir ) )
-    } )
-    it ( 'malformed', async () => {
-      const testDir = path.resolve ( configDir, 'malformed' )
-      expect ( await executeRunbook ( testDir, 'config issues' ) ).toEqual ( readExpected ( testDir ) )
-    } )
-  } )
-  describe ( "config compose in walkDirectories folder", () => {
-    const configDir = path.resolve ( testRoot, 'walkDirectories' )
+
+  describe ( "config compose ", () => {
+    const configDir = path.resolve ( testRoot, 'config', 'compose' )
     it ( 'happy', async () => {
       const testDir = path.resolve ( configDir, 'happy' )
       const runbookDir = path.join ( testDir, '.runbook' )
       let runbookFileName = path.join ( runbookDir, 'runbook.json' );
-      fs.rmSync ( runbookFileName, { force: true } )
+      fs.writeFileSync( runbookFileName, "{ }" )
       expect ( await executeRunbook ( testDir, 'config compose' ) ).toEqual ( readExpected ( testDir ) )
       expect ( readTestFile ( runbookDir, 'runbook.json' ) ).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
       fs.rmSync ( runbookFileName, { force: true } )
     } )
+
     it ( 'malformed', async () => {
 
       const testDir = path.resolve ( configDir, 'malformed' )
@@ -45,6 +36,22 @@ describe ( 'runbook', () => {
       fs.rmSync ( runbookFileName, { force: true } )
       expect ( await executeRunbook ( testDir, 'config compose' ) ).toEqual ( readExpected ( testDir ) )
       expect ( fs.existsSync ( runbookFileName ) ).toBeFalsy ()
+    } )
+  } )
+  describe ( "config issues", () => {
+    const configDir = path.resolve ( testRoot, 'config', 'issues' )
+    it ( 'happy', async () => {
+      const testDir = path.resolve ( configDir, 'happy' )
+      const runbookDir = path.join ( testDir, '.runbook' )
+      let runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      expect ( await executeRunbook ( testDir, 'config issues' ) ).toEqual ( readExpected ( testDir ) )
+    } )
+    it ( 'malformed', async () => {
+      const testDir = path.resolve ( configDir, 'malformed' )
+      const runbookDir = path.join ( testDir, '.runbook' )
+      let runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      expect ( await executeRunbook ( testDir, 'config issues' ) ).toEqual ( readExpected ( testDir ) )
+
     } )
   } )
   describe ( 'instrument', () => {
@@ -113,9 +120,9 @@ describe ( 'runbook', () => {
       const testDir = path.resolve ( viewDir, 'view' )
       expect ( await executeRunbook ( testDir, 'view' ) ).toEqual ( readExpected ( testDir ) )
     } )
-    it ( 'view findDiffs', async () => {
-      const testDir = path.resolve ( viewDir, 'findDiffs' )
-      expect ( await executeRunbook ( testDir, 'view findDiffs' ) ).toEqual ( readExpected ( testDir ) )
+    it ( 'view displayGit', async () => {
+      const testDir = path.resolve ( viewDir, 'displayGit' )
+      expect ( await executeRunbook ( testDir, 'view displayGit' ) ).toEqual ( readExpected ( testDir ) )
     } )
     it ( 'view domain', async () => {
       const testDir = path.resolve ( viewDir, 'domain' )

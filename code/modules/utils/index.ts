@@ -9,6 +9,7 @@ export * from './src/list'
 export * from './src/nameAnd'
 export * from './src/os'
 export * from './src/partialFunctions'
+export * from './src/prune'
 export * from './src/safe'
 export * from "./src/strings";
 export * from './src/types'

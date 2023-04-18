@@ -17,6 +17,23 @@
         }
       }
     },
+    "local": {
+      "direct": {
+        "database": {
+          "ngtest": {}
+        },
+        "service": {
+          "leo": {
+            "domain": "localhost",
+            "port": 8080
+          },
+          "npx": {
+            "domain": "localhost",
+            "port": 8090
+          }
+        }
+      }
+    },
     "test": {
       "direct": {
         "database": {

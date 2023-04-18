@@ -6,11 +6,27 @@
       "dev",
       "local"
     ],
+    "__from": [
+      "inheritance\\environment.inheritance.json",
+      "inheritance\\service.inheritance.json"
+    ],
     "service": [
       "leo",
       "npx"
     ]
   },
+  "__from": [
+    "inheritance\\environment.inheritance.json",
+    "inheritance\\service.inheritance.json",
+    "instruments\\echo.instrument.json",
+    "instruments\\git\\cloneOrFetch.instrument.json",
+    "instruments\\ls.instrument.json",
+    "mereology\\main.mereology.json",
+    "reference\\reference.json",
+    "situation\\situation.json",
+    "views\\debug\\displayGit.view.json",
+    "views\\debug\\domain.view.json"
+  ],
   "instrument": {
     "echo": {
       "type": "script",
@@ -25,8 +41,16 @@
       "format": {
         "type": "table",
         "hideHeader": 1
-      }
+      },
+      "__from": [
+        "instruments\\echo.instrument.json"
+      ]
     },
+    "__from": [
+      "instruments\\echo.instrument.json",
+      "instruments\\git\\cloneOrFetch.instrument.json",
+      "instruments\\ls.instrument.json"
+    ],
     "getRepo": {
       "type": "script",
       "description": "This will (when working) go get or update the repo",
@@ -49,7 +73,10 @@
       "format": {
         "type": "table",
         "hideHeader": 1
-      }
+      },
+      "__from": [
+        "instruments\\git\\cloneOrFetch.instrument.json"
+      ]
     },
     "ls": {
       "type": "script",
@@ -85,13 +112,46 @@
             "notdoneyet"
           ]
         }
-      }
+      },
+      "__from": [
+        "instruments\\ls.instrument.json"
+      ]
     }
   },
   "mereology": {
     "environment": [
       "service",
       "database"
+    ],
+    "__from": [
+      "mereology\\main.mereology.json"
+    ]
+  },
+  "setup": {
+    "environment": {
+      "gittag": {
+        "description": "The tag that will be in each service's git repo for the code that is in this environment",
+        "default": "${this.name}"
+      },
+      "__from": [
+        "mereology\\main.mereology.json"
+      ]
+    },
+    "service": {
+      "gitrepo": {
+        "description": ""
+      },
+      "_per environment": {
+        "protocol": "The protocol that this service will use in this environment",
+        "domain": "The domain name for this service in this environment",
+        "port": "The port that this service will listen on in this environment"
+      },
+      "__from": [
+        "mereology\\main.mereology.json"
+      ]
+    },
+    "__from": [
+      "mereology\\main.mereology.json"
     ]
   },
   "reference": {
@@ -148,7 +208,10 @@
             }
           }
         }
-      }
+      },
+      "__from": [
+        "reference\\reference.json"
+      ]
     },
     "direct": {
       "environment": {
@@ -189,15 +252,44 @@
             "directory": "c:\\git\\npx"
           }
         }
-      }
-    }
+      },
+      "__from": [
+        "reference\\reference.json"
+      ]
+    },
+    "__from": [
+      "reference\\reference.json"
+    ]
   },
   "situation": {
-    "leo": {},
-    "local": {},
-    "npx": {},
-    "test": {},
-    "dev": {}
+    "leo": {
+      "__from": [
+        "situation\\situation.json"
+      ]
+    },
+    "local": {
+      "__from": [
+        "situation\\situation.json"
+      ]
+    },
+    "npx": {
+      "__from": [
+        "situation\\situation.json"
+      ]
+    },
+    "test": {
+      "__from": [
+        "situation\\situation.json"
+      ]
+    },
+    "dev": {
+      "__from": [
+        "situation\\situation.json"
+      ]
+    },
+    "__from": [
+      "situation\\situation.json"
+    ]
   },
   "view": {
     "displayGit": {
@@ -232,8 +324,15 @@
             "addTo": "ser"
           }
         }
-      }
+      },
+      "__from": [
+        "views\\debug\\displayGit.view.json"
+      ]
     },
+    "__from": [
+      "views\\debug\\displayGit.view.json",
+      "views\\debug\\domain.view.json"
+    ],
     "domain": {
       "type": "view",
       "description": "Lists the domain and port of the services",
@@ -260,7 +359,10 @@
             "addTo": "ser"
           }
         }
-      }
+      },
+      "__from": [
+        "views\\debug\\domain.view.json"
+      ]
     }
   }
 }

@@ -1,0 +1,4 @@
+{"env":"test","tag":"test","ser":"leo","dir":"c:\\git\\leo","url":"leo.git.url"}
+{"env":"test","tag":"test","ser":"npx","dir":"c:\\git\\npx","url":"npx.git.url"}
+{"env":"dev","tag":"dev","ser":"leo","dir":"c:\\git\\leo","url":"leo.git.url"}
+{"env":"dev","tag":"dev","ser":"npx","dir":"c:\\git\\npx","url":"npx.git.url"}
