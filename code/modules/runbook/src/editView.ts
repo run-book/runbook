@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { startShell } from "@runbook/scripts";
+import { osType, editFile } from "@runbook/scripts";
 import { toArray } from "@runbook/utils";
 import * as path from "path";
 import { findDirectoryHoldingFileOrThrow } from "@runbook/files";
@@ -20,9 +20,9 @@ export async function executeAndEditViewAndExit ( cwd: string, args: any, inConf
       process.exit ( 2 )
     }
     const dir = findDirectoryHoldingFileOrThrow ( cwd, '.runbook' ) + '/.runbook'
-    console.log ( `Starting shell for ${inConfig.__from} in ${dir}` )
 
-    await Promise.all ( toArray ( inConfig.__from ).map ( async ( from: string ) => startShell ( dir, from ) ) )
+
+    await Promise.all ( toArray ( inConfig.__from ).map ( async ( from: string ) => editFile (osType(), dir, from ) ) )
     process.exit ( 0 )
   }
   if ( args.view ) {

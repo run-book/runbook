@@ -12,8 +12,9 @@ export const executeScriptInShell: ExecuteScriptFn = ( cwd: string, cmd: string 
 } );
 
 
-export const startShell = ( cwd: string, file: string ): Promise<string> => new Promise<string> ( resolve => {
-  return executeScriptInShell ( cwd, `start ${file}` )
+export const editFile = ( os: OS, cwd: string, file: string ): Promise<string> => new Promise<string> ( resolve => {
+  if ( os === 'Windows_NT' ) return executeScriptInShell ( cwd, `start ${file}` )
+  return executeScriptInShell ( cwd, `vim ${file}` ) //let's make this configurable later
 } )
 
 export const executeScriptLinesInShell: ExecuteScriptLinesFn = ( cwd, cmds ) => {
