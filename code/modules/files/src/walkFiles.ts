@@ -38,7 +38,7 @@ export function displayFilesAndResultsForValidation ( fs: ErrorsAnd<FileAndResul
   let fsWithValidationIssues = fs.filter ( f => f.result.length > 0 );
   return { validation: flatMap ( fsWithValidationIssues, f => [ f.file, ...indentAll ( f.result ) ] ) }
 }
-export function consoleLogValidationAndShouldExit ( fs: ErrorsAnd<DisplayValidation>, force?: string ): boolean {
+export function consoleLogValidationAndShouldExit ( fs: ErrorsAnd<DisplayValidation>, displayNoErrors: boolean, force?: string ): boolean {
   if ( isErrors ( fs ) ) {
     fs.errors.forEach ( x => console.log ( x ) )
     return true
@@ -49,6 +49,8 @@ export function consoleLogValidationAndShouldExit ( fs: ErrorsAnd<DisplayValidat
     if ( force !== undefined ) console.log ( force )
     return true
   }
+  if ( displayNoErrors )
+    console.log ( 'No validation issues' )
   return false
 }
 export async function validateJsonFiles ( dir: string, acceptor: ( f: string ) => boolean, validator: NameAndValidator<any> ): Promise<ErrorsAnd<FileAndResult<any>[]>> {

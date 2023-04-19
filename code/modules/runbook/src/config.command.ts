@@ -19,7 +19,7 @@ export function addConfigCommand ( configCmd: Command, cleanConfig: CleanConfig,
       const dir = findDirectoryHoldingFileOrThrow ( cwd, '.runbook' ) + '/.runbook'
       const validation = await validateJsonFiles ( dir, defaultMergeAccept, validateConfig ( true ) )
       const dispValidation: ErrorsAnd<DisplayValidation> = displayFilesAndResultsForValidation ( validation )
-      consoleLogValidationAndShouldExit ( dispValidation )
+      consoleLogValidationAndShouldExit ( dispValidation, true )
     } )
   const configComposeCmd: Command = configCmd.command ( 'compose' )
     .description ( 'Merges all the files in the .runbook directory to make the .runbook.json' )
@@ -30,7 +30,7 @@ export function addConfigCommand ( configCmd: Command, cleanConfig: CleanConfig,
       const dispValidation: ErrorsAnd<DisplayValidation> = displayFilesAndResultsForValidation ( validation )
       let force = configComposeCmd.optsWithGlobals ().force && 'Use --force to force the merge'
 
-      if ( consoleLogValidationAndShouldExit ( dispValidation, force ) ) return
+      if ( consoleLogValidationAndShouldExit ( dispValidation, false, force ) ) return
 
       const newConfig = await mergeJsonFiles ( dir, addFromMutator )
       if ( isErrors ( newConfig ) ) {
