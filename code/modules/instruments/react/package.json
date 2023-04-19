@@ -1,14 +1,11 @@
 {
   "name": "@runbook/instruments_react",
-  "description": "This is a project that allows code to be (safely) fetched on demand from a server. The url holding the code is including in the json",
-  "version": "0.0.29",
+  "description": "",
+  "version": "0.0.30",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
     "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version",
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
@@ -16,32 +13,35 @@
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all",
-      ">0.2%",
-      "not dead",
       "not op_mini all"
     ]
   },
   "dependencies": {
-    "react": "16.14.0",
-    "react-dom": "16.14.0",
-    "typescript": "^4.1.5"
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "storybook": "^7.0.6",
+    "typescript": "^5.0.4"
   },
   "devDependencies": {
-    "@types/react": "16.14.0",
-    "@testing-library/jest-dom": "^5.11.6",
-    "@testing-library/react": "^11.2.2",
-    "@testing-library/user-event": "^12.2.2",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^14.14.9",
-    "enzyme-adapter-react-16": "^1.15.6",
-    "enzyme": "^3.11.0",
-    "@types/enzyme": "^3.10.12",
-    "@types/enzyme-adapter-react-16": "^1.0.6",
-    "jest": "26.6.0",
-    "jest-dom": "2.1.1",
-    "react-scripts": "^4.0.1",
-    "ts-jest": "^26.4.4"
+    "@storybook/addon-essentials": "7.0.6",
+    "@storybook/addon-interactions": "7.0.6",
+    "@storybook/addon-links": "7.0.6",
+    "@storybook/blocks": "7.0.6",
+    "@storybook/react": "7.0.6",
+    "@storybook/react-webpack5": "7.0.6",
+    "@storybook/testing-library": "0.1.0",
+    "@testing-library/dom": "9.2.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/jest": "^29.5.1",
+    "@types/node": "16.11.7",
+    "@types/react": "18.0.37",
+    "@types/react-dom": "18.0.11",
+    "jest": "29.5.0",
+    "prop-types": "15.8.1",
+    "react-scripts": "^5.0.1",
+    "ts-jest": "^29.1.0"
   },
   "eslintConfig": {
     "extends": [
@@ -62,11 +62,6 @@
   "files": [
     "dist/index.js",
     "dist/index.d.ts",
-    "dist/src/",
-    "LICENSE.md",
-    "README.md",
-    "dist/index.js",
-    "dist/index.d.ts",
     "dist/src/"
   ],
   "keywords": [
@@ -79,6 +74,8 @@
     "test": "jest --config jest.config.json",
     "test:watch": "npm run test -- --watch",
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   }
 }

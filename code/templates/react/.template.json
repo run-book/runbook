@@ -1,12 +1,12 @@
 {
   "files": [
     {
-      "file":   ".npmrc",
-      "target": ".npmrc"
-    },
-    {
       "file":   ".env",
       "target": ".env"
+    },
+    {
+      "file":   ".npmrc",
+      "target": ".npmrc"
     },
     {
       "file":   "babel.config.json",
@@ -19,12 +19,12 @@
     {
       "target":      "package.json",
       "file":        "package.json",
-      "templated":        "${}",
+      "templated":   "${}",
       "postProcess": "packageJson(@laoban@/templates/javascript/package.json)"
     },
     {
       "file":   "tsconfig.json",
       "target": "tsconfig.json"
-    },
+    }
   ]
 }

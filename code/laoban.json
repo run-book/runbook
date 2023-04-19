@@ -37,6 +37,14 @@
           "command": "yarn run build"
         }
       ]
+    }   , "storybook":    {
+      "description": "Starts storybook",
+      "commands":    [
+        {
+          "guard":   "${packageDetails.guards.storybook}",
+          "command": "yarn run storybook"
+        }
+      ]
     }
   }
 }

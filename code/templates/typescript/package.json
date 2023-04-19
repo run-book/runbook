@@ -4,18 +4,7 @@
   "version":         "${version}",
   "license":         "${properties.license}",
   "repository":      "${properties.repository}",
-  "browserslist":    {
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ],
-    "production":  [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ]
-  },
+
   "dependencies":    {
     "react":     "16.14.0",
     "react-dom": "16.14.0"

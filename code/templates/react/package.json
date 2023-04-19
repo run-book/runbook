@@ -5,24 +5,6 @@
   "license":         "${properties.license}",
   "repository":      "${properties.repository}", "main": "dist/index",
   "types":           "dist/index",
-  "browserslist":    {
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version",
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ],
-    "production":  [
-      ">0.2%",
-      "not dead",
-      "not op_mini all",
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ]
-  },
   "dependencies":    {
     "react":      "18.2.0",
     "react-dom":  "18.2.0",
@@ -43,7 +25,8 @@
     "@testing-library/user-event":   "^14.4.3",
     "@types/jest":                   "^29.5.1",
     "@types/node":                   "16.11.7",
-    "@types/react":                  "16.9.56",
+    "@types/react":                  "18.0.37",
+    "@types/react-dom":              "18.0.11",
     "jest":                          "29.5.0",
     "prop-types":                    "15.8.1",
     "react-scripts":                 "^5.0.1",
@@ -65,16 +48,6 @@
       }
     ]
   },
-  "files":           [
-    "dist/index.js",
-    "dist/index.d.ts",
-    "dist/src/",
-    "LICENSE.md",
-    "README.md",
-    "dist/index.js",
-    "dist/index.d.ts",
-    "dist/src/"
-  ],
   "keywords":        [
     "react",
     "runbook"
