@@ -118,7 +118,7 @@ const checkOneKvForNonVariable = ( bcIndented: BindingContext, condK: string, co
     return ( oldPath: string[], situation: any ) => withContinuation ( oldPath, situation?.[ condK ], condK );
   };
 };
-const checkOneKv = ( condK, bcIndented: BindingContext, condV, condPath: string[] ) => {
+const checkOneKv = ( bcIndented: BindingContext, condK: string, condV: any, condPath: string[] ) => {
   const newCondPath = [ ...condPath, condK ]
   const checker = condK.startsWith ( '{' ) && condK.endsWith ( '}' )
     ? checkOneKvForVariable ( bcIndented, condK, condV, newCondPath )
@@ -134,7 +134,7 @@ const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any, condPat
   const bcIndented = debugAndIndent ( bc, 'makeOnFoundToExploreObject', JSON.stringify ( condition ) )
   const sortedCondition = deepSortCondition ( bc.mereology, `condition ${JSON.stringify ( condition, null, 2 )}`, condition )
   const onFoundForEachEntry: OnFoundContinuation[] = Object.entries ( sortedCondition ).map ( ( [ condK, condV ] ) =>
-    checkOneKv ( condK, bcIndented, condV, condPath ) )
+    checkOneKv ( bcIndented, condK, condV, condPath ) )
   makeCount++
   return ( continuation: OnFoundFn ) => {
     //ideally we would do the reduction at 'compile time' i.e. above the return
@@ -144,7 +144,7 @@ const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any, condPat
 };
 
 type MatchFn = ( path: string[], situation: any ) => ( b: Binding[], thisBinding: Binding ) => Binding[] | undefined
-const primitiveMatchFn = ( bcIndented: BindingContext, condition: any, condPath: string[] ) => {
+const primitiveMatchFn = ( bcIndented: BindingContext, condition: any, condPath: string[] ) : (c: OnFoundFn) => MatchFn=> {
   let matcher = matchPrimitiveAndAddBindingIfNeeded ( bcIndented, condition, condPath );
   return ( continuation: OnFoundFn ): MatchFn => {
     return ( path: string[], situation: any ): OnFoundFn => ( bindings: Binding[], thisBinding: Binding ): Binding[] | undefined => {

@@ -1,0 +1,15 @@
+{
+  "template":    "typescript",
+  "name":        "tagless",
+  "description": "",
+  "packageJson": {
+    "dependencies":    {},
+    "devDependencies": {}
+  },
+  "links":       ["@runbook/bindings"],
+  "guards":      {
+    "compile": true,
+    "publish": false,
+    "test":    true
+  }
+}
