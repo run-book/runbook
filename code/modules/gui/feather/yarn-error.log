@@ -1,0 +1,73 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js config get npmScopes --json
+
+PATH: 
+  C:\app\philr\product\21c\dbhomeXE\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\sbt\bin;C:\Program Files\Git\cmd;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\dotnet\;C:\ProgramData\chocolatey\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Users\philr\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\Calibre2\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Rancher Desktop\resources\resources\win32\bin\;C:\Program Files\Rancher Desktop\resources\resources\linux\bin\;C:\Program Files\Go\bin;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\PowerShell\7\;C:\Users\philr\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\philr\AppData\Local\Programs\Python\Python310\;C:\Users\philr\AppData\Local\Microsoft\WindowsApps;C:\Program Files\JetBrains\IntelliJ IDEA 2022.3.1\bin;;C:\Users\philr\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\philr\.dotnet\tools;C:\Users\philr\AppData\Roaming\npm;C:\Program Files\apache\apache-maven-3.8.4\bin;C:\Users\philr\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\philr\AppData\Local\Yarn\bin;C:\Users\philr\go\bin;C:\Program Files\pact\bin;C:\tools;
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  14.21.2
+
+Platform: 
+  win32 x64
+
+Trace: 
+  SyntaxError: C:\git\runbook\code\modules\gui\feather\package.json: Unexpected token } in JSON at position 425
+      at JSON.parse (<anonymous>)
+      at C:\Program Files (x86)\Yarn\lib\cli.js:1629:59
+      at Generator.next (<anonymous>)
+      at step (C:\Program Files (x86)\Yarn\lib\cli.js:310:30)
+      at C:\Program Files (x86)\Yarn\lib\cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "@runbook/feather",
+    "description": "",
+    "version": "0.0.29",
+    "main": "dist/index",
+    "types": "dist/index",
+    "browserslist": {
+      "development": [
+        "last 1 chrome version",
+        "last 1 firefox version",
+        "last 1 safari version"
+      ],
+      "production": [
+        ">0.2%",
+        "not dead",
+        "not op_mini all"
+      ]
+    },
+    "dependencies": {
+      "@runbook/gui_react": "0.0.29",
+      "storyb"
+    },
+    "devDependencies": {
+      "typescript": "^4.0.5",
+      "@types/node": "^14.14.7",
+      "@types/jest": "^26.0.15",
+      "@testing-library/jest-dom": "^5.11.5",
+      "@testing-library/user-event": "^12.2.0",
+      "jest": "^26.6.0",
+      "ts-jest": "^26.4.4"
+    },
+    "files": [
+      "dist/index.js",
+      "dist/index.d.ts",
+      "dist/src/"
+    ],
+    "license": "MIT",
+    "repository": "git@github.com:run-book/runbook.git",
+    "scripts": {
+      "test": "jest --config jest.config.json",
+      "test:watch": "npm run test -- --watch"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

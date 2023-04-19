@@ -13,14 +13,14 @@
   },
   "templates":      {
     "javascript": "@laoban@/templates/javascript",
-    "typescript": "@laoban@/templates/typescript_405",
-    "react":      "templates\\react"
+    "typescript": "templates/typescript",
+    "react":      "templates/react"
   },
   "defaultEnv":     {
     "NPM_TOKEN": ""
   },
   "scripts":        {
-    "ls-react":      {
+    "ls-react": {
       "description": "Lists all the react projects",
       "commands":    [
         {
@@ -29,7 +29,7 @@
         }
       ]
     },
-    "build": {
+    "build":    {
       "description": "Packages the react projects",
       "commands":    [
         {

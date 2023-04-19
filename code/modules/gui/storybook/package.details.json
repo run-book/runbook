@@ -1,0 +1,16 @@
+{
+  "template": "react",
+  "name": "@runbook/storybook",
+  "description": "",
+  "packageJson": {
+    "dependencies": {"storybook": "^7.0.6"},
+    "devDependencies": {}
+  },
+  "links": [],
+  "guards": {
+    "compile": true,
+    "publish": false,
+    "test": false,
+    "react": true
+  }
+}
