@@ -9,7 +9,7 @@
   ],
   "properties":     {
     "license":    "MIT",
-    "repository": "LICENSE.md"
+    "repository": "git@github.com:run-book/runbook.git"
   },
   "templates":      {
     "javascript": "@laoban@/templates/javascript",

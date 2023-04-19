@@ -1,0 +1,16 @@
+{
+  "template": "typescript",
+  "name": "@runbook/feather",
+  "description": "",
+  "packageJson": {
+    "dependencies": {},
+    "devDependencies": {}
+  },
+  "links": ["@runbook/gui"],
+  "guards": {
+    "compile": true,
+    "publish": true,
+    "test": true,
+    "react": true
+  }
+}

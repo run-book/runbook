@@ -1,0 +1,15 @@
+{
+  "template": "react",
+  "name": "@runbook/ontology_react",
+  "description": "",
+  "packageJson": {
+    "dependencies": {},
+    "devDependencies": {}
+  },
+  "links": [],
+  "guards": {
+    "compile": true,
+    "publish": false,
+    "test": true
+  }
+}

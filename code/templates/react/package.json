@@ -44,10 +44,11 @@
     "react",
     "runbook"
   ],
-  "license":         "MIT",
+
   "main":            "dist/index",
   "types":           "dist/index",
-  "repository":      "github:focuson-ts/focuson",
+  "license": "${properties.license}",
+  "repository": "${properties.repository}",
   "scripts":         {
     "start": "react-scripts start",
     "build": "react-scripts build",

@@ -37,7 +37,7 @@
     "dist/src/"
   ],
   "license": "MIT",
-  "repository": "LICENSE.md",
+  "repository": "git@github.com:run-book/runbook.git",
   "scripts": {
     "test": "jest --config jest.config.json",
     "test:watch": "npm run test -- --watch"

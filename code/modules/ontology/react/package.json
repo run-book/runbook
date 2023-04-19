@@ -1,5 +1,5 @@
 {
-  "name": "@runbook/gui",
+  "name": "@runbook/ontology_react",
   "description": "This is a project that allows code to be (safely) fetched on demand from a server. The url holding the code is including in the json",
   "version": "0.0.26",
   "main": "dist/index",
@@ -74,7 +74,7 @@
     "runbook"
   ],
   "license": "MIT",
-  "repository": "github:focuson-ts/focuson",
+  "repository": "git@github.com:run-book/runbook.git",
   "scripts": {
     "test": "jest --config jest.config.json",
     "test:watch": "npm run test -- --watch",
