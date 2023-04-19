@@ -16,7 +16,9 @@
       "not op_mini all"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "@runbook/gui": "0.0.26"
+  },
   "devDependencies": {
     "typescript": "^4.0.5",
     "@types/node": "^14.14.7",

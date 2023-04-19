@@ -9,8 +9,8 @@
   "links": [],
   "guards": {
     "compile": true,
-    "publish": true,
-    "test": true,
+    "publish": false,
+    "test": false,
     "react": true
   }
 }
