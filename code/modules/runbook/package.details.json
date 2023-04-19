@@ -9,7 +9,10 @@
     "dependencies":    {"commander": "^10.0.0"},
     "devDependencies": {}
   },
-  "links":       ["@runbook/config", "@runbook/utils", "@runbook/files", "@runbook/variables","@runbook/scripts","@runbook/gui"],
+  "links":       [
+    "@runbook/config", "@runbook/utils", "@runbook/files",
+    "@runbook/variables", "@runbook/scripts"
+  ],
   "guards":      {
     "compile": true,
     "publish": true,

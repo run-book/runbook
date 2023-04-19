@@ -1,6 +1,6 @@
 {
   "template": "react",
-  "name": "@runbook/gui",
+  "name": "@runbook/gui_react",
   "description": "",
   "packageJson": {
     "dependencies": {},
