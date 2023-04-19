@@ -1,12 +1,12 @@
 {
-  "template": "typescript",
-  "name": "@runbook/feather",
+  "template": "react",
+  "name": "@runbook/navigation_react",
   "description": "",
   "packageJson": {
     "dependencies": {},
     "devDependencies": {}
   },
-  "links": ["@runbook/gui_react"],
+  "links": [],
   "guards": {
     "compile": true,
     "publish": false,

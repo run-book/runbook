@@ -17,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "@runbook/gui": "0.0.29"
+    "@runbook/gui_react": "0.0.29"
   },
   "devDependencies": {
     "typescript": "^4.0.5",
