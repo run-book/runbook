@@ -77,6 +77,14 @@ export function validateChild<Main, K extends keyof Main> ( key: K, validator: N
     return validator ( newName ) ( child );
   };
 }
+
+export const validateHasAtLeastOneKey = (hint: string) =><Main, K extends keyof Main> ( ...keys: K[] ): NameAndValidator<Main> => ( name ) => ( value: Main ) => {
+  if ( isPrimitive ( value ) ) return [ `${name} does not have ${keys.toString ()} as it is of type ${typeof value} and not an object` ]
+  for ( const key of keys ) {
+    if ( value[ key ] !== undefined ) return [];
+  }
+  return [ `${name} does not have any of ${keys.toString ()}${hint}` ];
+};
 export function validateNameAnd<T> ( validator: NameAndValidator<T> ): NameAndValidator<NameAnd<T>> {
   return name => ( value: NameAnd<T> ) => {
     if ( value === undefined ) return []

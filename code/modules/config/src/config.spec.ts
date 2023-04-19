@@ -14,7 +14,8 @@ describe ( "validate config", () => {
       "prefix.view is undefined",
       "prefix.inheritance is undefined",
       "prefix.reference is undefined",
-      "prefix.instrument is undefined"
+      "prefix.instrument is undefined",
+      "prefix.situation is undefined",
     ] )
 
   } )

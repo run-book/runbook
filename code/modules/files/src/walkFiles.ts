@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from "path";
 import * as util from "util";
-import { deepCombineTwoObjectsWithPrune, ErrorsAnd, isPrimitive, mapErrors, mapObjValues, NameAndValidator, toErrorsAnd } from "@runbook/utils";
+import { deepCombineTwoObjectsWithPrune, Errors, ErrorsAnd, flatMap, indentAll, isErrors, isPrimitive, mapErrors, mapObjValues, NameAndValidator, toErrorsAnd } from "@runbook/utils";
 
 const astat = util.promisify ( fs.stat );
 const areaddir = util.promisify ( fs.readdir );
@@ -25,12 +25,37 @@ export async function mergeJsonFiles ( dir: string, mutator: ( dir: string, file
     all => all.reduce ( deepCombineTwoObjectsWithPrune ( j => j ), {} ) )
 }
 
-export async function validateJsonFiles ( dir: string, acceptor: ( f: string ) => boolean, validator: NameAndValidator<any> ): Promise<ErrorsAnd<any>> {
+export interface FileAndResult<T> {
+  file: string
+  result: T
+
+}
+export interface DisplayValidation {
+  validation: string[]
+}
+export function displayFilesAndResultsForValidation ( fs: ErrorsAnd<FileAndResult<string[]>[]> ): ErrorsAnd<DisplayValidation> {
+  if ( isErrors ( fs ) ) return { errors: [ `Errors accessing files`, ...indentAll ( fs.errors ) ] }
+  let fsWithValidationIssues = fs.filter ( f => f.result.length > 0 );
+  return { validation: flatMap ( fsWithValidationIssues, f => [ f.file, ...indentAll ( f.result ) ] ) }
+}
+export function consoleLogValidationAndShouldExit ( fs: ErrorsAnd<DisplayValidation>, force?: string ): boolean {
+  if ( isErrors ( fs ) ) {
+    fs.errors.forEach ( x => console.log ( x ) )
+    return true
+  }
+  if ( fs.validation.length > 0 ) {
+    console.log ( 'Validation issues' )
+    fs.validation.forEach ( x => console.log ( x ) )
+    if ( force !== undefined ) console.log ( force )
+    return true
+  }
+  return false
+}
+export async function validateJsonFiles ( dir: string, acceptor: ( f: string ) => boolean, validator: NameAndValidator<any> ): Promise<ErrorsAnd<FileAndResult<any>[]>> {
   return loadAllFiles ( acceptor, dir, ( dir, f, json ) => {
     const file = path.relative ( dir, f );
     return ({ file, result: validator ( file ) ( json ) });
   } )
-
 }
 export function addFromMutator ( dir: string, file: string, json: any ) {
   function withDepth ( json: any, depth: number ) {
