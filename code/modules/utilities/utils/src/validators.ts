@@ -18,8 +18,8 @@ export const validateNumber = ( allowUndefined?: true ): NameAndValidator<number
 export const validateBoolean = ( allowUndefined?: true ): NameAndValidator<boolean> => validateIsType ( 'boolean', allowUndefined );
 
 export const validateDefined: NameAndValidator<any> = ( name ) => ( value ) => value === undefined ? [ `${name} is undefined` ] : [];
-export function validateValue<T> ( ...values: T[] ): NameAndValidator<T> {
-  return ( name ) => ( value: T | undefined ) => value && values.includes ( value ) ? [] : [ `${name} is [${JSON.stringify ( value )}] not one of ${JSON.stringify ( values )}` ];
+export function validateValue<T> ( ...values: (T | undefined)[] ): NameAndValidator<T> {
+  return ( name ) => ( value: T | undefined ) => values.includes ( value ) ? [] : [ `${name} is [${JSON.stringify ( value )}] not one of ${JSON.stringify ( values )}` ];
 }
 
 export function composeValidators<T> ( ...fns: Validator<T>[] ): Validator<T> {
@@ -38,11 +38,6 @@ export function orValidators<T> ( msg: string, ...fns: NameAndValidator<T>[] ): 
       const thisMsg = i === 0 ? `${name} ${msg}. Either` : `or`;
       return e.length === 0 ? [] : [ thisMsg, ...indentAll ( e ) ];
     } )
-    // for ( const fn of fns ) {
-    //   const errors = fn ( name ) ( value );
-    //   if ( errors.length === 0 ) return [];
-    // }
-    // return [ `${name} ${msg}`, ...fns[ 0 ] ( name ) ( value ) ];
   };
 }
 export function validateItemOrArray<T> ( validator: NameAndValidator<T>, allowUndefined?: true ): NameAndValidator<T | T[]> {
@@ -68,7 +63,7 @@ export function validateChildItemOrArray<Main, K extends keyof Main> ( key: K, v
   return validateChild ( key, validateItemOrArray ( validator ), allowUndefined );
 }
 
-export function validateChild<Main, K extends keyof Main> ( key: K, validator: NameAndValidator<Main[K]>, allowUndefined?: true ): NameAndValidator<Main> {
+export function validateChild<Main, K extends keyof Main> ( key: K, validator: NameAndValidator<Main[K]>, allowUndefined?: boolean ): NameAndValidator<Main> {
   return ( name ) => ( value: Main | undefined ) => {
     if ( isPrimitive ( value ) ) return [ `${name} does not have ${key.toString ()} as it is of type ${typeof value} and not an object` ]
     let child = value[ key ];
@@ -86,9 +81,9 @@ export const validateHasAtLeastOneKey = ( hint: string ) => <Main, K extends key
     }
     return [ `${name} does not have any of ${keys.toString ()}${hint}` ];
   };
-export function validateNameAnd<T> ( validator: NameAndValidator<T> ): NameAndValidator<NameAnd<T> | undefined> {
+export function validateNameAnd<T> ( validator: NameAndValidator<T>, allowUndefined?: true ): NameAndValidator<NameAnd<T> | undefined> {
   return name => ( value: NameAnd<T | undefined> | undefined ) => {
-    if ( value === undefined ) return []
+    if ( value === undefined ) return allowUndefined ? [] : [ `${name} is undefined` ];
     if ( isPrimitive ( value ) ) return [ `${name} is of type ${typeof value} and not an array` ]
     return flatMapEntries ( value, ( t, n ) => t ? validator ( name + '.' + n ) ( t ) : [] );
   };
@@ -106,9 +101,10 @@ export const validateOrString = <Main> ( validate: NameAndValidator<Main> ): Nam
     if ( typeof value === 'string' ) return validateString () ( name ) ( value );
     return validate ( name ) ( value );
   }
-export const validateChildValue = <Main, K extends keyof Main> ( key: K, ...legalValues: Main[K][] ): NameAndValidator<Main> =>
-  validateChild<Main, K> ( key, validateValue ( ...legalValues ) as any )
-export const validateChildNumber = <Main, K extends keyof Main> ( key: K, allowUndefined?: true ): NameAndValidator<Main> => validateChild<Main, K> ( key, validateNumber ( allowUndefined ) as any )
+export const validateChildValue = <Main, K extends keyof Main> ( key: K, ...legalValues: (Main[K] | undefined)[] ): NameAndValidator<Main> =>
+  validateChild<Main, K> ( key, validateValue ( ...legalValues ) as any, legalValues.includes ( undefined ) )
+export const validateChildNumber = <Main, K extends keyof Main> ( key: K, allowUndefined?: true ): NameAndValidator<Main> =>
+  validateChild<Main, K> ( key, validateNumber ( allowUndefined ) as any, allowUndefined )
 
 export const validateChildDefined = <Main, K extends keyof Main> ( key: K ): NameAndValidator<Main> => validateChild ( key, validateDefined as any )
 export const validate = <Main, Res> ( name: string, validator: NameAndValidator<Main>, value: any, ifTrue: ( value: Main ) => Res, ifErrors: ( errors: string[] ) => Res ): Res => {

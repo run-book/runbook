@@ -2,15 +2,11 @@ Errors in config
 config.instrument.ins Ìsn't a valid script. Either
   config.instrument.ins.description is undefined
   config.instrument.ins.params is undefined
-  config.instrument.ins.staleness is undefined
-  config.instrument.ins.cost is undefined
   config.instrument.ins.windows is undefined
   config.instrument.ins.linux is undefined
 or
   config.instrument.ins.description is undefined
   config.instrument.ins.params is undefined
-  config.instrument.ins.staleness is undefined
-  config.instrument.ins.cost is undefined
   config.instrument.ins.script is undefined
 config.mereology is undefined
 config.view.view1.type is undefined
@@ -23,15 +19,11 @@ config.reference is undefined
 config.instrument.ins Ìsn't a valid script. Either
   config.instrument.ins.description is undefined
   config.instrument.ins.params is undefined
-  config.instrument.ins.staleness is undefined
-  config.instrument.ins.cost is undefined
   config.instrument.ins.windows is undefined
   config.instrument.ins.linux is undefined
 or
   config.instrument.ins.description is undefined
   config.instrument.ins.params is undefined
-  config.instrument.ins.staleness is undefined
-  config.instrument.ins.cost is undefined
   config.instrument.ins.script is undefined
 config.situation is undefined
 

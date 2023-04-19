@@ -7,14 +7,14 @@ const sharedI = ( script: string ): SharedScriptInstrument => ({
   type: "script",
   script,
   description: "",
-  format: 'raw',
+  format: { type: "table" },
   params: '*',
   staleness: 5000,
 })
 export const varying = ( sW: string, sL: string ): VaryingScriptInstrument => ({
   linux: sharedI ( sL ),
   windows: sharedI ( sW ),
-  format: 'raw',
+  format: { type: "table" },
   description: "",
   params: '*',
   type: "script",
@@ -69,55 +69,33 @@ describe ( 'executeSharedScriptInstrument', function () {
 describe ( 'validateScriptInstrument', () => {
   it ( 'should validate the fixture script instruments', () => {
     expect ( validateScriptInstrument ( 'prefix' ) ( sharedI ( 'someScript' ) ) ).toEqual ( [
-      "prefix Ìsn't a valid script. Either",
-      "  prefix.params is undefined",
-      "  prefix.cost is undefined",
-      "  prefix.windows is undefined",
-      "  prefix.linux is undefined",
-      "or",
-      "  prefix.params is undefined",
-      "  prefix.cost is undefined"
+
     ] )
     expect ( validateScriptInstrument ( 'prefix' ) ( varying ( 'win', 'linux' ) ) ).toEqual ( [
-      "prefix Ìsn't a valid script. Either",
-      "  prefix.params is undefined",
-      "  prefix.cost is undefined",
-      "or",
-      "  prefix.params is undefined",
-      "  prefix.cost is undefined",
-      "  prefix.script is undefined"
     ] )
   } )
   it ( "should report errors", () => {
-    expect ( validateScriptInstrument ( 'prefix' ) ( {} as any ) ).toEqual ( [
+    expect ( validateScriptInstrument ( 'prefix' ) ( {} as any ) ).toEqual ([
       "prefix Ìsn't a valid script. Either",
       "  prefix.description is undefined",
       "  prefix.params is undefined",
-      "  prefix.staleness is undefined",
-      "  prefix.cost is undefined",
       "  prefix.windows is undefined",
       "  prefix.linux is undefined",
       "or",
       "  prefix.description is undefined",
       "  prefix.params is undefined",
-      "  prefix.staleness is undefined",
-      "  prefix.cost is undefined",
       "  prefix.script is undefined"
     ] )
-    expect ( validateScriptInstrument ( 'prefix' ) ( { windows: 1, linux1: 1 } as any ) ).toEqual ( [
+    expect ( validateScriptInstrument ( 'prefix' ) ( { windows: 1, linux1: 1 } as any ) ).toEqual ([
       "prefix Ìsn't a valid script. Either",
       "  prefix.description is undefined",
       "  prefix.params is undefined",
-      "  prefix.staleness is undefined",
-      "  prefix.cost is undefined",
       "  prefix.windows does not have script as it is of type number and not an object",
       "  prefix.windows does not have format as it is of type number and not an object",
       "  prefix.linux is undefined",
       "or",
       "  prefix.description is undefined",
       "  prefix.params is undefined",
-      "  prefix.staleness is undefined",
-      "  prefix.cost is undefined",
       "  prefix.script is undefined"
     ] )
 

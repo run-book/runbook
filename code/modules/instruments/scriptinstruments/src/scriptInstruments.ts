@@ -44,7 +44,6 @@ export interface ExecuteOptions {
 
 export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumentK<ScriptInstrument> =>
   ( context: string, i: ScriptInstrument, sdFn ) => async ( params ) => {
-
     if ( opt.debug ) console.log ( 'executeSharedScriptInstrument', JSON.stringify ( i ) )
     if ( opt.debug ) console.log ( '  opt', JSON.stringify ( opt ) )
     if ( i === undefined ) throw new Error ( `Instrument is undefined` )
@@ -104,7 +103,7 @@ export const validateCommonScriptIntrument: NameAndValidator<CommonInstrument> =
   validateChildString ( 'description' ),
   validateChild ( 'params', orValidators<any> ( '', validateNameAnd ( validateCleanInstrumentParam ), validateString () ) ),
   validateChildNumber ( 'staleness', true ),
-  validateChildValue ( 'cost', "low", "medium", "high" )
+  validateChildValue ( 'cost', "low", "medium", "high", undefined )
 )
 
 const validateTableFormat: NameAndValidator<TableFormat> = composeNameAndValidators<TableFormat> (

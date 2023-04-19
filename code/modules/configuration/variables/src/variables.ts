@@ -1,6 +1,6 @@
 //Copyright (c)2020-2023 Philip Rice. <br />Permission is hereby granted, free of charge, to any person obtaining a copyof this software and associated documentation files (the Software), to dealin the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:  <br />The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED AS
 /** ref is like ${xxx} and this returns dic[xxx]. */
-import { findPart, firstSegment, lastSegment, NameAnd, safeArray, toArray } from "@runbook/utils";
+import { findPart, firstSegment, lastSegment, NameAnd, safeArray, safeString, toArray } from "@runbook/utils";
 import { stringFunctions } from "./stringFunctions";
 
 export interface VariableDefn {
@@ -38,7 +38,7 @@ interface DereferenceOptions {
   throwError?: true
   emptyTemplateReturnsSelf?: true
   variableDefn?: VariableDefn
-  functions?: NameAnd<( s: string ) => string>
+  functions?: NameAnd<( s: string | undefined ) => string>
 }
 
 
@@ -62,14 +62,14 @@ function composeVar ( context: string, dic: any, composeString: string, options:
   const parts = withoutStartEnd.split ( ',' )
   // console.log ( 'parts', parts )
   let raw = parts.map ( s => replaceVarOfTrimmed ( context + ` part of ${composeString}`, dic, s.trim (), options ) )
-    .map ( s => s.trim () ).filter ( s => s.length > 0 ).join ( ',' );
+    .map ( s => safeString ( s ).trim () ).filter ( s => s.length > 0 ).join ( ',' );
   const result = commaIfNeeded && raw.trim ().length > 0 ? raw + ',' : raw
   return result
 }
-function replaceVarOfTrimmed ( context: string, dic: any, withoutStartEnd: string, options: DereferenceOptions ): string {
+function replaceVarOfTrimmed ( context: string, dic: any, withoutStartEnd: string, options: DereferenceOptions ): string | undefined {
   const obj = findPart ( dic, withoutStartEnd )
   const last = lastSegment ( withoutStartEnd, '.' )
-  if ( last === undefined ) return withoutStartEnd
+  if ( last === undefined ) return undefined
   const { result, error } = processVariable ( context, dic, last, obj, options )
   if ( error !== undefined ) {
     // console.error('dic',dic)
@@ -77,9 +77,9 @@ function replaceVarOfTrimmed ( context: string, dic: any, withoutStartEnd: strin
       throw new Error ( context + toArray ( error ).join ( ',' ) )
     } else {return `//DerefenceError-ERROR ${context}. ${error}. Value was ${JSON.stringify ( obj )}`}
   }
-  return result || withoutStartEnd
+  return result
 }
-function applyFunctions ( withoutEnd: string, context: string, ref: string, options: DereferenceOptions, raw: string ) {
+function applyFunctions ( withoutEnd: string, context: string, ref: string, options: DereferenceOptions, raw: string | undefined ) {
   const { variableDefn, functions } = options
   const realFunctions = functions ? functions : stringFunctions
   const result = withoutEnd.split ( '|' ).slice ( 1 ).reduce ( ( acc, s ) => {
@@ -94,7 +94,7 @@ function applyFunctions ( withoutEnd: string, context: string, ref: string, opti
     }
     const fn = realFunctions[ s ]
     if ( fn === undefined ) throw new Error ( `${context}. Cannot process ${ref} as no function [${s}] is defined. Legal functions are ${Object.keys ( realFunctions ).join ( ',' )}` )
-    return acc
+    return fn ( acc, '' )
   }, raw )
   return result;
 }

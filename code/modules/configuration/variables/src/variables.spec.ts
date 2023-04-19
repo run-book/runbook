@@ -9,7 +9,10 @@ describe ( "derefence", () => {
       expect ( derefence ( 'context', dic, "b.c", { variableDefn: dollarsBracesVarDefn } ) ).toEqual ( 'b.c' )
       expect ( derefence ( 'context', dic, "Some data ${a} here", { variableDefn: dollarsBracesVarDefn } ) ).toEqual ( 'Some data A here' )
       expect ( derefence ( 'context', dic, "Some data ${b.c} here", { variableDefn: dollarsBracesVarDefn } ) ).toEqual ( 'Some data BC here' )
+    } )
+    it ( "should handle 'not in'", () => {
       expect ( derefence ( 'context', dic, "Some data ${d} here", { variableDefn: dollarsBracesVarDefn } ) ).toEqual ( "Some data //LAOBAN-UPDATE-ERROR context. ${d} is undefined here" )
+
     } )
     it ( "should ignore leading trailing spaces", () => {
       const dic = { a: "A", b: { c: "BC" } }

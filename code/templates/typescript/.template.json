@@ -1,6 +1,10 @@
 {
   "files": [
     {
+      "file":   ".env",
+      "target": ".env"
+    },
+    {
       "file":   ".npmrc",
       "target": ".npmrc"
     },

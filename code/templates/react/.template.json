@@ -5,6 +5,10 @@
       "target": ".npmrc"
     },
     {
+      "file":   ".env",
+      "target": ".env"
+    },
+    {
       "file":   "babel.config.json",
       "target": "babel.config.json"
     },
