@@ -1,7 +1,7 @@
 {
   "name": "@runbook/fixtures",
   "description": "",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -23,7 +23,7 @@
     ]
   },
   "dependencies": {
-    "@runbook/utils": "0.0.29",
+    "@runbook/utils": "0.0.30",
     "react": "16.14.0",
     "react-dom": "16.14.0"
   },

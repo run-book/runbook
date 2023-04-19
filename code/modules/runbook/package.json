@@ -1,7 +1,7 @@
 {
   "name": "@runbook/runbook",
   "description": "",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "main": "dist/index",
   "types": "dist/index",
   "bin": {
@@ -27,11 +27,11 @@
   },
   "dependencies": {
     "commander": "^10.0.0",
-    "@runbook/config": "0.0.29",
-    "@runbook/utils": "0.0.29",
-    "@runbook/files": "0.0.29",
-    "@runbook/variables": "0.0.29",
-    "@runbook/scripts": "0.0.29",
+    "@runbook/config": "0.0.30",
+    "@runbook/utils": "0.0.30",
+    "@runbook/files": "0.0.30",
+    "@runbook/variables": "0.0.30",
+    "@runbook/scripts": "0.0.30",
     "react": "16.14.0",
     "react-dom": "16.14.0"
   },
