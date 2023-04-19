@@ -70,7 +70,7 @@ export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteIns
     return result
   }
 export const findScriptAndDisplay = ( os: OS ) => ( s: ScriptInstrument ): ScriptAndDisplay => {
-  function check ( s: ScriptAndDisplay ) {
+  function check ( s: ScriptAndDisplay ): ScriptAndDisplay {
     if ( s?.script === undefined ) throw new Error ( `OS is ${os}. No script for instrument ${s}` )
     return s
   }
@@ -79,7 +79,8 @@ export const findScriptAndDisplay = ( os: OS ) => ( s: ScriptInstrument ): Scrip
     if ( os === 'Windows_NT' ) if ( s.windows ) return check ( s.windows ); else throw new Error ( `No windows script for instrument ${s}` )
     if ( os === 'Linux' ) if ( s.linux ) return check ( s.linux ); else throw new Error ( `No linux script for instrument ${s}` )
     if ( os === 'Darwin' ) if ( s.linux ) return check ( s.linux ); else throw new Error ( `No linux script for instrument ${s}` )
-  } else throw new Error ( `OS is ${os}. Cannot execute instrument type${s}` )
+  }
+  throw new Error ( `OS is ${os}. Cannot execute instrument type${s}` )
 };
 
 export const executeScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumentK<ScriptInstrument> =>
@@ -101,19 +102,19 @@ const validateCleanInstrumentParam: NameAndValidator<CleanInstrumentParam> = com
 //   "format": DisplayFormat,
 export const validateCommonScriptIntrument: NameAndValidator<CommonInstrument> = composeNameAndValidators<CommonInstrument> (
   validateChildString ( 'description' ),
-  validateChild ( 'params', orValidators<string | NameAnd<CleanInstrumentParam>> ( '', validateNameAnd ( validateCleanInstrumentParam ), validateString (), ) ),
+  validateChild ( 'params', orValidators<any> ( '', validateNameAnd ( validateCleanInstrumentParam ), validateString () ) ),
   validateChildNumber ( 'staleness', true ),
   validateChildValue ( 'cost', "low", "medium", "high" )
 )
 
 const validateTableFormat: NameAndValidator<TableFormat> = composeNameAndValidators<TableFormat> (
   validateChildString ( 'type' ),
-  validateChild ( 'headers', validateArray ( validateString () ), true ),
-  validateChild ( 'hideFooter', orValidators<boolean | number> ( '', validateNumber (), validateBoolean() ), true ),
-  validateChild ( 'hideHeader', orValidators<boolean | number> ( '', validateNumber (), validateBoolean() ), true ) )
+  validateChild ( 'headers', validateArray ( validateString () ) as NameAndValidator<string[] | undefined>, true ),
+  validateChild ( 'hideFooter', orValidators<any> ( '', validateNumber (), validateBoolean () ), true ),
+  validateChild ( 'hideHeader', orValidators<any> ( '', validateNumber (), validateBoolean () ), true ) )
 
 
-const validateDisplayFormat: NameAndValidator<DisplayFormat> = orValidators<DisplayFormat> ( `Ìsn't a valid display format`,
+const validateDisplayFormat: NameAndValidator<DisplayFormat | undefined> = orValidators<any> ( `Ìsn't a valid display format`,
   validateTableFormat, validateValue ( 'raw', 'json', 'onelinejson', 'oneperlinejson' ) )
 export const validateScriptAndDisplay: NameAndValidator<ScriptAndDisplay> = composeNameAndValidators (
   validateChild ( 'script', validateItemOrArray ( validateString () ) ),
@@ -122,12 +123,13 @@ export const validateScriptAndDisplay: NameAndValidator<ScriptAndDisplay> = comp
 export const validateSharedScriptInstrument: NameAndValidator<SharedScriptInstrument> = composeNameAndValidators<SharedScriptInstrument> (
   validateCommonScriptIntrument,
   validateScriptAndDisplay,
-  validateChild ( 'outputColumns', validateArray ( validateString () ), true )
+  validateChild ( 'outputColumns', validateArray ( validateString () ) as NameAndValidator<string[] | undefined>, true )
 )
 
-export const validateVaryingScriptInstrument: NameAndValidator<VaryingScriptInstrument> = composeNameAndValidators<VaryingScriptInstrument> (
+export const validateVaryingScriptInstrument: NameAndValidator<VaryingScriptInstrument> = composeNameAndValidators<any> (
   validateCommonScriptIntrument,
   validateChild ( 'windows', validateScriptAndDisplay ),
   validateChild ( 'linux', validateScriptAndDisplay )
 )
-export const validateScriptInstrument: NameAndValidator<ScriptInstrument> = orValidators<ScriptInstrument> ( `Ìsn't a valid script`, validateVaryingScriptInstrument, validateSharedScriptInstrument )
+export const validateScriptInstrument: NameAndValidator<ScriptInstrument> =
+               orValidators<any> ( `Ìsn't a valid script`, validateVaryingScriptInstrument, validateSharedScriptInstrument )

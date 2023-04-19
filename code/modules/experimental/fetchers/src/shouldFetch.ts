@@ -1,4 +1,4 @@
-import { flatMap, getDescription } from "@runbook/utils";
+import { flatMap, getDescription, safeArray } from "@runbook/utils";
 import { getOptional, Optional } from "@runbook/optics";
 
 export type ShouldFetchFn<State> = ( state: State ) => ShouldFetchResult
@@ -16,12 +16,12 @@ export function isFailedShouldFetchResult ( result: ShouldFetchResult ): result 
   return (result as any).willNotFetchBecause !== undefined
 }
 export function composeShouldFetchResult ( results: ShouldFetchResult[] ): ShouldFetchResult {
-  const willFetchBecause = flatMap ( results, result => {
-    if ( isSuccessfulShouldFetchResult ( result ) ) return result.willFetchBecause
+  const willFetchBecause = results && flatMap ( results, result => {
+    if ( isSuccessfulShouldFetchResult ( result ) ) return safeArray ( result.willFetchBecause )
     return []
   } )
-  const willNotFetchBecause = flatMap ( results, result => {
-    if ( isFailedShouldFetchResult ( result ) ) return result.willNotFetchBecause
+  const willNotFetchBecause = results && flatMap ( results, result => {
+    if ( isFailedShouldFetchResult ( result ) ) return safeArray ( result.willNotFetchBecause )
     return []
   } )
   if ( willFetchBecause.length > 0 ) return { willFetchBecause }

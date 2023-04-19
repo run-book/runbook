@@ -19,7 +19,7 @@ export const findHeaders = ( tableFormat: TableFormat, text: string[] ) => {
 }
 
 export function columnsToDisplay ( format: TableFormat, text: string[] ) {
-  function toNum ( n: number | boolean ) {
+  function toNum ( n: number | boolean | undefined ) {
     return typeof n === 'number' ? n : n ? 1 : 0
   }
   const start = toNum ( format.hideHeader )

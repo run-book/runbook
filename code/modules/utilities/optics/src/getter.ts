@@ -1,7 +1,8 @@
 export type OpticGetFn<M, C> = GetOptional<M, C> | Getter<M, C>
-export function get<M, C> ( optic: OpticGetFn<M, C>, model: M ): C {
+
+export function get<M, C> ( optic: Getter<M, C>, model: M ): C {
   if ( isGet ( optic ) ) return optic.get ( model )
-  return optic.getOptional ( model )
+  throw new Error ( `Expected a Getter, but got ${optic}` )
 }
 export function getOptional<M, C> ( optic: OpticGetFn<M, C>, model: M ): C | undefined {
   return isGetOptional ( optic ) ? optic.getOptional ( model ) : optic.get ( model );

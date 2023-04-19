@@ -5,9 +5,9 @@ import { DisplayFormat } from "@runbook/displayformat";
 export interface CommonInstrument {
   description: string,
   params: string | NameAnd<CleanInstrumentParam>,
-  staleness: number,
-  cost: InstrumentCost,
-  "format": DisplayFormat,
+  staleness?: number,
+  cost?: InstrumentCost,
+  format: DisplayFormat,
 }
 export interface CleanInstrumentParam {
   type: string,

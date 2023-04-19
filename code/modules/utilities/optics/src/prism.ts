@@ -16,7 +16,11 @@ export function composePrism<M, C, GC> ( first: Prism<M, C>, second: Prism<C, GC
   const getFirst = getOptionalFn ( first )
   const getSecond = getOptionalFn ( second )
   return {
-    getOptional: ( model: M ) => getSecond ( getFirst ( model ) ),
+    getOptional: ( model: M ) => {
+      let first = getFirst ( model );
+      if ( first === undefined ) return undefined;
+      return getSecond ( first );
+    },
     reverseGet: ( child: GC ) => first.reverseGet ( second.reverseGet ( child ) )
   }
 }

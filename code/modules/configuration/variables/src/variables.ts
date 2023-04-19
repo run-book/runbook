@@ -28,7 +28,7 @@ export const doubleXmlVariableDefn: VariableDefn = {
   removeStartEnd: ref => ref.slice ( 2, ref.length - 2 )
 }
 interface ProcessedVariableResult {
-  result: string
+  result?: string
   error?: string | string[]
 }
 
@@ -61,21 +61,23 @@ function composeVar ( context: string, dic: any, composeString: string, options:
   // console.log ( 'composeVar', withoutStartEnd )
   const parts = withoutStartEnd.split ( ',' )
   // console.log ( 'parts', parts )
-  let raw = parts.map ( s => replaceVarOfTrimmed ( context + ` part of ${composeString}`, dic, s.trim (), options ) ).map ( s => s.trim () ).filter ( s => s.length > 0 ).join ( ',' );
+  let raw = parts.map ( s => replaceVarOfTrimmed ( context + ` part of ${composeString}`, dic, s.trim (), options ) )
+    .map ( s => s.trim () ).filter ( s => s.length > 0 ).join ( ',' );
   const result = commaIfNeeded && raw.trim ().length > 0 ? raw + ',' : raw
   return result
 }
-function replaceVarOfTrimmed ( context: string, dic: any, withoutStartEnd: string, options: DereferenceOptions ) {
+function replaceVarOfTrimmed ( context: string, dic: any, withoutStartEnd: string, options: DereferenceOptions ): string {
   const obj = findPart ( dic, withoutStartEnd )
   const last = lastSegment ( withoutStartEnd, '.' )
+  if ( last === undefined ) return withoutStartEnd
   const { result, error } = processVariable ( context, dic, last, obj, options )
   if ( error !== undefined ) {
     // console.error('dic',dic)
     if ( options?.throwError ) {
       throw new Error ( context + toArray ( error ).join ( ',' ) )
-    } else {return `//LAOBAN-UPDATE-ERROR ${context}. ${error}. Value was ${JSON.stringify ( obj )}`}
+    } else {return `//DerefenceError-ERROR ${context}. ${error}. Value was ${JSON.stringify ( obj )}`}
   }
-  return result
+  return result || withoutStartEnd
 }
 function applyFunctions ( withoutEnd: string, context: string, ref: string, options: DereferenceOptions, raw: string ) {
   const { variableDefn, functions } = options
@@ -92,19 +94,23 @@ function applyFunctions ( withoutEnd: string, context: string, ref: string, opti
     }
     const fn = realFunctions[ s ]
     if ( fn === undefined ) throw new Error ( `${context}. Cannot process ${ref} as no function [${s}] is defined. Legal functions are ${Object.keys ( realFunctions ).join ( ',' )}` )
-    return fn ( acc, undefined )
+    return acc
   }, raw )
   return result;
 }
 export function replaceVar ( context: string, ref: string, dic: any, options: DereferenceOptions | undefined ): string {
-  const withoutEnd = options.variableDefn.removeStartEnd ( ref ).trim ()
+  if ( options === undefined ) return ref
+  const optionsNotUndefined = options
+  const variableDefn = options.variableDefn
+  if ( variableDefn === undefined ) return ref
+  const withoutEnd = variableDefn.removeStartEnd ( ref ).trim ()
   if ( withoutEnd === '' && options?.emptyTemplateReturnsSelf ) return ref
   if ( withoutEnd === '' ) return ''
   const first = firstSegment ( withoutEnd, '|' )
   function rawString () {
-    if ( first.startsWith ( 'compose(' ) && first.endsWith ( ')' ) ) return composeVar ( context, dic, first, options, false )
-    if ( first.startsWith ( 'composeWithCommaIfNeeded(' ) && first.endsWith ( ')' ) ) return composeVar ( context, dic, first, options, true )
-    return replaceVarOfTrimmed ( context + ` Ref is ${ref}`, dic, first, options );
+    if ( first.startsWith ( 'compose(' ) && first.endsWith ( ')' ) ) return composeVar ( context, dic, first, optionsNotUndefined, false )
+    if ( first.startsWith ( 'composeWithCommaIfNeeded(' ) && first.endsWith ( ')' ) ) return composeVar ( context, dic, first, optionsNotUndefined, true )
+    return replaceVarOfTrimmed ( context + ` Ref is ${ref}`, dic, first, optionsNotUndefined );
   }
   const raw = rawString ();
   const result = applyFunctions ( withoutEnd, context, ref, options, raw );
@@ -135,7 +141,7 @@ export function processVariable ( context: string, dic: any, nameWithCommands: s
       const hasCommaRequest = commaIndex > 0 && commaIndex < mapIndex
       const comma = realvalue.length > 0 && hasCommaRequest ? ',' : ''
       const map = nameWithCommands.substring ( mapIndex + 8 )
-      const mapParts: RegExpMatchArray = map.match ( /^\(([A-Za-z0-9]*)=>(.*)\)$/ )
+      const mapParts: RegExpMatchArray | null = map.match ( /^\(([A-Za-z0-9]*)=>(.*)\)$/ )
       if ( mapParts === null ) return error ( `The mapFn was not of form '(variable=>strings)' it was ${map}` )
       const variable = mapParts[ 1 ]
       const mapFn = mapParts[ 2 ]
@@ -156,7 +162,7 @@ export function processVariable ( context: string, dic: any, nameWithCommands: s
   if ( value === undefined ) return { result: undefined }
 
 
-  const parts:string[] = nameWithCommands.split ( ':' ).map ( s => s.trim () ).filter ( s => s.length > 0 )
+  const parts: string[] = nameWithCommands.split ( ':' ).map ( s => s.trim () ).filter ( s => s.length > 0 )
   if ( parts.length === 0 ) return { result: value }
   if ( parts.length === 1 ) return { result: value }
   const indent = findIndentString ( parts )
@@ -164,7 +170,7 @@ export function processVariable ( context: string, dic: any, nameWithCommands: s
   if ( parts.includes ( 'object' ) ) {
     if ( typeof value !== 'object' ) return error ( `Expected object but was of type ${typeof value} with value ${JSON.stringify ( value )}` )
     const comma = parts.includes ( 'comma' ) && Object.keys ( value ).length > 0 ? ',' : ''
-    return { result: toStringRemovingBraces ( value, indent.result ) + comma }
+    return { result: toStringRemovingBraces ( value, indent.result || '' ) + comma }
   } else {
     return { result: value.toString () }
   }

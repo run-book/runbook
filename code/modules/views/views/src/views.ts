@@ -1,4 +1,4 @@
-import { composeNameAndValidators, NameAnd, validateAny, validateChild, validateChildItemOrArray, validateChildString, validateNameAnd, validateString } from "@runbook/utils";
+import { composeNameAndValidators, NameAnd, NameAndValidator, validateAny, validateChild, validateChildItemOrArray, validateChildString, validateNameAnd, validateString } from "@runbook/utils";
 import { Binding } from "@runbook/bindings";
 
 export type Fetchers = NameAnd<Fetcher>
@@ -24,7 +24,7 @@ export interface View {
   fetchers: Fetchers
 }
 
-export const validateIfTrue = composeNameAndValidators<IfTrue> (
+export const validateIfTrue: NameAndValidator<IfTrue> = composeNameAndValidators<IfTrue> (
   validateChildString ( 'type' ),
   validateChildString ( 'name' ),
   validateChild ( 'params', validateAny () ),

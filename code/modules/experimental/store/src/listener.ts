@@ -13,7 +13,7 @@ export function addListener<State> ( store: Store<State>, listener: StoreListene
   store.listeners.push ( listener )
 }
 
-export async function notifyListeners<State> ( store: Store<State>, fn: ( l: StoreListener<State>, state: State ) => Promise<void> ): Promise<void> {
+export async function notifyListeners<State> ( store: Store<State>, fn: ( l: StoreListener<State>, state: State ) => Promise<void> | undefined ): Promise<void> {
   let fullStore = checkStore ( store );
   await Promise.all ( fullStore.listeners.map ( listener => fn ( listener, fullStore.state ) ) )
 }

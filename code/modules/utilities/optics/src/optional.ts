@@ -24,8 +24,18 @@ export function composeOptional<M, C, GC> ( first: Optional<M, C>, second: Optio
   const setFirst: ( model: M, child: C ) => (M | undefined) = setOptionalFn ( first )
   const setSecond: ( model: C, child: GC ) => (C | undefined) = setOptionalFn ( second )
   return {
-    getOptional: ( model: M ): (GC | undefined) => getSecond ( getFirst ( model ) ),
-    setOptional: ( model: M, child: GC ) => setFirst ( model, setSecond ( getFirst ( model ), child ) )
+    getOptional: ( model: M ): (GC | undefined) => {
+      let first = getFirst ( model );
+      if ( first === undefined ) return undefined;
+      return getSecond ( first );
+    },
+    setOptional: ( model: M, child: GC ) => {
+      let first = getFirst ( model );
+      if ( first === undefined ) return undefined;
+      let newFirst = setSecond ( first, child );
+      if ( newFirst === undefined ) return undefined;
+      return setFirst ( model, newFirst );
+    }
   }
 }
 

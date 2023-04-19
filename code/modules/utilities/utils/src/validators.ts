@@ -5,7 +5,7 @@ import { indentAll } from "./strings";
 
 
 export type Validator<T> = ( value: T ) => string[]
-export type NameAndValidator<T> = ( name: string ) => ( value: T ) => string[]
+export type NameAndValidator<T> = ( name: string ) => ( value: T | undefined ) => string[]
 
 export function validateIsType ( expected: string, allowUndefined?: true ): NameAndValidator<any> {
   return ( name ) => ( value ) => {
@@ -13,23 +13,23 @@ export function validateIsType ( expected: string, allowUndefined?: true ): Name
     return typeof value === expected ? [] : [ `${name} is [${JSON.stringify ( value )}] which is a ${typeof value} and not a ${expected}` ];
   }
 }
-export const validateString = ( allowUndefined?: true ): NameAndValidator<string> => validateIsType ( 'string' );
-export const validateNumber = ( allowUndefined?: true ): NameAndValidator<number> => validateIsType ( 'number' );
-export const validateBoolean = ( allowUndefined?: true ): NameAndValidator<number> => validateIsType ( 'boolean' );
+export const validateString = ( allowUndefined?: true ): NameAndValidator<string> => validateIsType ( 'string', allowUndefined );
+export const validateNumber = ( allowUndefined?: true ): NameAndValidator<number> => validateIsType ( 'number', allowUndefined );
+export const validateBoolean = ( allowUndefined?: true ): NameAndValidator<boolean> => validateIsType ( 'boolean', allowUndefined );
 
 export const validateDefined: NameAndValidator<any> = ( name ) => ( value ) => value === undefined ? [ `${name} is undefined` ] : [];
 export function validateValue<T> ( ...values: T[] ): NameAndValidator<T> {
-  return ( name ) => ( value: T ) => values.includes ( value ) ? [] : [ `${name} is [${JSON.stringify ( value )}] not one of ${JSON.stringify ( values )}` ];
+  return ( name ) => ( value: T | undefined ) => value && values.includes ( value ) ? [] : [ `${name} is [${JSON.stringify ( value )}] not one of ${JSON.stringify ( values )}` ];
 }
 
 export function composeValidators<T> ( ...fns: Validator<T>[] ): Validator<T> {
   return ( value: T ) => flatMap ( fns, v => v ( value ) );
 }
 export function composeNameAndValidators<T> ( ...fns: NameAndValidator<T>[] ): NameAndValidator<T> {
-  return ( name: string ) => ( value: T ) => flatMap ( fns, v => v ( name ) ( value ) );
+  return ( name: string ) => ( value: T | undefined ) => flatMap ( fns, v => v ( name ) ( value ) );
 }
 export function orValidators<T> ( msg: string, ...fns: NameAndValidator<T>[] ): NameAndValidator<T> {
-  return ( name: string ) => ( value: T ) => {
+  return ( name: string ) => ( value: T | undefined ) => {
     if ( fns.length === 0 ) return []
     const errors = fns.map ( fn => fn ( name ) ( value ) )
     const ok = errors.some ( e => e.length === 0 )
@@ -38,15 +38,15 @@ export function orValidators<T> ( msg: string, ...fns: NameAndValidator<T>[] ): 
       const thisMsg = i === 0 ? `${name} ${msg}. Either` : `or`;
       return e.length === 0 ? [] : [ thisMsg, ...indentAll ( e ) ];
     } )
-    for ( const fn of fns ) {
-      const errors = fn ( name ) ( value );
-      if ( errors.length === 0 ) return [];
-    }
-    return [ `${name} ${msg}`, ...fns[ 0 ] ( name ) ( value ) ];
+    // for ( const fn of fns ) {
+    //   const errors = fn ( name ) ( value );
+    //   if ( errors.length === 0 ) return [];
+    // }
+    // return [ `${name} ${msg}`, ...fns[ 0 ] ( name ) ( value ) ];
   };
 }
 export function validateItemOrArray<T> ( validator: NameAndValidator<T>, allowUndefined?: true ): NameAndValidator<T | T[]> {
-  return ( name ) => ( value: T | T[] ) => {
+  return ( name ) => ( value: undefined | T | T[] ) => {
     if ( value === undefined ) return allowUndefined ? [] : [ `${name} is undefined` ];
     let i = 0;
     if ( Array.isArray ( value ) ) return flatMap ( value, validator ( `${name}[${i++}]` ) );
@@ -54,7 +54,7 @@ export function validateItemOrArray<T> ( validator: NameAndValidator<T>, allowUn
   };
 }
 export function validateArray<T> ( validate: NameAndValidator<T>, allowUndefined?: true ): NameAndValidator<T[]> {
-  return ( name ) => ( value: T[] ) => {
+  return ( name ) => ( value: T[] | undefined ) => {
     if ( value === undefined ) return allowUndefined ? [] : [ `${name} is undefined` ];
     if ( isPrimitive ( value ) ) return [ `${name} is of type ${typeof value} and not an array` ]
     let i = 0;
@@ -64,12 +64,12 @@ export function validateArray<T> ( validate: NameAndValidator<T>, allowUndefined
   }
 }
 
-export function validateChildItemOrArray<Main, K extends keyof Main> ( key: K, validator: NameAndValidator<Main[K]>, allowUndefined?: true ): NameAndValidator<Main> {
+export function validateChildItemOrArray<Main, K extends keyof Main> ( key: K, validator: NameAndValidator<any>, allowUndefined?: true ): NameAndValidator<Main> {
   return validateChild ( key, validateItemOrArray ( validator ), allowUndefined );
 }
 
 export function validateChild<Main, K extends keyof Main> ( key: K, validator: NameAndValidator<Main[K]>, allowUndefined?: true ): NameAndValidator<Main> {
-  return ( name ) => ( value: Main ) => {
+  return ( name ) => ( value: Main | undefined ) => {
     if ( isPrimitive ( value ) ) return [ `${name} does not have ${key.toString ()} as it is of type ${typeof value} and not an object` ]
     let child = value[ key ];
     let newName = name + '.' + key.toString ();
@@ -78,22 +78,23 @@ export function validateChild<Main, K extends keyof Main> ( key: K, validator: N
   };
 }
 
-export const validateHasAtLeastOneKey = (hint: string) =><Main, K extends keyof Main> ( ...keys: K[] ): NameAndValidator<Main> => ( name ) => ( value: Main ) => {
-  if ( isPrimitive ( value ) ) return [ `${name} does not have ${keys.toString ()} as it is of type ${typeof value} and not an object` ]
-  for ( const key of keys ) {
-    if ( value[ key ] !== undefined ) return [];
-  }
-  return [ `${name} does not have any of ${keys.toString ()}${hint}` ];
-};
-export function validateNameAnd<T> ( validator: NameAndValidator<T> ): NameAndValidator<NameAnd<T>> {
-  return name => ( value: NameAnd<T> ) => {
+export const validateHasAtLeastOneKey = ( hint: string ) => <Main, K extends keyof Main> ( ...keys: K[] ): NameAndValidator<Main> => ( name ) =>
+  ( value: Main | undefined ) => {
+    if ( isPrimitive ( value ) ) return [ `${name} does not have ${keys.toString ()} as it is of type ${typeof value} and not an object` ]
+    for ( const key of keys ) {
+      if ( value[ key ] !== undefined ) return [];
+    }
+    return [ `${name} does not have any of ${keys.toString ()}${hint}` ];
+  };
+export function validateNameAnd<T> ( validator: NameAndValidator<T> ): NameAndValidator<NameAnd<T> | undefined> {
+  return name => ( value: NameAnd<T | undefined> | undefined ) => {
     if ( value === undefined ) return []
     if ( isPrimitive ( value ) ) return [ `${name} is of type ${typeof value} and not an array` ]
-    return flatMapEntries ( value, ( t, n ) => validator ( name + '.' + n ) ( t ) );
+    return flatMapEntries ( value, ( t, n ) => t ? validator ( name + '.' + n ) ( t ) : [] );
   };
 }
 export function validateAny<T> (): NameAndValidator<T> {
-  return name => value => []
+  return () => () => []
 }
 
 export const validateChildString = <Main, K extends keyof Main> ( key: K, allowUndefined?: true ) => {

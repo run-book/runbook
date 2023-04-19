@@ -27,7 +27,7 @@ export function isTransformClear<M, C> ( t: TransformCmd<M, C> ): t is Transform
 export function applyOneTransformFn<M, C> ( m: M, t: TransformCmd<M, C> ): M {
   if ( isTransformMap ( t ) ) mapOptionalOrOriginal ( t.optional ) ( m, t.map )
   if ( isTransformSet ( t ) ) mapOptionalOrOriginal ( t.optional ) ( m, () => t.set )
-  if ( isTransformClear ( t ) ) mapOptionalOrOriginal ( t.optional ) ( m, () => undefined )
+  if ( isTransformClear ( t ) ) mapOptionalOrOriginal ( t.optional ) ( m, () => undefined as any )
   throw new Error ( 'unknown transform' + JSON.stringify ( t ) )
 }
 

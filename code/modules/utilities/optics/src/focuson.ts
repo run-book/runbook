@@ -23,7 +23,7 @@ export function focusQuery<M, C, K extends keyof C> ( o: Optional<M, C>, key: K 
     getOptional: ( model: M ) => {
       const c = getOptional ( model );
       if ( c === undefined ) return undefined;
-      return c[ key ];
+      return c?.[ key ];
     },
     setOptional: ( model: M, child: C[K] ) => {
       const c = getOptional ( model );

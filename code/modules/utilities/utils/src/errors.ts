@@ -12,7 +12,7 @@ export function isValue<T> ( t: ErrorsAnd<T> ): t is T {
 }
 export type ErrorsAnd<T> = T | Errors
 
-export function foldErrors<T,T1> ( t: ErrorsAnd<T>, f: ( t: T ) => T1, g: ( e: Errors ) => T1 ): T1 {
+export function foldErrors<T, T1> ( t: ErrorsAnd<T>, f: ( t: T ) => T1, g: ( e: Errors ) => T1 ): T1 {
   return isErrors ( t ) ? g ( t ) : f ( t );
 }
 export function mapErrors<T, T1> ( t: ErrorsAnd<T>, f: ( t: T ) => T1 ): ErrorsAnd<T1> {
@@ -20,7 +20,7 @@ export function mapErrors<T, T1> ( t: ErrorsAnd<T>, f: ( t: T ) => T1 ): ErrorsA
 }
 
 export function composeErrors ( rs: Errors[] ): Errors {
-  return { errors: rs.reduce ( ( acc, r ) => acc.concat ( r.errors ), [] ) }
+  return { errors: rs.reduce ( ( acc, r ) => acc.concat ( r.errors ), [] as string[] ) }
 }
 export function toErrorsAnd<T> ( ts: ErrorsAnd<T>[] ): ErrorsAnd<T[]> {
   const errors = filterToType ( ts, isErrors )

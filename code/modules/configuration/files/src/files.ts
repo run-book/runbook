@@ -3,7 +3,7 @@ import fs from "fs";
 import { cleanLineEndings, ErrorsAnd, isErrors, mapErrors } from "@runbook/utils";
 
 export function findInParent ( directory: string, acceptor: ( filename: string ) => boolean ): string | undefined {
-  function find ( dir: string ): string {
+  function find ( dir: string ): string | undefined {
     if ( acceptor ( dir ) ) return dir
     let parse = path.parse ( dir )
     if ( parse.dir === parse.root ) return undefined
@@ -24,11 +24,11 @@ export function loadFileInDirectory ( cwd: string, errorString: string, marker: 
     const contents = fs.readFileSync ( file ).toString ( 'utf-8' )
     try {
       return JSON.parse ( contents )
-    } catch ( e ) {
-      return { errors: [ `Error parser ${errorString} from  ${file}: ${e.message}` ] }
+    } catch ( e: any ) {
+      return { errors: [ `Error parser ${errorString} from  ${file}: ${e}` ] }
     }
-  } catch ( e ) {
-    return { errors: [ `Error loading ${errorString}  from ${file}: ${e.message}` ] }
+  } catch ( e: any ) {
+    return { errors: [ `Error loading ${errorString}  from ${file}: ${e}` ] }
   }
 
 }
@@ -42,10 +42,10 @@ export function findDirectoryHoldingFileOrThrow ( directory: string, file: strin
 export function findFileInParentsOrError ( directory: string, file: string ): ErrorsAnd<string> {
   return mapErrors ( findDirectoryHoldingFileOrError ( directory, file ), dir => Path.join ( dir, file ) );
 }
-export function readTestFile ( dir, file: string ) {
+export function readTestFile ( dir: string, file: string ) {
   return cleanLineEndings ( fs.readFileSync ( Path.join ( dir, file ), 'utf8' ) )
 }
 
-export function readExpected ( dir ) {
-  return readTestFile(dir, 'expected.txt')
+export function readExpected ( dir: string ) {
+  return readTestFile ( dir, 'expected.txt' )
 }

@@ -11,6 +11,7 @@ export const fromReferenceData = ( mereology: ReferenceData ): FromReferenceData
   if ( !mereology ) return undefined;
   const direct: NameAnd<any> = mereology.direct?.[ searchNameSpace ]?.[ searchValue ]
   const fromBindings: NameAnd<any>[] = existing.map ( ( { namespace, value } ) => {
+    if (namespace===undefined ||  mereology.bound===undefined) return undefined;
     if ( typeof value !== 'string' ) return []
     const childMereology: ReferenceData = mereology.bound?.[ namespace ]?.[ value ]
     const withoutMe = existing.filter ( e => e.namespace !== namespace || e.value !== value )
@@ -21,5 +22,5 @@ export const fromReferenceData = ( mereology: ReferenceData ): FromReferenceData
 };
 
 export const validateReferenceData: NameAndValidator<ReferenceData> = composeNameAndValidators (
-  validateChild ( 'direct', validateNameAnd ( validateAny () ), true ),
+  validateChild ( 'direct', validateNameAnd ( validateAny<any> () ), true ),
   validateChild ( 'bound', validateNameAnd ( validateNameAnd ( validateAny () ) ), true ) )

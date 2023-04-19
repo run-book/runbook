@@ -40,7 +40,7 @@ function interpretPrimitive<Acc> ( bc: BindingContext, interpreter: ConditionI<A
   else
     return interpreter.primitiveConstant ( acc, cond, condPath )
 }
-function interpretKeyValue<Acc> ( bc: BindingContext, interpreter: ConditionI<Acc>, acc: Acc, key: string, value, condPath: (string | any)[] ): Acc {
+function interpretKeyValue<Acc> ( bc: BindingContext, interpreter: ConditionI<Acc>, acc: Acc, key: string, value: any, condPath: (string | any)[] ): Acc {
   const newCondPath = [ ...condPath, key ]
   let fromKey = interpretPrimitive ( bc, interpreter, newCondPath, acc, key );
   return interpretCondition ( bc, interpreter, value, newCondPath, fromKey )

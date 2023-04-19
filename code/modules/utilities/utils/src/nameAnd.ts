@@ -16,7 +16,7 @@ export async function mapObjValuesK<T, T1> ( obj: NameAnd<T>, fn: ( t: T, name: 
   return result
 }
 
-export function merge2Objs<T1, T2, T> ( one: NameAnd<T1>, two: NameAnd<T2>, fn: ( t1: T1 | undefined, t2: T2 | undefined ) => T ): NameAnd<T> {
+export function merge2Objs<T1, T2, T> ( one: NameAnd<T1>, two: NameAnd<T2>, fn: ( t1: T1, t2: T2 ) => T ): NameAnd<T> {
   const result: NameAnd<T> = {}
   for ( const name in one ) result[ name ] = fn ( one[ name ], two[ name ] )
   return result
@@ -54,13 +54,13 @@ export interface ObjEqualMessages<T> {
   oneIsNull: string
   twoIsNull: string
   lengthMismatch: ( one: number, two: number ) => string
-  keyMismatch: ( one: string, legal: string[]) => string
+  keyMismatch: ( one: string, legal: string[] ) => string
   valueMismatch: ( key: string, one: T, two: T ) => string
 }
 export function objsEqualOrMessages<T> ( msgs: ObjEqualMessages<T>, one: NameAnd<T>, two: NameAnd<T> ): string[] {
   if ( one === null ) return [ msgs.oneIsNull ]
   if ( two === null ) return [ msgs.twoIsNull ]
-  const oneKeys = Object.keys ( one ).sort()
+  const oneKeys = Object.keys ( one ).sort ()
   const twoKeys = Object.keys ( two )
   if ( oneKeys.length !== twoKeys.length ) return [ msgs.lengthMismatch ( oneKeys.length, twoKeys.length ) ]
   const result: string[] = []

@@ -6,20 +6,17 @@ import {
 const sharedI = ( script: string ): SharedScriptInstrument => ({
   type: "script",
   script,
-  cost: undefined,
   description: "",
-  format: undefined,
-  params: undefined,
+  format: 'raw',
+  params: '*',
   staleness: 5000,
 })
 export const varying = ( sW: string, sL: string ): VaryingScriptInstrument => ({
   linux: sharedI ( sL ),
   windows: sharedI ( sW ),
-  cost: undefined,
-  format: undefined,
+  format: 'raw',
   description: "",
-  params: undefined,
-  staleness: 0,
+  params: '*',
   type: "script",
 })
 const si = sharedI ( `A B\n1 2 3\n4 5 6` )
@@ -80,7 +77,7 @@ describe ( 'validateScriptInstrument', () => {
       "or",
       "  prefix.params is undefined",
       "  prefix.cost is undefined"
-    ])
+    ] )
     expect ( validateScriptInstrument ( 'prefix' ) ( varying ( 'win', 'linux' ) ) ).toEqual ( [
       "prefix Ìsn't a valid script. Either",
       "  prefix.params is undefined",

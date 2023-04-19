@@ -3,13 +3,13 @@ import { ErrorsAnd } from "./errors";
 import { fromEntries, NameAnd } from "./nameAnd";
 
 let pathMarker = /[\/\\]/g;
-export function lastSegment ( s: string, marker: string | RegExp = pathMarker ) {
+export function lastSegment ( s: string, marker: string | RegExp = pathMarker ): string|undefined{
   if ( s === undefined ) return undefined
   const parts = s.split ( marker ).filter ( s => s.length > 0 )
   if ( parts.length === 0 ) return s
   return parts[ parts.length - 1 ]
 }
-export function allButLastSegment ( s: string, marker: string | RegExp = pathMarker ): string {
+export function allButLastSegment ( s: string, marker: string | RegExp = pathMarker ): string|undefined {
   if ( s === undefined ) return undefined
   const parts = s.split ( marker ).filter ( s => s.length > 0 )
   if ( parts.length === 0 ) return s
@@ -20,8 +20,8 @@ export function allButLastSegment ( s: string, marker: string | RegExp = pathMar
 export function indentAll ( s: string[] ): string[] {
   return s.map ( s => '  ' + s )
 }
-export function firstSegment ( s: string, marker: string | RegExp = pathMarker ) {
-  if ( s === undefined ) return undefined
+export function firstSegment ( s: string, marker: string | RegExp = pathMarker ): string {
+  if ( s === undefined ) return ''
   const parts = s.split ( marker ).filter ( s => s.length > 0 )
   if ( parts.length === 0 ) return s
   return parts[ 0 ]
@@ -41,7 +41,7 @@ export function nameValueToNameAndString ( s: string[] ): ErrorsAnd<NameAnd<stri
       const value = s.substring ( index + 1 )
       return [ name, value ]
     } ) );
-  } catch ( e ) {
-    return { errors: [ e ] }
+  } catch ( e: any ) {
+    return { errors: [ e.toString () ] }
   }
 }

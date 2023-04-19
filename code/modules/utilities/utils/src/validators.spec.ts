@@ -1,5 +1,4 @@
 import { composeNameAndValidators, orValidators, validateChild, validateChildNumber, validateChildString, validateChildValue, validateNameAnd, validateNumber, validateString, validateValue } from "./validators";
-import { NameAnd } from "./nameAnd";
 
 const data = {
   a: 1,

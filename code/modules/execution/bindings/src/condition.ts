@@ -9,7 +9,7 @@ import { Mereology } from "@runbook/mereology";
  *  with it first to see if the approach will work
  */
 type VKVD = { kv: [ string, any ], vd: ValueData }
-export function deepSortCondition ( mereology: Mereology, context: string, t: any ) {
+export function deepSortCondition ( mereology: Mereology, context: string, t: any ): any {
   if ( Array.isArray ( t ) ) return t.map ( a => deepSortCondition ( mereology, context, a ) ).sort ()
   if ( typeof t === 'object' ) {
     const vds: VKVD[] = Object.entries ( t ).map ( ( kv ) => ({ kv, vd: getValueDataForSort ( kv ) }) )

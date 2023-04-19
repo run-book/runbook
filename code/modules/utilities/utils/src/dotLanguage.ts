@@ -12,8 +12,10 @@ export function findPart ( dic: any, ref: string ): any {
 export const deletePath = <T> ( obj: T ) => ( ref: string ): T => {
   if ( ref === undefined ) return obj
 
-  const found = findPart ( obj, allButLastSegment ( ref, ) )
-
-  delete found?.[ lastSegment ( ref, ) ]
+  let last = lastSegment ( ref, );
+  let path = allButLastSegment ( ref, );
+  if ( path === undefined || last === undefined ) return obj
+  const found = findPart ( obj, path )
+  delete found?.[ last ]
   return obj
 };

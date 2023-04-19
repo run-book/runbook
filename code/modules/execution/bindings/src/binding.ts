@@ -26,7 +26,7 @@ function debug ( bc: BindingContext, ...args: any[] ) {
 }
 function debugAndIndent ( bc: BindingContext, ...args: any[] ): BindingContext {
   if ( bc.debug ) return ({ ...bc, debugIndent: indent ( bc ) + 1 })
-  if ( bc.debug && args.length > 0 ) debug ( this, ...args )
+  if ( bc.debug && args.length > 0 ) debug ( bc, ...args )
   return bc
 }
 
@@ -73,41 +73,37 @@ const matchPrimitiveAndAddBindingIfNeeded = ( bc: BindingContext, condition: Pri
 
 type OnFoundFn = ( b: Binding[], thisBinding: Binding ) => Binding[]
 type OnFoundContinuation = ( onfound: OnFoundFn ) => ( oldPath: string[], situation: any ) => OnFoundFn
-interface MatchResult {
-  bindings: Binding[]
-  match: boolean
-}
-const checkSituationMatchesCondition = ( bc: BindingContext, condK, condV, condPath: string[] ) => {
+const checkSituationMatchesCondition = ( bc: BindingContext, condK: string, condV: any, condPath: string[] ) => {
   let matchPrim = matchPrimitiveAndAddBindingIfNeeded ( bc, condK, condPath );
   let matchAndContinue = matchUntilLeafAndThenContinue ( bc, condV, condPath );
   return ( continuation: OnFoundFn ) => {
     let matchAndContinueWithContinuation = matchAndContinue ( continuation );
-    return ( oldPath: string[], sitV, sitK ): OnFoundFn => {
+    return ( oldPath: string[], sitV: string, sitK: any ): OnFoundFn => {
       const path = [ ...oldPath, sitK ]
       let matchWithSituation = matchAndContinueWithContinuation ( path, sitV );
       return ( bindings: Binding[], thisBinding: Binding ): Binding[] => {
         if ( sitV === undefined ) return bindings;
-        const matchsPrimitive: MatchsPrimitive = matchPrim ( path, sitK, thisBinding )
+        const matchsPrimitive: MatchsPrimitive | undefined = matchPrim ( path, sitK, thisBinding )
         if ( matchsPrimitive === undefined ) return bindings
         let result = matchWithSituation ( bindings, matchsPrimitive.binding );
-        if ( result.length === bindings.length && matchsPrimitive.varNameAndInheritsFrom ) {//OK we didn't match in the situation. Maybe we can match in the mereology?
-          const { varName, inheritsFrom } = matchsPrimitive.varNameAndInheritsFrom
+        if ( result && result.length === bindings.length && matchsPrimitive.varNameAndInheritsFrom ) {//OK we didn't match in the situation. Maybe we can match in the mereology?
+          const { inheritsFrom } = matchsPrimitive.varNameAndInheritsFrom
           const inMere = bc.refDataFn ( Object.values ( thisBinding ), inheritsFrom, sitK )
           if ( inMere === undefined ) return bindings
           let mereologyResult = matchAndContinueWithContinuation ( path, inMere ) ( bindings, matchsPrimitive.binding )
           return mereologyResult === undefined ? bindings : mereologyResult;
         }
-        return result
+        return result || bindings;
       };
     };
   };
 };
-const checkOneKvForVariable = ( bc: BindingContext, condK, condV, condPath: string[] ) => {
+const checkOneKvForVariable = ( bc: BindingContext, condK: string, condV: any, condPath: string[] ) => {
   let matcher = checkSituationMatchesCondition ( bc, condK, condV, condPath );
   return ( continuation: OnFoundFn ) => {
     let withContinuation = matcher ( continuation );
-    return ( oldPath: string[], situation: any ) => ( bindings: Binding[], thisBinding ) =>
-      flatMap ( Object.entries ( situation ), ( [ sitK, sitV ] ) =>
+    return ( oldPath: string[], situation: any ) => ( bindings: Binding[], thisBinding: Binding ) =>
+      flatMap ( Object.entries ( situation ), ( [ sitK, sitV ]: [ string, any ] ) =>
         withContinuation ( oldPath, sitV, sitK ) ( bindings, thisBinding ) );
   };
 };
@@ -144,10 +140,10 @@ const makeOnFoundToExploreObject = ( bc: BindingContext, condition: any, condPat
 };
 
 type MatchFn = ( path: string[], situation: any ) => ( b: Binding[], thisBinding: Binding ) => Binding[] | undefined
-const primitiveMatchFn = ( bcIndented: BindingContext, condition: any, condPath: string[] ) : (c: OnFoundFn) => MatchFn=> {
+const primitiveMatchFn = ( bcIndented: BindingContext, condition: any, condPath: string[] ): ( c: OnFoundFn ) => MatchFn => {
   let matcher = matchPrimitiveAndAddBindingIfNeeded ( bcIndented, condition, condPath );
   return ( continuation: OnFoundFn ): MatchFn => {
-    return ( path: string[], situation: any ): OnFoundFn => ( bindings: Binding[], thisBinding: Binding ): Binding[] | undefined => {
+    return ( path: string[], situation: any ): OnFoundFn => ( bindings: Binding[], thisBinding: Binding ): Binding[] => {
       const matches = matcher ( path, situation, thisBinding )
       debug ( bcIndented, 'isPrimitive', JSON.stringify ( condition ), JSON.stringify ( situation ), JSON.stringify ( matches ) )
       return matches ? continuation ( bindings, matches.binding ) : [];
@@ -158,7 +154,7 @@ const objectMatchFn = ( bcIndented: BindingContext, condition: any, condPath: st
   let maker = makeOnFoundToExploreObject ( bcIndented, condition, condPath );
   return ( continuation: OnFoundFn ) => {
     let withContinuation = maker ( continuation );
-    return ( path: string[], situation: any ): OnFoundFn => ( b: Binding[], thisBinding: Binding ): Binding[] | undefined => {
+    return ( path: string[], situation: any ): OnFoundFn => ( b: Binding[], thisBinding: Binding ): Binding[] => {
       if ( Array.isArray ( situation ) ) throw new Error ( `Can't handle arrays yet` )
       return withContinuation ( path, situation ) ( b, thisBinding )
     };

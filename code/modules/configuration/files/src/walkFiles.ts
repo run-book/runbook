@@ -7,7 +7,7 @@ const astat = util.promisify ( fs.stat );
 const areaddir = util.promisify ( fs.readdir );
 
 export const defaultMergeAccept = ( f: string ) => !f.includes ( 'runbook.' ) && f.endsWith ( '.json' )
-async function loadAllFiles ( acceptor: ( f: string ) => boolean, dir: string, mutator: ( dir: string, file: string, contents: any ) => ErrorsAnd<any> ) {
+async function loadAllFiles ( acceptor: (( f: string ) => boolean) | undefined, dir: string, mutator: ( dir: string, file: string, contents: any ) => ErrorsAnd<any> ) {
   const actualAcceptor = acceptor || defaultMergeAccept
   let files = await walkDirectory ( dir );
   let loaded: Promise<ErrorsAnd<any>>[] = files.filter ( actualAcceptor ).map ( async f => {
@@ -60,7 +60,7 @@ export async function validateJsonFiles ( dir: string, acceptor: ( f: string ) =
   } )
 }
 export function addFromMutator ( dir: string, file: string, json: any ) {
-  function withDepth ( json: any, depth: number ) {
+  function withDepth ( json: any, depth: number ): any {
     if ( depth > 2 ) return json
     if ( isPrimitive ( json ) ) return json
     if ( Array.isArray ( json ) ) return json.map ( j => withDepth ( j, depth ) )
@@ -83,10 +83,10 @@ export async function walkDirectory ( dir: string ): Promise<string[]> {
   return flatten ( files );
 }
 //https://stackoverflow.com/questions/52189973/recursive-directory-listing-using-promises-in-node-js
-function flatten ( arr ) {
-  return arr.reduce ( ( flat, toFlatten ) => flat.concat ( Array.isArray ( toFlatten ) ? flatten ( toFlatten ) : toFlatten ), [] );
+function flatten<T> ( arr: any ): string[] {
+  return arr.reduce ( ( flat: any, toFlatten: any ) => flat.concat ( Array.isArray ( toFlatten ) ? flatten ( toFlatten ) : toFlatten ), [] );
 }
-async function walkDirectoryPrim ( dir: string ) {
+async function walkDirectoryPrim ( dir: string ): Promise<any> {
   // Get this directory's contents
   const files = await areaddir ( dir );
   // Wait on all the files of the directory

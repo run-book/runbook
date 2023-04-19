@@ -55,13 +55,14 @@ function mergeIntoTraceFetch<State, C> ( whyNotLoaded: WhyNotLoadedAndFetcher<St
   return { whyNotLoaded, transforms: transforms.data }
 }
 export async function traceFetch<State, C> ( fs: NameAnd<Fetcher<State, any>>, state: State ): Promise<NameAnd<TraceFetch<State, C>>> {
-  const whyNotLoaded = whichWillLoad ( fs ) ( state )
-  const transforms = await fetchAll ( whyNotLoaded, state )
+  const whyNotLoaded: NameAnd<WhyNotLoadedAnd<State, Fetcher<State, any>>> = whichWillLoad ( fs ) ( state )
+  const transforms: NameAnd<WhyNotLoadedAnd<State, ErrorsAnd<FetcherResult<State, any>>>> = await fetchAll ( whyNotLoaded, state )
   return merge2Objs ( whyNotLoaded, transforms, mergeIntoTraceFetch )
 }
 export function traceFetchToString<State, C> ( t: TraceFetch<State, C> ) {
-  const whyNotLoaded = t.whyNotLoaded
-  const transforms = foldErrors ( t.transforms, res => { return { tx: transformToString ( res.tx ), otherTxs: res.otherTxs.map ( transformToString ) }; }, t => ({ errors: t.errors }) as any )
+  const whyNotLoaded: WhyNotLoadedAnd<State, Fetcher<State, C>> = t.whyNotLoaded
+  const transforms = t.transforms && foldErrors ( t.transforms, ( res: FetcherResult<State, C> ) =>
+    ({ tx: transformToString ( res.tx ), otherTxs: res.otherTxs.map ( transformToString ) }), t => ({ errors: t.errors }) as any )
   const result = { whyNotLoaded, transforms }
   return JSON.stringify ( result, null, 2 )
 }
