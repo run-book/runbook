@@ -26,12 +26,11 @@ export function addConfigCommand ( configCmd: Command, cleanConfig: CleanConfig,
     .option ( '-f|--force', 'force the merge even if there are errors' )
     .action ( async () => {
       const dir = findDirectoryHoldingFileOrThrow ( cwd, '.runbook' ) + '/.runbook'
-      const validation = await validateJsonFiles ( dir, defaultMergeAccept, validationConfigPartial )
-      const dispValidation: ErrorsAnd<DisplayValidation> = displayFilesAndResultsForValidation ( validation )
-      let force = configComposeCmd.optsWithGlobals ().force && 'Use --force to force the merge'
-
-      if ( consoleLogValidationAndShouldExit ( dispValidation, false, force ) ) return
-
+      if ( !configComposeCmd.optsWithGlobals ().force ) {
+        const validation = await validateJsonFiles ( dir, defaultMergeAccept, validationConfigPartial )
+        const dispValidation: ErrorsAnd<DisplayValidation> = displayFilesAndResultsForValidation ( validation )
+        if ( consoleLogValidationAndShouldExit ( dispValidation, false, 'Use --force to force the merge' ) ) return
+      }
       const newConfig = await mergeJsonFiles ( dir, addFromMutator )
       if ( isErrors ( newConfig ) ) {
         console.log ( 'Errors composing' )

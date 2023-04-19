@@ -1,5 +1,5 @@
 {
-  "template": "typescript",
+  "template": "react",
   "name": "@runbook/gui",
   "description": "",
   "packageJson": {

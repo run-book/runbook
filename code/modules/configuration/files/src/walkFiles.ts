@@ -46,7 +46,7 @@ export function consoleLogValidationAndShouldExit ( fs: ErrorsAnd<DisplayValidat
   if ( fs.validation.length > 0 ) {
     console.log ( 'Validation issues' )
     fs.validation.forEach ( x => console.log ( x ) )
-    if ( force !== undefined ) console.log ( force )
+    if ( force === undefined ) console.log ( force )
     return true
   }
   if ( displayNoErrors )

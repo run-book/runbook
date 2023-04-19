@@ -12,15 +12,15 @@
     "repository": "LICENSE.md"
   },
   "templates":      {
-    "javascript":       "@laoban@/templates/javascript",
-    "typescript":       "@laoban@/templates/typescript_405",
-    "typescript_react": "@laoban@/templates/typescript_react"
+    "javascript": "@laoban@/templates/javascript",
+    "typescript": "@laoban@/templates/typescript_405",
+    "react":      "templates\\react"
   },
   "defaultEnv":     {
     "NPM_TOKEN": ""
   },
   "scripts":        {
-    "ls-react": {
+    "ls-react":      {
       "description": "Lists all the react projects",
       "commands":    [
         {
@@ -29,12 +29,12 @@
         }
       ]
     },
-    "react-package": {
+    "build": {
       "description": "Packages the react projects",
       "commands":    [
         {
           "guard":   "${packageDetails.guards.react}",
-          "command": "echo going to do something with react"
+          "command": "yarn run build"
         }
       ]
     }

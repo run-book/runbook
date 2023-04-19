@@ -1,0 +1,30 @@
+{
+  "files": [
+    {
+      "file":   ".npmrc",
+      "target": ".npmrc"
+    },
+    {
+      "file":   "babel.config.json",
+      "target": "babel.config.json"
+    },
+    {
+      "file":   "jest.config.json",
+      "target": "jest.config.json"
+    },
+    {
+      "target":      "package.json",
+      "file":        "package.json",
+      "templated":        "${}",
+      "postProcess": "packageJson(@laoban@/templates/javascript/package.json)"
+    },
+    {
+      "file":   "tsconfig.json",
+      "target": "tsconfig.json"
+    },
+    {
+      "file":   "src/enzymeAdapterSetup.ts",
+      "target": "src/enzymeAdapterSetup.ts"
+    }
+  ]
+}
