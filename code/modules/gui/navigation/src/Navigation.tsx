@@ -1,4 +1,6 @@
-import { RunbookComponentWithProps, RunbookProps, RunbookState } from "@runbook/utilities_react";
+import { RunbookComponent, RunbookComponentWithProps, RunbookProps, RunbookState } from "@runbook/utilities_react";
+import { composeOptional, focusQuery } from "@runbook/optics";
+import { safeArray } from "@runbook/utils";
 
 
 export interface NavItemProps extends RunbookProps<string> {
@@ -21,16 +23,18 @@ export const navItem: RunbookComponentWithProps<string, NavItemProps> =
                    ? selectedNavItem ( { page } )
                    : unselectedNavItem ( st ) ( { page, focusedOn: st.get () } )
 
-export interface NavigationProps extends RunbookProps<string> {
+
+export interface SelectedPageAndViews {
+  selectedPage: string
   views: string[]
 }
 
-
-export const navigation: RunbookComponentWithProps<string, NavigationProps> = <S extends any> ( st: RunbookState<S, string> ) => {
-  const NavItem = navItem<S> ( st );
-  return ( { focusedOn, views } ): JSX.Element => {
+export const navigation: RunbookComponent<SelectedPageAndViews> = st => {
+  const NavItem = navItem ( st.focusQuery ( 'selectedPage' ) );
+  return ( { focusedOn } ): JSX.Element => {
+    const selectedPage = focusedOn?.selectedPage;
     return (<>
-      <ul>{views.map ( ( page ) => navItem ( st ) ( { page, focusedOn } ) )} </ul>
+      <ul>{safeArray ( focusedOn?.views ).map ( ( page ) => <NavItem page={page} focusedOn={selectedPage}/> )} </ul>
     </>)
   };
 };

@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { RunbookState, StateForStoryBook } from '@runbook/utilities_react'
-import { HasSelectedPage, selectedPageL } from "./SelectedPage";
-import { navigation } from "./Navigation";
+import { navigation, SelectedPageAndViews } from "./Navigation";
+import { identity } from "@runbook/optics";
 
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -14,40 +14,32 @@ const meta: Meta<typeof Navigation> = {
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 
-interface NavigationTestState {
-  selectedPage: string
-}
+
 export default meta;
-type Story = StoryObj<typeof Navigation>;
-function Navigation ( args: { st: RunbookState<NavigationTestState, string>, views: string[] } ): JSX.Element {
-  return navigation ( args.st ) ( { views: args.views, focusedOn: args.st.get () } )
+type Story = StoryObj<any>;
+function Navigation ( args: { st: RunbookState<SelectedPageAndViews, SelectedPageAndViews> } ): JSX.Element {
+  return navigation ( args.st ) ( { focusedOn: args.st.optGet () } )
 }
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
 
-const render = ( initialS: HasSelectedPage ) => ( args: any ) => {
-  return <StateForStoryBook s={initialS} args={args} opt={selectedPageL ()}>
-    {args => <Navigation {...args} st={args.st}/>}
+const render = ( args: SelectedPageAndViews ) => {
+  return <StateForStoryBook s={args} args={{}} opt={identity<SelectedPageAndViews> ()}>
+    {args => <Navigation st={args.st}/>}
   </StateForStoryBook>
 };
 export const Primary: Story = {
-  render: render ( { selectedPage: 'Views' } ),
-  args: {
-    views: [
-      'Views',
-      'Instruments',
-      'Ontology',
-      'Reference Data' ],
-  },
+  render: render,
+  args: { selectedPage: 'Views', views: [ 'Views', 'Instruments', 'Navigation' ] },
 }
 export const NoSelectedPage: Story = {
-  render: render ( { selectedPage: undefined } as any ),
-  args: {
-    views: [
-      'Views',
-      'Instruments',
-      'Ontology',
-      'Reference Data' ],
-  },
+  render,
+  args: { views: [ 'Views', 'Instruments', 'Navigation' ] },
+
+}
+export const NoViews: Story = {
+  render,
+  args: {selectedPage: 'Views', },
+
 }
 
 

@@ -1,6 +1,6 @@
 import { identity, iso2 } from "./iso";
 import { focusQuery } from "./focuson";
-import { Optional } from "./optional";
+import { nthOpt, Optional } from "./optional";
 import { getOptional, multiplyOpt, multiplyOptInto } from "./getter";
 import { setOptional } from "./setter";
 
@@ -54,6 +54,18 @@ describe ( "composing two lenses (multiply)", () => {
     let actual = getOptional ( ad, hello );
     expect ( actual ).toEqual ( { one: "hello", two: "two" } )
     expect ( setOptional ( ad, hello, { one: "goodbye", two: "two" } ) ).toEqual ( { a: { b: { c: "goodbye" } }, d: "two" } )
+  } )
+} )
+
+
+describe ( "optics on arrays", () => {
+  it ( "nth should be an optional to the nth item ", () => {
+    const second = nthOpt ( 1 )
+    expect ( getOptional ( second, [ 1, 2, 3 ] ) ).toEqual ( 2 )
+    expect ( setOptional ( second, [ 1, 2, 3 ], 4 ) ).toEqual ( [ 1, 4, 3 ] )
+
+    expect ( getOptional ( second, [ ] ) ).toEqual ( undefined )
+    expect ( setOptional ( second, [ ], 4 ) ).toEqual ( [ undefined, 4 ] )
   } )
 } )
 

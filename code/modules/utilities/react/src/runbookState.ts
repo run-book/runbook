@@ -12,7 +12,7 @@ export interface RunbookPropsWithChildren<C> extends RunbookProps<C> {
 
 export class RunbookState<S, C> {
   readonly state: S;
-  private readonly opt: Optional<S, C>
+  readonly opt: Optional<S, C>
   private readonly setS: ( s: S ) => void;
   getInCons: any
   constructor ( s: S, opt: Optional<S, C>, setS: ( s: S ) => void ) {

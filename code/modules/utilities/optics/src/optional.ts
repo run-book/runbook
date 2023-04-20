@@ -63,3 +63,14 @@ export function appendItem<M> (): OptionalR<M[], M> {
     }
   }
 }
+
+export function nthOpt<T> ( number: number ): Optional<T[], T> {
+  return {
+    get: ( array: T[] ) => array[ number ],
+    set: ( array: T[], value: T ) => {
+      let newArray = array.slice ()
+      newArray[ number ] = value
+      return newArray
+    }
+  }
+}
