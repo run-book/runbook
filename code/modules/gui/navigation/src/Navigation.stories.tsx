@@ -14,10 +14,13 @@ const meta: Meta<typeof Navigation> = {
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 
+interface NavigationTestState {
+  selectedPage: string
+}
 export default meta;
 type Story = StoryObj<typeof Navigation>;
-function Navigation ( args: { st: RunbookState<HasSelectedPage, string>, views: string[] } ): JSX.Element {
-  return navigation ( args.st ) ( { views: args.views, page: args.st.get () } )
+function Navigation ( args: { st: RunbookState<NavigationTestState, string>, views: string[] } ): JSX.Element {
+  return navigation ( args.st ) ( { views: args.views, focusedOn: args.st.get () } )
 }
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
 

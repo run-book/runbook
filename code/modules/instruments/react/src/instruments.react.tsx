@@ -1,4 +1,4 @@
-import { RunbookState } from "@runbook/utilities_react";
+import { RunbookComponent, RunbookState } from "@runbook/utilities_react";
 import { CommonInstrument } from "@runbook/instruments";
 import { isSharedScriptInstrument, isVaryingScriptInstument, SharedScriptInstrument } from "@runbook/scriptinstruments";
 
@@ -14,11 +14,9 @@ export const JsonMe = ( st: RunbookState<any, any> ) => () => {
   return <pre>{JSON.stringify ( st.optGet (), null, 2 )}</pre>
 }
 
-export const instrument = <S, I extends CommonInstrument> ( st: RunbookState<S, I> ) => {
-  return (): JSX.Element => {
-    const i: I = st.get ();
-    if ( isSharedScriptInstrument ( i ) ) return sharedInstrument ( st as any ) ()
-    if ( isVaryingScriptInstument ( i ) ) return varyingInstrument ( st as any ) ()
-    return <div><p>Unknown Instrument</p>{JsonMe ( st ) ()}</div>
-  };
+export const instrument: RunbookComponent<CommonInstrument> = st => () => {
+  const i = st.get ();
+  if ( isSharedScriptInstrument ( i ) ) return sharedInstrument ( st as any ) ()
+  if ( isVaryingScriptInstument ( i ) ) return varyingInstrument ( st as any ) ()
+  return <div><p>Unknown Instrument</p>{JsonMe ( st ) ()}</div>
 };

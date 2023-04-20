@@ -4,7 +4,7 @@ import { CommonInstrument } from "@runbook/instruments";
 import { Meta, StoryObj } from "@storybook/react";
 import { RunbookState, StateForStoryBook } from "@runbook/utilities_react";
 import React from "react";
-import { instrument } from "@runbook/instruments_react";
+import { instrument } from "./instruments.react";
 
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -18,8 +18,8 @@ const meta: Meta<typeof Instrument> = {
 
 export default meta;
 type Story = StoryObj<any>;
-function Instrument<S, I extends CommonInstrument> ( args: { st: RunbookState<S, I> } ): JSX.Element {
-  return instrument ( args.st ) ()
+function Instrument<S extends any> ( args: { st: RunbookState<S, CommonInstrument> } ): JSX.Element {
+  return instrument ( args.st ) ( { focusedOn: args.st.get () } )
 }
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
 
