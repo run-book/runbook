@@ -1,6 +1,14 @@
 {
   "files": [
     {
+      "file":   ".storybook/main.ts",
+      "target": ".storybook/main.ts"
+    },
+    {
+      "file":   ".storybook/preview.ts",
+      "target": ".storybook/preview.ts"
+    },
+    {
       "file":   ".env",
       "target": ".env"
     },
