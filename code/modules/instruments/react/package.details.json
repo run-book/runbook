@@ -1,15 +1,15 @@
 {
-  "template": "react",
-  "name": "@runbook/instruments_react",
+  "template":    "react",
+  "name":        "@runbook/instruments_react",
   "description": "",
   "packageJson": {
-    "dependencies": {},
+    "dependencies":    {},
     "devDependencies": {}
   },
-  "links": [],
-  "guards": {
+  "links":       ["@runbook/scriptinstruments", "@runbook/optics", "@runbook/utilities_react"],
+  "guards":      {
     "compile": true,
     "publish": false,
-    "test": false
+    "test":    false
   }
 }

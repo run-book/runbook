@@ -6,16 +6,16 @@
       "dev",
       "local"
     ],
-    "__from": [
+    "__from":      [
       "inheritance\\environment.inheritance.json",
       "inheritance\\service.inheritance.json"
     ],
-    "service": [
+    "service":     [
       "leo",
       "npx"
     ]
   },
-  "__from": [
+  "__from":      [
     "inheritance\\environment.inheritance.json",
     "inheritance\\service.inheritance.json",
     "instruments\\echo.instrument.json",
@@ -27,149 +27,153 @@
     "views\\debug\\displayGit.view.json",
     "views\\debug\\domain.view.json"
   ],
-  "instrument": {
-    "echo": {
-      "type": "script",
+  "instrument":  {
+    "echo":    {
+      "type":        "script",
       "description": "An instrument that sends its arguments to standard output",
-      "params": "*",
-      "staleness": 5000,
-      "cost": "low",
-      "script": [
+      "params":      "*",
+      "staleness":   5000,
+      "cost":        "low",
+      "script":      [
         "echo {argsNames}",
         "echo {allArgs}"
       ],
-      "format": {
-        "type": "table",
+      "format":      {
+        "type":       "table",
         "hideHeader": 1
       },
-      "__from": [
+      "__from":      [
         "instruments\\echo.instrument.json"
       ]
     },
-    "__from": [
+    "__from":  [
       "instruments\\echo.instrument.json",
       "instruments\\git\\cloneOrFetch.instrument.json",
       "instruments\\ls.instrument.json"
     ],
     "getRepo": {
-      "type": "script",
+      "type":        "script",
       "description": "This will (when working) go get or update the repo",
-      "params": {
+      "params":      {
         "service": {
           "description": "The service for the repo",
-          "default": "leo"
+          "default":     "leo"
         },
         "repoUrl": {
           "description": "The url holding the git repo",
-          "default": "leo.git.url"
+          "default":     "leo.git.url"
         }
       },
-      "staleness": 5000,
-      "cost": "low",
-      "script": [
+      "staleness":   5000,
+      "cost":        "low",
+      "script":      [
         "echo {argsNames}",
         "echo {allArgs}"
       ],
-      "format": {
-        "type": "table",
+      "format":      {
+        "type":       "table",
         "hideHeader": 1
       },
-      "__from": [
+      "__from":      [
         "instruments\\git\\cloneOrFetch.instrument.json"
       ]
     },
-    "ls": {
-      "type": "script",
+    "ls":      {
+      "__display":   {
+        "run":    {"component": "scriptInstrument", "regex": "ls"},
+        "edit": {}
+      },
+      "type":        "script",
       "description": "A demo instrument that displays the directory contents",
-      "params": {
+      "params":      {
         "dir": {
-          "default": ".",
+          "default":     ".",
           "description": "The directory to display"
         }
       },
-      "staleness": 5000,
-      "cost": "low",
-      "format": {
-        "type": "table",
+      "staleness":   5000,
+      "cost":        "low",
+      "format":      {
+        "type":    "table",
         "headers": [
           "file"
         ]
       },
-      "windows": {
+      "windows":     {
         "script": "dir /b {dir}",
         "format": {
-          "type": "table",
+          "type":    "table",
           "headers": [
             "file"
           ]
         }
       },
-      "linux": {
+      "linux":       {
         "script": "ls -l {dir}",
         "format": {
-          "type": "table",
+          "type":    "table",
           "headers": [
             "notdoneyet"
           ]
         }
       },
-      "__from": [
+      "__from":      [
         "instruments\\ls.instrument.json"
       ]
     }
   },
-  "mereology": {
+  "mereology":   {
     "environment": [
       "service",
       "database"
     ],
-    "__from": [
+    "__from":      [
       "mereology\\main.mereology.json"
     ]
   },
-  "setup": {
+  "setup":       {
     "environment": {
       "gittag": {
         "description": "The tag that will be in each service's git repo for the code that is in this environment",
-        "default": "${this.name}"
+        "default":     "${this.name}"
       },
       "__from": [
         "mereology\\main.mereology.json"
       ]
     },
-    "service": {
-      "gitrepo": {
+    "service":     {
+      "gitrepo":          {
         "description": ""
       },
       "_per environment": {
         "protocol": "The protocol that this service will use in this environment",
-        "domain": "The domain name for this service in this environment",
-        "port": "The port that this service will listen on in this environment"
+        "domain":   "The domain name for this service in this environment",
+        "port":     "The port that this service will listen on in this environment"
       },
-      "__from": [
+      "__from":           [
         "mereology\\main.mereology.json"
       ]
     },
-    "__from": [
+    "__from":      [
       "mereology\\main.mereology.json"
     ]
   },
-  "reference": {
-    "bound": {
+  "reference":   {
+    "bound":  {
       "environment": {
-        "dev": {
+        "dev":   {
           "direct": {
             "database": {
               "ngtest": {}
             },
-            "service": {
+            "service":  {
               "leo": {
                 "domain": "dev.leo",
-                "port": 80
+                "port":   80
               },
               "npx": {
                 "domain": "dev.npx",
-                "port": 80
+                "port":   80
               }
             }
           }
@@ -179,43 +183,43 @@
             "database": {
               "ngtest": {}
             },
-            "service": {
+            "service":  {
               "leo": {
                 "domain": "localhost",
-                "port": 8080
+                "port":   8080
               },
               "npx": {
                 "domain": "localhost",
-                "port": 8090
+                "port":   8090
               }
             }
           }
         },
-        "test": {
+        "test":  {
           "direct": {
             "database": {
               "ngtest": {}
             },
-            "service": {
+            "service":  {
               "leo": {
                 "domain": "test.leo",
-                "port": 80
+                "port":   80
               },
               "npx": {
                 "domain": "test.npx",
-                "port": 80
+                "port":   80
               }
             }
           }
         }
       },
-      "__from": [
+      "__from":      [
         "reference\\reference.json"
       ]
     },
     "direct": {
       "environment": {
-        "dev": {
+        "dev":  {
           "git": {
             "gittag": "dev"
           }
@@ -231,7 +235,7 @@
           }
         }
       },
-      "database": {
+      "database":    {
         "ngprod": {
           "url": "ngprod.url"
         },
@@ -239,21 +243,21 @@
           "url": "ngtest.url"
         }
       },
-      "service": {
+      "service":     {
         "leo": {
           "git": {
-            "url": "leo.git.url",
+            "url":       "leo.git.url",
             "directory": "c:\\git\\leo"
           }
         },
         "npx": {
           "git": {
-            "url": "npx.git.url",
+            "url":       "npx.git.url",
             "directory": "c:\\git\\npx"
           }
         }
       },
-      "__from": [
+      "__from":      [
         "reference\\reference.json"
       ]
     },
@@ -261,28 +265,28 @@
       "reference\\reference.json"
     ]
   },
-  "situation": {
-    "leo": {
+  "situation":   {
+    "leo":    {
       "__from": [
         "situation\\situation.json"
       ]
     },
-    "local": {
+    "local":  {
       "__from": [
         "situation\\situation.json"
       ]
     },
-    "npx": {
+    "npx":    {
       "__from": [
         "situation\\situation.json"
       ]
     },
-    "test": {
+    "test":   {
       "__from": [
         "situation\\situation.json"
       ]
     },
-    "dev": {
+    "dev":    {
       "__from": [
         "situation\\situation.json"
       ]
@@ -291,18 +295,18 @@
       "situation\\situation.json"
     ]
   },
-  "view": {
+  "view":        {
     "displayGit": {
-      "type": "view",
-      "description": "Lists the git properties of the services",
-      "usage": [
+      "type":          "view",
+      "description":   "Lists the git properties of the services",
+      "usage":         [
         "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
       ],
       "preconditions": [
         "The environments and services need to be in the ontology",
         "The domain and port need to be in the reference data"
       ],
-      "fetchers": {
+      "fetchers":      {
         "gitClone": {
           "condition": {
             "{env:environment}": {
@@ -310,57 +314,57 @@
                 "gittag": "{tag}"
               }
             },
-            "{ser:service}": {
+            "{ser:service}":     {
               "git": {
-                "url": "{url}",
+                "url":       "{url}",
                 "directory": "{dir}"
               }
             }
           },
-          "ifTrue": {
-            "type": "instrument",
-            "name": "echo",
+          "ifTrue":    {
+            "type":   "instrument",
+            "name":   "echo",
             "params": "*",
-            "addTo": "ser"
+            "addTo":  "ser"
           }
         }
       },
-      "__from": [
+      "__from":        [
         "views\\debug\\displayGit.view.json"
       ]
     },
-    "__from": [
+    "__from":     [
       "views\\debug\\displayGit.view.json",
       "views\\debug\\domain.view.json"
     ],
-    "domain": {
-      "type": "view",
-      "description": "Lists the domain and port of the services",
-      "usage": [
+    "domain":     {
+      "type":          "view",
+      "description":   "Lists the domain and port of the services",
+      "usage":         [
         "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
       ],
       "preconditions": [
         "The environments and services need to be in the ontology",
         "The domain and port need to be in the reference data"
       ],
-      "fetchers": {
+      "fetchers":      {
         "domainAndPort": {
           "condition": {
             "{env:environment}": {},
-            "{ser:service}": {
+            "{ser:service}":     {
               "domain": "{domain}",
-              "port": "{port}"
+              "port":   "{port}"
             }
           },
-          "ifTrue": {
-            "type": "instrument",
-            "name": "echo",
+          "ifTrue":    {
+            "type":   "instrument",
+            "name":   "echo",
             "params": "*",
-            "addTo": "ser"
+            "addTo":  "ser"
           }
         }
       },
-      "__from": [
+      "__from":        [
         "views\\debug\\domain.view.json"
       ]
     }

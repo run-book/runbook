@@ -3,10 +3,10 @@
   "name": "@runbook/navigation_react",
   "description": "",
   "packageJson": {
-    "dependencies": {},
-    "devDependencies": {}
+    "dependencies": {   },
+    "devDependencies": { "@sambego/storybook-state": "^2.0.1"}
   },
-  "links": [],
+  "links": ["@runbook/optics","@runbook/utilities_react"],
   "guards": {
     "compile": true,
     "publish": false,

@@ -1,12 +1,12 @@
 {
   "template": "react",
-  "name": "@runbook/storybook",
+  "name": "@runbook/utilities_react",
   "description": "",
   "packageJson": {
     "dependencies": {"storybook": "^7.0.6"},
     "devDependencies": {}
   },
-  "links": ["@runbook/navigation_react", "@runbook/instruments_react"],
+  "links": [],
   "guards": {
     "compile": true,
     "publish": false,

@@ -19,6 +19,7 @@
   "dependencies": {
     "storybook": "^7.0.6",
     "@runbook/navigation_react": "0.0.30",
+    "@runbook/instruments_react": "0.0.30",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "^5.0.4"
@@ -30,6 +31,7 @@
     "@storybook/blocks": "7.0.6",
     "@storybook/react": "7.0.6",
     "@storybook/react-webpack5": "7.0.6",
+    "@storybook/manager-webpack5": "6.5.16",
     "@storybook/testing-library": "0.1.0",
     "@testing-library/dom": "9.2.0",
     "@testing-library/jest-dom": "^5.16.5",

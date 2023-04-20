@@ -18,6 +18,7 @@
     "@storybook/blocks":             "7.0.6",
     "@storybook/react":              "7.0.6",
     "@storybook/react-webpack5":     "7.0.6",
+    "@storybook/manager-webpack5":   "6.5.16",
     "@storybook/testing-library":    "0.1.0",
     "@testing-library/dom":          "9.2.0",
     "@testing-library/jest-dom":     "^5.16.5",
