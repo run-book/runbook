@@ -17,6 +17,7 @@ export function allButLastSegment ( s: string, marker: string | RegExp = pathMar
   return result
 }
 
+
 export function indentAll ( s: string[] ): string[] {
   return s.map ( s => '  ' + s )
 }

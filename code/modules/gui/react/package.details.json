@@ -6,7 +6,7 @@
     "dependencies": {},
     "devDependencies": {}
   },
-  "links": [],
+  "links": [ "@runbook/utilities_react"],
   "guards": {
     "compile": true,
     "publish": false,

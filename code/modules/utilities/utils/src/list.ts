@@ -16,3 +16,9 @@ export function zipAll<T1, T2, T3> ( t1s: T1[], t2s: T2[], merge: ( t1: T1, t2: 
     result.push ( merge ( t1s[ i ], t2s[ i ] ) )
   return result
 }
+
+export const changeLastItem = <T> ( t: T ) => ( ts: T[] ): T[] => {
+  const result = [ ...ts ]
+  result[ result.length - 1 ] = t
+  return result
+};

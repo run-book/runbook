@@ -1,41 +1,43 @@
 import { RunbookComponent, RunbookComponentWithProps, RunbookProps, RunbookState } from "@runbook/utilities_react";
-import { composeOptional, focusQuery } from "@runbook/optics";
-import { safeArray } from "@runbook/utils";
+import { composeOptional, focusQuery, Optional } from "@runbook/optics";
+import { mapObjToArray, NameAnd, safeArray, safeObject } from "@runbook/utils";
 
 
 export interface NavItemProps extends RunbookProps<string> {
-  page: string
+  name: string
 }
 
 
 export const unselectedNavItem: RunbookComponentWithProps<string, NavItemProps> =
-               st => ( { page }: NavItemProps ) =>
-                 (<li onClick={e => st.set ( page )}> {page}</li>);
+               st => ( { name }: NavItemProps ) =>
+                 (<li onClick={e => st.set ( name )}> {name}</li>);
 
 
-export const selectedNavItem = ( { page }: { page: string } ) =>
-  (<li><b>{page}</b></li>);
+export const selectedNavItem = ( { name }: { name: string } ) =>
+  (<li><b>{name}</b></li>);
 
 
 export const navItem: RunbookComponentWithProps<string, NavItemProps> =
-               st => ( { page, focusedOn }: NavItemProps ) =>
-                 focusedOn === page
-                   ? selectedNavItem ( { page } )
-                   : unselectedNavItem ( st ) ( { page, focusedOn: st.get () } )
+               st => ( { name, focusedOn }: NavItemProps ) =>
+                 focusedOn === name
+                   ? selectedNavItem ( { name } )
+                   : unselectedNavItem ( st ) ( { name, focusedOn: st.get () } )
 
 
-export interface SelectedPageAndViews {
-  selectedPage: string
-  views: string[]
+export interface SelectedAndItems<T> {
+  selected: string
+  items: NameAnd<T>
 }
 
-export const navigation: RunbookComponent<SelectedPageAndViews> = st => {
-  const NavItem = navItem ( st.focusQuery ( 'selectedPage' ) );
-  return ( { focusedOn } ): JSX.Element => {
-    const selectedPage = focusedOn?.selectedPage;
-    return (<>
-      <ul>{safeArray ( focusedOn?.views ).map ( ( page ) => <NavItem page={page} focusedOn={selectedPage}/> )} </ul>
-    </>)
-  };
-};
+export function navigation<T> ( navItem: RunbookComponentWithProps<string, NavItemProps> ): RunbookComponent<SelectedAndItems<T>> {
+  return st => {
+    return ( { focusedOn } ): JSX.Element => {
+      const selected = focusedOn?.selected;
+      const stSelected = st.focusQuery ( "selected" );
+      return (<>
+        <ul>{          mapObjToArray ( safeObject ( focusedOn?.items ), ( t, name ) =>
+            navItem ( stSelected ) ( { focusedOn: selected, name } ) )} </ul></>)
+    };
+  }
+}
 
