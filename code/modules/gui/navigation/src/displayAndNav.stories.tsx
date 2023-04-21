@@ -43,8 +43,6 @@ const dataOpt = focusQuery ( identity<DisplayAndNavStoryState> (), 'data' )
 const refOpt = optionalForRefAndData ( selectionOpt, dataOpt )
 const render = ( args: DisplayAndNavStoryArgs ) => {
   const path = split ( args.path, '.' )
-  const parentPath = path.slice ( 0, path.length - 1 )
-  const item = path[ path.length - 1 ]
 
   const state: DisplayAndNavStoryState = { data: args.data, selected: path }
 

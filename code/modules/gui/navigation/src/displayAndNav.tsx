@@ -16,7 +16,7 @@ export function displayAndNav<S extends any> ( nc: NavigationContext<S>, dc: Dis
     console.log('parentPath', parentPath)
     console.log('item', item)
     return <div>
-      {navigation ( nc ) ( stForNav ) ( { focusedOn: stForNav.optGet (), parent: focusedOn?.data, parentPath:[] } )}
+      {navigation ( nc ) ( stForNav ) ( { focusedOn: stForNav.optGet (), parent: stForDisplay.optGet (), parentPath:[] } )}
       {displayOnDemand ( dc, parentPath, item ) ( stForDisplay ) ( { focusedOn: stForDisplay.optGet () } )}
     </div>
   }
