@@ -47,8 +47,8 @@ export const Primary: Story = {
   args: {
     selected: [ 'views' ],
     data: {
-      views: { 'V1': {}, 'V2': {}, 'V3': {} },
       instruments: { 'I1': {}, 'I2': {}, 'I3': {} },
+      views: { 'V1': {}, 'V2': {}, 'V3': {} },
     }
   }
 }
@@ -56,8 +56,8 @@ export const NoSelectedPage: Story = {
   render,
   args: {
     data: {
-      views: { 'V1': {}, 'V2': {}, 'V3': {} },
       instruments: { 'I1': {}, 'I2': {}, 'I3': {} },
+      views: { 'V1': {}, 'V2': {}, 'V3': {} },
     }
   }
 }
