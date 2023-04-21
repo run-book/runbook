@@ -1,15 +1,15 @@
 {
-  "template": "typescript",
-  "name": "@runbook/scriptinstruments",
+  "template":    "typescript",
+  "name":        "@runbook/scriptinstruments",
   "description": "",
   "packageJson": {
-    "dependencies": {},
+    "dependencies":    {},
     "devDependencies": {}
   },
-  "links": ["@runbook/instruments", "@runbook/displayformat"],
-  "guards": {
+  "links":       ["@runbook/instruments", "@runbook/displayformat", "@runbook/fixtures"],
+  "guards":      {
     "compile": true,
     "publish": true,
-    "test": true
+    "test":    true
   }
 }

@@ -94,7 +94,6 @@ export const executeScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumen
 //   staleness: number,
 //   cost: InstrumentCost,
 const validateCleanInstrumentParam: NameAndValidator<CleanInstrumentParam> = composeNameAndValidators (
-  validateChildString ( 'type', true ),
   validateChildString ( 'description' ),
   validateChildString ( 'default', true ),
 )

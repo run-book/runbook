@@ -10,7 +10,7 @@ export interface CommonInstrument {
   format: DisplayFormat,
 }
 export interface CleanInstrumentParam {
-  type: string,
+
   description?: string,
   default?: string
 }
