@@ -7,7 +7,7 @@ import { RunbookComponent, RunbookState } from "./runbookState";
 export interface SBookProps<S, C> {
   s: S,
   opt: Optional<S, C>,
-  children: RunbookComponent<C>
+  children: RunbookComponent<S,C>
 }
 
 

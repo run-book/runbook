@@ -2,43 +2,43 @@ import { RunbookComponent } from "@runbook/utilities_react";
 import { NameAnd } from "@runbook/utils";
 import { getOptional, parsePath } from "@runbook/optics";
 
-export type DisplayFn = <C>( parentPath: string[], item: string, obj: C | undefined ) => RunbookComponent<any> | undefined
+export type DisplayFn<S> = ( parentPath: string[], item: string, obj: any | undefined ) => RunbookComponent<S, any> | undefined
 
 
-export interface DisplayGroupAndItem<C> {
-  __group?: RunbookComponent<NameAnd<C>>
-  __item?: RunbookComponent<C>
+export interface DisplayGroupAndItem<S> {
+  __group?: RunbookComponent<S, any>
+  __item?: RunbookComponent<S, any>
 }
-export function isDisplayGroupAndItem<C> ( x: any ): x is DisplayGroupAndItem<C> {
+export function isDisplayGroupAndItem<S> ( x: any ): x is DisplayGroupAndItem<S> {
   return x.__group !== undefined || x.__item !== undefined
 }
 
-export interface NameAndDisplayGroupAndItem extends NameAnd<DisplayGroupAndItem<any> | RunbookComponent<any> | NameAndDisplayGroupAndItem> {
+export interface NameAndDisplayGroupAndItem<S> extends NameAnd<DisplayGroupAndItem<S> | RunbookComponent<S, any> | NameAndDisplayGroupAndItem<S>> {
 
 }
 
-export function displayFnFromNameAnd ( na: NameAndDisplayGroupAndItem, defFn: RunbookComponent<any> ): DisplayFn {
-  return ( parentPath, item, obj ) => {
-    const forParentPath: DisplayGroupAndItem<any> | RunbookComponent<any> | undefined = getOptional ( parsePath ( parentPath ), na );
+export function displayFnFromNameAnd<S> ( na: NameAndDisplayGroupAndItem<S>, defFn: RunbookComponent<S, any> ): DisplayFn<S> {
+  return ( parentPath, item, obj ): RunbookComponent<S, any> => {
+    const forParentPath: DisplayGroupAndItem<S> | RunbookComponent<S, any> | undefined = getOptional ( parsePath ( parentPath ), na );
     if ( forParentPath === undefined ) return defFn
     const path = [ ...parentPath, item ]
-    const forPath: DisplayGroupAndItem<any> | RunbookComponent<any> | undefined = getOptional ( parsePath ( path ), na );
+    const forPath: DisplayGroupAndItem<S> | RunbookComponent<S, any> | undefined = getOptional ( parsePath ( path ), na );
 
     console.log ( 'displayFnFromNameAnd', parentPath, item )
     console.log ( 'displayFnFromNameAnd for Path', forPath )
     console.log ( 'displayFnFromNameAnd for PArentPath', forParentPath )
 
     if ( forPath === undefined ) {  //e.g. ['view'] 'v1'   (note that with [] 'view' we would have a forPath
-      if ( isDisplayGroupAndItem ( forParentPath ) && forParentPath.__item !== undefined ) return forParentPath.__item
+      if ( isDisplayGroupAndItem<S> ( forParentPath ) && forParentPath.__item !== undefined ) return forParentPath.__item
       if ( typeof forParentPath === 'function' ) return forParentPath
     }
     //here we are in the scenario [] 'view' or ['ontology'] 'mereology'
-    if ( isDisplayGroupAndItem ( forPath )) {
+    if ( isDisplayGroupAndItem<S> ( forPath ) ) {
       if ( forPath.__group !== undefined ) return forPath.__group
-      // if ( forPath.__item !== undefined ) return forPath.__item
     }
     if ( typeof forPath === 'function' ) return forPath
     return defFn
+
   }
 
 }

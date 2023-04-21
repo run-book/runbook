@@ -2,10 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { identity } from "@runbook/optics";
 import { NameAnd, split } from "@runbook/utils";
 import React from "react";
-import { DisplayStoryBook, jsonMe } from "@runbook/utilities_react";
+import { DisplayStoryBook, RunbookState } from "@runbook/utilities_react";
 import { DisplayContext, displayOnDemand } from "./displayOnDemand";
-import { sampleDisplay, sampleDisplayFn } from "./display.fixture";
-import { displayFnFromNameAnd } from "./displayFn";
+import { fixtureDisplayContext, sampleDisplay } from "./display.fixture";
 
 
 //exists to just finesse Storybook
@@ -20,25 +19,24 @@ const meta: Meta<typeof Display> = {
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
 
-interface DisplayStoryArgs extends DisplayStoryState {
+interface DisplayStoryArgs {
   parentPath: string
   item: string
+  data: DisplayStoryState
 }
 type  DisplayStoryState = NameAnd<any>
 
 export default meta;
 type Story = StoryObj<DisplayStoryArgs>;
 
-const dc: DisplayContext<DisplayStoryState> = {
-  displayFn: displayFnFromNameAnd ( sampleDisplayFn, st => props => jsonMe(st))
-}
+const dc: DisplayContext<DisplayStoryState> = fixtureDisplayContext ()
 
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
 
 const render = ( args: DisplayStoryArgs ) => {
-  return <DisplayStoryBook s={args.data} opt={identity ()}>
-    {st => props =>
+  return <DisplayStoryBook s={args.data} opt={identity<DisplayStoryState> ()}>
+    {( st: RunbookState<DisplayStoryState, DisplayStoryState> ) => props =>
       displayOnDemand ( dc, split ( args.parentPath, '.' ), args.item ) ( st ) ( props )}
   </DisplayStoryBook>
 };

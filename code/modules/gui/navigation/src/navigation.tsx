@@ -5,7 +5,7 @@ import { jsonMe, RunbookComponent, RunbookComponentWithProps, RunbookProps } fro
 
 export interface NavigationContext<S> {
   /** Later this will be more complex and store the history of where we have been */
-  selectionOpt: Optional<S, string[]>
+  // selectionOpt: Optional<S, string[]>
   /** The names control the order in which things are displayed. The Runbook component is used to actually display the component */
   displayInNav: <T> ( path: string[], name: string, t: T ) => boolean
 }

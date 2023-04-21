@@ -3,12 +3,12 @@ import { parsePath } from "@runbook/optics";
 import { DisplayFn } from "./displayFn";
 
 export interface DisplayContext<S> {
-  displayFn: DisplayFn
+  displayFn: DisplayFn<S>
 }
-export const displayOnDemand = <S, C> ( dc: DisplayContext<S>, parentPath: string[], item: string ): RunbookComponent<C> =>
+export const displayOnDemand = <S> ( dc: DisplayContext<S>, parentPath: string[], item: string ): RunbookComponent<S,any> =>
   st => props => {
     const newSt = st.withOpt ( parsePath ( [ ...parentPath, item ] ) )
-    const displayFn: RunbookComponent<any> | undefined = dc.displayFn ( parentPath, item, newSt.optGet () );
+    const displayFn: RunbookComponent<S,any> | undefined = dc.displayFn ( parentPath, item, newSt.optGet () );
     console.log('displayOnDemand - displayFn', displayFn  )
 
     return typeof displayFn !== 'function' ? jsonMe ( st ) : displayFn ( newSt ) ( props );

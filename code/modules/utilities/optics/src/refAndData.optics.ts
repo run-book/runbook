@@ -3,7 +3,7 @@ import { RefAndData } from "@runbook/utils";
 import { getOptional } from "./getter";
 import { setOptional } from "./setter";
 
-export const optionalForRef = <S, Ref, Data> ( refO: Optional<S, Ref>, dataO: Optional<S, Data> ): Optional<S, RefAndData<Ref, Data>> => {
+export const optionalForRefAndData = <S, Ref, Data> ( refO: Optional<S, Ref>, dataO: Optional<S, Data> ): Optional<S, RefAndData<Ref, Data>> => {
   return {
     get: ( s: S ) => {
       const refV = getOptional ( refO, s )

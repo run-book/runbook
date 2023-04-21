@@ -4,7 +4,7 @@ export interface RunbookProps<C> {
   focusedOn?: C
 }
 
-export type RunbookComponent<C> = <S> ( st: RunbookState<S, C> ) => ( props: RunbookProps<C> ) => JSX.Element
+export type RunbookComponent<S, C> =  ( st: RunbookState<S, C> ) => ( props: RunbookProps<C> ) => JSX.Element
 export type RunbookComponentWithProps<C, Props extends RunbookProps<C>> = <S> ( st: RunbookState<S, C> ) => ( props: Props ) => JSX.Element
 export interface RunbookPropsWithChildren<C> extends RunbookProps<C> {
   children: React.ReactNode

@@ -1,5 +1,8 @@
 import { jsonMe, RunbookComponent } from "@runbook/utilities_react";
-import { NameAndDisplayGroupAndItem } from "./displayFn";
+import { displayFnFromNameAnd, NameAndDisplayGroupAndItem } from "./displayFn";
+import { DisplayContext } from "./displayOnDemand";
+import { NavigationContext } from "./navigation";
+import { focusQuery, identity } from "@runbook/optics";
 
 export const sampleDisplay = {
   instruments: { 'I1': { name: 'inst 1' }, 'I2': { name: 'inst 2' }, 'I3': { name: 'inst 3' } },
@@ -11,21 +14,37 @@ export const sampleDisplay = {
   }
 };
 
-function display ( typeName: string ): RunbookComponent<any> {
+function display<S> ( typeName: string ): RunbookComponent<S, any> {
   return st => props => <div><h1>{typeName}</h1>{jsonMe ( st )}</div>
 }
-export const sampleDisplayFn: NameAndDisplayGroupAndItem = {
-  instruments: {
-    __item: display ( 'Instrument' )
-  },
-  views: {
-    __item: display ( 'View' ),
-    __group: display ( 'Views' )
-  },
-  ontology: {
-    __group: display ( 'Ontology' ),
-    mereology: display ( 'Mereology' ),
-    reference: display ( 'Reference' ),
-    inheritance: display ( 'Inheritance' )
+export function sampleDisplayFn<S> (): NameAndDisplayGroupAndItem<S> {
+  return {
+    instruments: {
+      __item: display ( 'Instrument' )
+    },
+    views: {
+      __item: display ( 'View' ),
+      __group: display ( 'Views' )
+    },
+    ontology: {
+      __group: display ( 'Ontology' ),
+      mereology: display ( 'Mereology' ),
+      reference: display ( 'Reference' ),
+      inheritance: display ( 'Inheritance' )
+    }
   }
 }
+
+export const fixtureDisplayContext = <S extends any> (): DisplayContext<S> => {
+  return {
+    displayFn: displayFnFromNameAnd ( sampleDisplayFn(), st => props => jsonMe ( st ) )
+  }
+}
+
+export interface HasSelectedForTest {
+  selected: string[]
+}
+export const fixtureNavContext = <S extends HasSelectedForTest> (): NavigationContext<S> => ({
+
+  displayInNav: ( path, t ) => true
+})
