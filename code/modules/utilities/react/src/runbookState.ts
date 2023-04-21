@@ -30,5 +30,6 @@ export class RunbookState<S, C> {
   map = ( fn: ( c: C ) => C ) => this.set ( fn ( this.get () ) )
   optGet (): C | undefined { return getOptional ( this.opt, this.state ) }
   get (): C { return getOptional ( this.opt, this.state )!}
+  withOpt<D>(opt: Optional<S, D>){return new RunbookState(this.state, opt, this.setS)}
 }
 

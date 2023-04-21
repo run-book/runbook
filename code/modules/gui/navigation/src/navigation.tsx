@@ -7,7 +7,7 @@ export interface NavigationContext<S> {
   /** Later this will be more complex and store the history of where we have been */
   selectionOpt: Optional<S, string[]>
   /** The names control the order in which things are displayed. The Runbook component is used to actually display the component */
-  displayFn: <T> ( path: string[], name: string, t: T ) => RunbookComponent<T> | undefined
+  displayInNav: <T> ( path: string[], name: string, t: T ) => boolean
 }
 
 export interface NavItemWithProps extends NavWithProps {
@@ -24,13 +24,14 @@ export const unselectedNavItem: RunbookComponentWithProps<string[], NavItemWithP
 export const selectedNavItem = <S extends any> ( nc: NavigationContext<S> ): RunbookComponentWithProps<string[], NavItemWithProps> =>
   st => ( props ) => {
     const { item, parentPath, parent } = props
-    const { displayFn } = nc
-    const fn = displayFn ( parentPath, item, parent )
+    const { displayInNav } = nc
     const newParent = parent[ item ]
-    if ( fn === undefined || newParent === undefined ) return <li>!<b>{item}</b></li>
-    return <li><b onClick={() => st.set ( [ ...parentPath, item ] )}>{item}</b>
-      {navigation ( nc ) ( st ) ( { ...props, parentPath: [ ...parentPath, item ], parent: newParent } )}
-    </li>
+    const shouldDisplayChild = displayInNav ( parentPath, item, parent ) && newParent !== undefined && !isPrimitive ( newParent )
+    if ( shouldDisplayChild )
+      return <li><b onClick={() => st.set ( [ ...parentPath, item ] )}>{item}</b>
+        {navigation ( nc ) ( st ) ( { ...props, parentPath: [ ...parentPath, item ], parent: newParent } )}
+      </li>
+    else { return <li>!<b>{item}</b></li> }
   };
 
 /** There is an optimisation here... the parentPath is assumed to be selected */

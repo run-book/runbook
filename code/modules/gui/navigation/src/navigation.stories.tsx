@@ -7,9 +7,13 @@ import { DisplayStoryBook } from "@runbook/utilities_react";
 
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-const meta: Meta<typeof NewNavigation> = {
-  title: 'NewNavigation',
-  component: NewNavigation,
+
+//exists to just finesse Storybook
+const Navigation = (): JSX.Element => <div></div>;
+
+const meta: Meta<typeof Navigation> = {
+  title: 'Navigation',
+  component: Navigation,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: [ 'autodocs' ],
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
@@ -28,12 +32,9 @@ type Story = StoryObj<NavigationStoryArgs>;
 
 const nc: NavigationContext<NavigationStoryState> = {
   selectionOpt: focusQuery ( identity<NavigationStoryState> (), 'selected' ),
-  displayFn: ( path, t ) => st => () => <div>Something displayed</div>
+  displayInNav: ( path, t ) => true
 }
 
-function NewNavigation (): JSX.Element {
-  return <div></div> //exists to just finesse Storybook
-}
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
 
 const render = ( args: NavigationStoryArgs ) => {

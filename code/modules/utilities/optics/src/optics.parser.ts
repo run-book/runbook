@@ -2,8 +2,7 @@ import { appendItem, composeOptional, nthItem, Optional } from "./optional";
 import { focusQuery } from "./focuson";
 import { identity } from "./iso";
 
-export function opticsParserO<M, C> ( path: string ): Optional<M, C> {
-  const parts = path.split ( "." )
+export function parsePath ( path: string[] ) {
   function processPart ( acc: Optional<any, any>, part: string ): Optional<any, any> {
     const match = /^(.*)\[(\d+|append)]$/.exec ( part )
     if ( match ) {
@@ -13,5 +12,9 @@ export function opticsParserO<M, C> ( path: string ): Optional<M, C> {
     }
     return focusQuery ( acc, part )
   }
-  return parts.reduce ( processPart, identity<any> () )
+  return path.reduce ( processPart, identity<any> () )
+}
+export function opticsParserO<M, C> ( path: string ): Optional<M, C> {
+  const parts = path.split ( "." )
+  return parsePath ( parts );
 }

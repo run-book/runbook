@@ -3,13 +3,13 @@ import { ErrorsAnd } from "./errors";
 import { fromEntries, NameAnd } from "./nameAnd";
 
 let pathMarker = /[\/\\]/g;
-export function lastSegment ( s: string, marker: string | RegExp = pathMarker ): string|undefined{
+export function lastSegment ( s: string, marker: string | RegExp = pathMarker ): string | undefined {
   if ( s === undefined ) return undefined
   const parts = s.split ( marker ).filter ( s => s.length > 0 )
   if ( parts.length === 0 ) return s
   return parts[ parts.length - 1 ]
 }
-export function allButLastSegment ( s: string, marker: string | RegExp = pathMarker ): string|undefined {
+export function allButLastSegment ( s: string, marker: string | RegExp = pathMarker ): string | undefined {
   if ( s === undefined ) return undefined
   const parts = s.split ( marker ).filter ( s => s.length > 0 )
   if ( parts.length === 0 ) return s
@@ -17,6 +17,9 @@ export function allButLastSegment ( s: string, marker: string | RegExp = pathMar
   return result
 }
 
+export function split ( s: string, marker: string | RegExp = pathMarker ): string[] {
+  return s.split ( marker ).map ( s => s.trim () ).filter ( s => s.length > 0 )
+}
 
 export function indentAll ( s: string[] ): string[] {
   return s.map ( s => '  ' + s )
