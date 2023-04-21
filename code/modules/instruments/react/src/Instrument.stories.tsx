@@ -2,7 +2,7 @@ import { focusOn, identity } from "@runbook/optics";
 
 import { CommonInstrument } from "@runbook/instruments";
 import { Meta, StoryObj } from "@storybook/react";
-import { RunbookState, StateForStoryBook } from "@runbook/utilities_react";
+import { DisplayStoryBook } from "@runbook/utilities_react";
 import React from "react";
 import { instrument } from "./instruments.react";
 
@@ -17,9 +17,9 @@ const meta: Meta<typeof Instrument> = {
 };
 
 export default meta;
-type Story = StoryObj<any>;
-function Instrument<S extends any> ( args: { st: RunbookState<S, CommonInstrument> } ): JSX.Element {
-  return instrument ( args.st ) ( { focusedOn: args.st.get () } )
+type Story = StoryObj<TestStateForInstrument<CommonInstrument>>;
+function Instrument<S extends any> (): JSX.Element {
+  return <div></div> //exists to just finesse Storybook
 }
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
 
@@ -29,9 +29,7 @@ interface TestStateForInstrument<I extends CommonInstrument> {
 
 const instrumentL = focusOn ( identity<TestStateForInstrument<CommonInstrument>> (), 'instrument' )
 const render = <I extends CommonInstrument> ( initialS: TestStateForInstrument<I> ) => () => {
-  return <StateForStoryBook s={initialS} args={{}} opt={instrumentL}>
-    {args => <Instrument {...args} st={args.st}/>}
-  </StateForStoryBook>
+  return <DisplayStoryBook s={initialS} opt={instrumentL}>{instrument}</DisplayStoryBook>
 };
 export const Unknown: Story = {
   render: render ( {

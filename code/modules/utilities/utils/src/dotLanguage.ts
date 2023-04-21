@@ -1,5 +1,11 @@
 import { allButLastSegment, firstSegment, lastSegment } from "./strings";
 
+export function findFromPath ( dic: any, path: string[] ): any {
+  if ( path === undefined ) return undefined
+
+  return path.reduce ( ( acc, part ) => acc?.[ part ], dic )
+
+}
 export function findPart ( dic: any, ref: string ): any {
   if ( ref === undefined ) return undefined
   if ( ref === '' ) return dic

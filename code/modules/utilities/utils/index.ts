@@ -13,4 +13,5 @@ export * from './src/prune'
 export * from './src/safe'
 export * from "./src/strings";
 export * from './src/types'
+export * from './src/tuples'
 export * from "./src/validators"

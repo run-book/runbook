@@ -13,7 +13,7 @@ export interface RunbookPropsWithChildren<C> extends RunbookProps<C> {
 export class RunbookState<S, C> {
   readonly state: S;
   readonly opt: Optional<S, C>
-  private readonly setS: ( s: S ) => void;
+  setS: ( s: S ) => void;
   getInCons: any
   constructor ( s: S, opt: Optional<S, C>, setS: ( s: S ) => void ) {
     this.state = s;
@@ -21,6 +21,7 @@ export class RunbookState<S, C> {
     this.setS = setS;
     this.getInCons = this.get
   }
+  static clone<S, C> ( r: RunbookState<S, C> ) {return new RunbookState ( r.state, r.opt, r.setS )}
   focusQuery<K extends keyof C> ( k: K ): RunbookState<S, Required<C[K]>> {
     const newOpt: Optional<S, C[K]> = focusQuery ( this.opt, k );
     return new RunbookState ( this.state, newOpt, this.setS ) as any;

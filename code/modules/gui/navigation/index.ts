@@ -1,4 +1,4 @@
-export * from './src/Navigation';
-export * from './src/Navigation.stories';
+export * from './src/navigation';
+export * from './src/navigation.stories';
 
 export * from './src/SelectedPage';

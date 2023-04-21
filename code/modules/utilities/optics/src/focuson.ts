@@ -2,6 +2,7 @@ import { Lens } from "./lens";
 import { setFn, setOptionalFn } from "./setter";
 import { Optional } from "./optional";
 import { getOptionalFn } from "./getter";
+import { addDescription, getDescription } from "@runbook/utils";
 
 
 export function focusOn<M, C, K extends keyof C> ( lens: Lens<M, C>, key: K ): Lens<M, C[K]> {
@@ -19,7 +20,7 @@ export function focusOn<M, C, K extends keyof C> ( lens: Lens<M, C>, key: K ): L
 export function focusQuery<M, C, K extends keyof C> ( o: Optional<M, C>, key: K ): Optional<M, C[K]> {
   const getOptional = getOptionalFn ( o );
   const setOptional = setOptionalFn ( o );
-  return {
+  return addDescription ( {
     getOptional: ( model: M ) => {
       const c = getOptional ( model );
       if ( c === undefined ) return undefined;
@@ -31,5 +32,5 @@ export function focusQuery<M, C, K extends keyof C> ( o: Optional<M, C>, key: K 
       copy[ key ] = child;
       return setOptional ( model, copy );
     }
-  }
+  }, `${getDescription ( o, () => 'unknown' )}['${key.toString ()}']` )
 }
