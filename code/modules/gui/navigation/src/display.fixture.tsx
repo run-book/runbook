@@ -15,7 +15,9 @@ function display ( typeName: string ): RunbookComponent<any> {
   return st => props => <div><h1>{typeName}</h1>{jsonMe ( st )}</div>
 }
 export const sampleDisplayFn: NameAndDisplayGroupAndItem = {
-  instruments: display ( 'Instrument' ),
+  instruments: {
+    __item: display ( 'Instrument' )
+  },
   views: {
     __item: display ( 'View' ),
     __group: display ( 'Views' )

@@ -35,7 +35,7 @@ export function displayFnFromNameAnd ( na: NameAndDisplayGroupAndItem, defFn: Ru
     //here we are in the scenario [] 'view' or ['ontology'] 'mereology'
     if ( isDisplayGroupAndItem ( forPath )) {
       if ( forPath.__group !== undefined ) return forPath.__group
-      if ( forPath.__item !== undefined ) return forPath.__item
+      // if ( forPath.__item !== undefined ) return forPath.__item
     }
     if ( typeof forPath === 'function' ) return forPath
     return defFn
