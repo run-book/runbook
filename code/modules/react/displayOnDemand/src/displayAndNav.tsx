@@ -1,4 +1,4 @@
-import { RunbookComponent, RunbookState } from "@runbook/utilities_react";
+import { RunbookComponent, RunbookState } from "@runbook/runbook_state";
 import { NameAnd, RefAndData } from "@runbook/utils";
 import { navigation, NavigationContext } from "./navigation";
 import { DisplayContext, displayOnDemand } from "./displayOnDemand";

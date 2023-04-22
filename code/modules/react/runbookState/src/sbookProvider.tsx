@@ -6,9 +6,10 @@ import { RunbookComponent, RunbookState } from "./runbookState";
 
 export interface SBookProps<S, C> {
   s: S,
+  id?: string,
   opt: Optional<S, C>,
   children: RunbookComponent<S, C>
-  mode: string|undefined
+  mode: string | undefined
 }
 
 
@@ -19,7 +20,9 @@ const makeState = <S extends any, C> ( store: Store<RunbookState<S, C>>, opt: Op
   };
   return new RunbookState<S, C> ( s, opt, setS )
 };
-export function SBookStoreFor<S, C> ( { s, opt, children, mode }: SBookProps<S, C> ): JSX.Element {
+export function SBookStoreFor<S, C> ( props: SBookProps<S, C> ): JSX.Element {
+  const { s, opt, children, mode, id } = props
+  const realId = id || 'root'
   const store = new Store<RunbookState<S, C>> ( undefined as any );
   store.set ( makeState ( store, opt ) ( s ) );
   return <State store={store}>{brokenRunbookState => {
@@ -28,11 +31,13 @@ export function SBookStoreFor<S, C> ( { s, opt, children, mode }: SBookProps<S, 
     console.log ( 'SBookStoreFor - optget', st.optGet );
     console.log ( 'SBookStoreFor - optGet?.()', st.optGet?. () );
     const focusedOn = st.optGet?. () as any
-    return children ( st ) ( { focusedOn, mode } );
+    return children ( st ) ( { focusedOn, mode, id: realId } );
   }}</State>;
 }
-export function DisplayStoryBook<S, C> ( { s, opt, children, mode }: SBookProps<S, C> ): JSX.Element {
-  return <SBookStoreFor s={s} opt={opt} mode={mode}>{st => props =>
+export function DisplayStoryBook<S, C> ( props: SBookProps<S, C> ): JSX.Element {
+  const { s, opt, children, mode } = props
+
+  return <SBookStoreFor {...props}>{st => props =>
     <div>
       {children ( st ) ( props )}
       <hr/>

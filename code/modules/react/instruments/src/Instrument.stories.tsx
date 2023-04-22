@@ -2,10 +2,10 @@ import { focusOn, identity, Optional } from "@runbook/optics";
 
 import { CommonInstrument } from "@runbook/instruments";
 import { Meta, StoryObj } from "@storybook/react";
-import { DisplayStoryBook } from "@runbook/utilities_react";
+import { DisplayStoryBook, RunbookComponent } from "@runbook/runbook_state";
 import React from "react";
-import { scriptInstrument } from "./instruments.react";
 import { echoScriptInstrument, gitScriptInstrument, lsScriptInstrument, ScriptInstrument } from "@runbook/scriptinstruments";
+import { displayScriptInstrument } from "./instruments.react";
 
 //exists to just finesse Storybook
 const Instrument = <S extends any> (): JSX.Element => <div></div>;
@@ -32,8 +32,13 @@ interface TestArgsForInstrument {
 }
 
 const instrumentL: Optional<TestStateForInstrument, ScriptInstrument> = focusOn ( identity<TestStateForInstrument> (), 'instrument' )
+
+function scriptInstrument ( mode: string ): RunbookComponent<TestStateForInstrument, ScriptInstrument> {
+  if ( mode === 'view' ) return displayScriptInstrument<TestStateForInstrument> ()
+  return st => props => <div>Unknown mode</div>
+}
 const render = ( args: TestArgsForInstrument ) => {
-  return <DisplayStoryBook s={{ instrument: args.instrument }} opt={instrumentL} mode={args.mode}>{scriptInstrument ()}</DisplayStoryBook>
+  return <DisplayStoryBook s={{ instrument: args.instrument }} opt={instrumentL} mode={args.mode}>{scriptInstrument ( args.mode )}</DisplayStoryBook>
 };
 export const EchoView: Story = {
   render,

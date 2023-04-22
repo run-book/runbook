@@ -1,4 +1,4 @@
-import { RunbookComponent, RunbookComponentWithProps, RunbookProps } from "@runbook/utilities_react";
+import { RunbookComponent, RunbookComponentWithProps, RunbookProps } from "@runbook/runbook_state";
 import { RememberedMode, SelectionState } from "./displayAndNav";
 import { focusQuery, mapOptionalOrOriginal, Optional } from "@runbook/optics";
 

@@ -1,4 +1,4 @@
-import { jsonMe, modeFromProps, RunbookComponent, displayWithNewOpt } from "@runbook/utilities_react";
+import { jsonMe, modeFromProps, RunbookComponent, displayWithNewOpt } from "@runbook/runbook_state";
 import { DisplayComponent, displayFnFromNameAnd } from "./displayFn";
 import { DisplayContext } from "./displayOnDemand";
 import { NavigationContext } from "./navigation";
@@ -22,8 +22,8 @@ export function fixtureDisplayWithoutMode<S> ( typeName: string ): RunbookCompon
 
 export const fixtureDisplayWithMode = <S extends any> ( opt: Optional<S, SelectionState> ) => ( typeName: string ): RunbookComponent<S, any> =>
   st => props => <div><h1>{typeName} - {modeFromProps ( props )}</h1>
-    {displayWithNewOpt ( changeMode<S> ( 'view' ), opt, st, props.mode )}
-    {displayWithNewOpt ( changeMode<S> ( 'edit' ), opt, st, props.mode )}
+    {displayWithNewOpt (st, props,opt, changeMode<S> ( 'view' ))}
+    {displayWithNewOpt (st, props,opt, changeMode<S> ( 'edit' ))}
     {jsonMe ( st )}</div>;
 
 export function sampleDisplayComponent<S> ( display: ( typeName: string ) => RunbookComponent<S, any> ): DisplayComponent<S> {
@@ -55,5 +55,5 @@ export const fixtureDisplayContext = <S extends any> ( display: ( typeName: stri
 
 
 export const fixtureNavContext = <S extends any> (): NavigationContext<S> => ({
-  displayInNav: ( path, t ) => path.length<1
+  displayInNav: ( path, t ) => path.length < 1
 })

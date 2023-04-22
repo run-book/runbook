@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { NameAnd } from "@runbook/utils";
 import { navigation } from "./navigation";
 import React from "react";
-import { DisplayStoryBook } from "@runbook/utilities_react";
+import { DisplayStoryBook } from "@runbook/runbook_state";
 import { fixtureNavContext, sampleDisplay } from "./display.fixture";
 import { focusQuery, identity } from "@runbook/optics";
 

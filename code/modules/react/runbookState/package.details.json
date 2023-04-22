@@ -1,6 +1,6 @@
 {
   "template": "react",
-  "name": "@runbook/utilities_react",
+  "name": "@runbook/runbook_state",
   "description": "",
   "packageJson": {
     "dependencies": {"storybook": "^7.0.6"},

@@ -1,5 +1,5 @@
 {
-  "name": "@runbook/instruments_react",
+  "name": "@runbook/components",
   "description": "",
   "version": "0.0.32",
   "main": "dist/index",
@@ -17,9 +17,7 @@
     ]
   },
   "dependencies": {
-    "@runbook/scriptinstruments": "0.0.32",
     "@runbook/optics": "0.0.32",
-    "@runbook/components": "0.0.32",
     "@runbook/runbook_state": "0.0.32",
     "react": "18.2.0",
     "react-dom": "18.2.0",

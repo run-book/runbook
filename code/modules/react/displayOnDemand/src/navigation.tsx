@@ -1,5 +1,5 @@
 import { isPrimitive, mapObjToArray, NameAnd } from "@runbook/utils";
-import { jsonMe, RunbookComponentWithProps, RunbookProps } from "@runbook/utilities_react";
+import { jsonMe, RunbookComponentWithProps, RunbookProps } from "@runbook/runbook_state";
 
 
 export interface NavigationContext<S> {

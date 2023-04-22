@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { focusQuery, identity, Optional, optionalForRefAndData } from "@runbook/optics";
 import { NameAnd, RefAndData, split } from "@runbook/utils";
 import React from "react";
-import { DisplayStoryBook, RunbookState } from "@runbook/utilities_react";
+import { DisplayStoryBook, RunbookState } from "@runbook/runbook_state";
 import { DisplayContext } from "./displayOnDemand";
 import { fixtureDisplayContext, fixtureDisplayWithMode, fixtureNavContext, sampleDisplay } from "./display.fixture";
 import { displayAndNav, RememberedMode, SelectionState } from "./displayAndNav";

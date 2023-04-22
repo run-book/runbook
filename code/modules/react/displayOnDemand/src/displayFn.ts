@@ -1,4 +1,4 @@
-import { RunbookComponent } from "@runbook/utilities_react";
+import { RunbookComponent } from "@runbook/runbook_state";
 import { NameAnd } from "@runbook/utils";
 import { getOptional, parsePath } from "@runbook/optics";
 

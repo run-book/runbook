@@ -6,7 +6,7 @@
     "dependencies": {   },
     "devDependencies": { "@sambego/storybook-state": "^2.0.1"}
   },
-  "links": ["@runbook/optics","@runbook/utilities_react"],
+  "links": ["@runbook/optics","@runbook/runbook_state"],
   "guards": {
     "compile": true,
     "publish": false,
