@@ -2,7 +2,7 @@ import { RunbookComponent, RunbookState } from "@runbook/utilities_react";
 import { NameAnd, RefAndData } from "@runbook/utils";
 import { navigation, NavigationContext } from "./navigation";
 import { DisplayContext, displayOnDemand } from "./displayOnDemand";
-import { focusOnJustData, focusOnJustRef } from "@runbook/optics/dist/src/refAndData.optics";
+import { focusOnJustData, focusOnJustRef } from "@runbook/optics";
 import { focusQuery } from "@runbook/optics";
 import { getMode } from "./mode";
 

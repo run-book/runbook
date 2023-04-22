@@ -14,12 +14,12 @@ export interface RunbookPropsWithChildren<C> extends RunbookProps<C> {
 }
 
 /** When we have a new optional we need to make sure that we call focusedon correctly so that react will detect changes */
-export function displayWithNewOpt<S, C> ( r: RunbookComponent<S, C>, opt: Optional<S, C>, st: RunbookState<S, any> ): JSX.Element {
+export function displayWithNewOpt<S, C> ( r: RunbookComponent<S, C>, opt: Optional<S, C>, st: RunbookState<S, any> , mode: string|undefined): JSX.Element {
   let runbookState = st.withOpt ( opt );
-  return r ( runbookState ) ( { focusedOn: runbookState.optGet () } );
+  return r ( runbookState ) ( { focusedOn: runbookState.optGet () , mode });
 }
-export function display<S, C> ( r: RunbookComponent<S, C>, st: RunbookState<S, C> ): JSX.Element {
-  return r ( st ) ( { focusedOn: st.optGet () } );
+export function display<S, C> ( r: RunbookComponent<S, C>, st: RunbookState<S, C>, mode: string |undefined): JSX.Element {
+  return r ( st ) ( { focusedOn: st.optGet () , mode });
 }
 
 

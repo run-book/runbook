@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { focusQuery, identity, Optional } from "@runbook/optics";
+import { focusQuery, identity, Optional, optionalForRefAndData } from "@runbook/optics";
 import { NameAnd, RefAndData, split } from "@runbook/utils";
 import React from "react";
 import { DisplayStoryBook, RunbookState } from "@runbook/utilities_react";
 import { DisplayContext } from "./displayOnDemand";
 import { fixtureDisplayContext, fixtureDisplayWithMode, fixtureNavContext, sampleDisplay } from "./display.fixture";
 import { displayAndNav, RememberedMode, SelectionState } from "./displayAndNav";
-import { optionalForRefAndData } from "@runbook/optics/dist/src/refAndData.optics";
 
 
 //exists to just finesse Storybook

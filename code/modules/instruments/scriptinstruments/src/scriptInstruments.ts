@@ -3,7 +3,7 @@ import { bracesVarDefn, derefence } from "@runbook/variables";
 import { ExecuteScriptFn, ExecuteScriptLinesFn } from "@runbook/scripts";
 import { DisplayFormat, stringToJson } from "@runbook/displayformat";
 import { composeNameAndValidators, mapObjToArray, NameAnd, NameAndValidator, orValidators, OS, toArray, validateArray, validateBoolean, validateChild, validateChildItemOrArray, validateChildNumber, validateChildString, validateChildValue, validateItemOrArray, validateNameAnd, validateNumber, validateString, validateValue } from "@runbook/utils";
-import { TableFormat } from "@runbook/displayformat/dist/src/displayFormat";
+import { TableFormat } from "@runbook/displayformat";
 
 /** This is when the script is shared on both linux and windows */
 export interface SharedScriptInstrument extends CommonScript, ScriptAndDisplay {

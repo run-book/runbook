@@ -22,9 +22,10 @@ export function fixtureDisplayWithoutMode<S> ( typeName: string ): RunbookCompon
 
 export const fixtureDisplayWithMode = <S extends any> ( opt: Optional<S, SelectionState> ) => ( typeName: string ): RunbookComponent<S, any> =>
   st => props => <div><h1>{typeName} - {modeFromProps ( props )}</h1>
-    {displayWithNewOpt ( changeMode<S> ( 'view' ), opt, st )}
-    {displayWithNewOpt ( changeMode<S> ( 'edit' ), opt, st )}
+    {displayWithNewOpt ( changeMode<S> ( 'view' ), opt, st, props.mode )}
+    {displayWithNewOpt ( changeMode<S> ( 'edit' ), opt, st, props.mode )}
     {jsonMe ( st )}</div>;
+
 export function sampleDisplayComponent<S> ( display: ( typeName: string ) => RunbookComponent<S, any> ): DisplayComponent<S> {
   return {
     instruments: {

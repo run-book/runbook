@@ -1,5 +1,5 @@
 import { display, jsonMe, RunbookComponent } from "@runbook/utilities_react";
-import { composeOptional, getOptional, Optional, parsePath } from "@runbook/optics";
+import { getOptional, parsePath } from "@runbook/optics";
 import { DisplayFn } from "./displayFn";
 
 export interface DisplayContext<S> {
@@ -21,7 +21,7 @@ export function displayOnDemand<S> ( dc: DisplayContext<S>, parentPath: string[]
     console.log ( 'displayOnDemand -st', newSt )
     console.log ( 'displayOnDemand - new props', newSt.optGet () )
     const displayFn: RunbookComponent<S, any> | undefined = dc.displayFn ( parentPath, item, props.mode || 'view', newSt.optGet () );
-    return typeof displayFn !== 'function' ? jsonMe ( st ) : display ( displayFn, newSt );
+    return typeof displayFn !== 'function' ? jsonMe ( st ) : display ( displayFn, newSt , props.mode);
   };
 }
 

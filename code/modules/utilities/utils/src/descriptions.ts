@@ -13,7 +13,7 @@ export function getDescription ( obj: any, fn?: ( o: any ) => string ): string {
     if ( description ) return description
     return description || fn ? fn ( obj ) : 'unknown'
   }
-  return fn ( obj )
+  return typeof fn ==='function'?fn ( obj ): 'unknown'
 }
 
 //Why are the descriptions fns? Because they are expensive and we can later turn them off (have it as a debug setting)
