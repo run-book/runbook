@@ -22,6 +22,7 @@ const meta: Meta<typeof Display> = {
 interface DisplayStoryArgs {
   parentPath: string
   item: string
+  mode: string
   data: DisplayStoryState
 }
 type  DisplayStoryState = NameAnd<any>
@@ -37,7 +38,7 @@ const dc: DisplayContext<DisplayStoryState> = fixtureDisplayContext ()
 const render = ( args: DisplayStoryArgs ) => {
   return <DisplayStoryBook s={args.data} opt={identity<DisplayStoryState> ()}>
     {( st: RunbookState<DisplayStoryState, DisplayStoryState> ) => props =>
-      displayOnDemand ( dc, split ( args.parentPath, '.' ), args.item ) ( st ) ( props )}
+      displayOnDemand ( dc, split ( args.parentPath, '.' ), args.item, args.mode ) ( st ) ( { ...props, mode: args.mode } )}
   </DisplayStoryBook>
 };
 
@@ -45,6 +46,7 @@ const render = ( args: DisplayStoryArgs ) => {
 export const Views: Story = {
   render: render,
   args: {
+    mode: 'overview',
     parentPath: '',
     item: 'views',
     data: sampleDisplay
@@ -59,9 +61,10 @@ export const ViewV1: Story = {
   }
 }
 
-export const ViewV2: Story = {
+export const ViewV2_Edit: Story = {
   render: render,
   args: {
+    mode: 'edit',
     parentPath: 'views',
     item: 'V2',
     data: sampleDisplay
@@ -69,17 +72,28 @@ export const ViewV2: Story = {
 }
 
 
-export const Instruments: Story = {
+export const InstrumentsUnsupportedDisplay: Story = {
   render: render,
   args: {
+    mode: 'overview',
     parentPath: '',
     item: 'instruments',
     data: sampleDisplay
   }
 }
-export const InstrumentI1: Story = {
+export const InstrumentI1View: Story = {
   render: render,
   args: {
+    mode: 'view',
+    parentPath: 'instruments',
+    item: 'I1',
+    data: sampleDisplay
+  }
+}
+export const InstrumentI1UnsupportedMode: Story = {
+  render: render,
+  args: {
+    mode: 'view',
     parentPath: 'instruments',
     item: 'I1',
     data: sampleDisplay

@@ -26,9 +26,25 @@ export function focusDataOn<S, Ref, T, K extends keyof T> ( refDataOpt: Optional
     },
     setOptional: ( s: S, v: RefAndData<Ref, T[K]> ) => {
       const existingRefAndData = getOptional ( refDataOpt, s )
-      const newData: T = refDataOpt ? { ...existingRefAndData.data } : {} as T
+      const newData: T = existingRefAndData ? { ...existingRefAndData.data } : {} as T
       newData[ key ] = v.data
       return setOptional ( refDataOpt, s, { ref: v.ref, data: newData } )
+    }
+  }
+}
+
+export function focusRefOn<S, Ref, T, K extends keyof Ref> ( refDataOpt: Optional<S, RefAndData<Ref, T>>, key: K ): OptionalR<S, RefAndData<Ref[K], T>> {
+  return {
+    getOptional: ( s: S ) => {
+      const refB = getOptional ( refDataOpt, s )
+      if ( refB === undefined ) return undefined
+      return { ref: refB.ref[ key ], data: refB.data }
+    },
+    setOptional: ( s: S, v: RefAndData<Ref[K], T> ) => {
+      const existingRefAndData = getOptional ( refDataOpt, s )
+      const newRef: Ref = existingRefAndData ? { ...existingRefAndData.ref } : {} as Ref
+      newRef[ key ] = v.ref
+      return setOptional ( refDataOpt, s, { ref: newRef, data: v.data } )
     }
   }
 }

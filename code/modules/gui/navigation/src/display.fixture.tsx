@@ -1,8 +1,8 @@
-import { jsonMe, RunbookComponent } from "@runbook/utilities_react";
+import { jsonMe, modeFromProps, RunbookComponent } from "@runbook/utilities_react";
 import { displayFnFromNameAnd, NameAndDisplayGroupAndItem } from "./displayFn";
 import { DisplayContext } from "./displayOnDemand";
 import { NavigationContext } from "./navigation";
-import { focusQuery, identity } from "@runbook/optics";
+import { DisplayAndNavReference } from "./displayAndNav";
 
 export const sampleDisplay = {
   instruments: { 'I1': { name: 'inst 1' }, 'I2': { name: 'inst 2' }, 'I3': { name: 'inst 3' } },
@@ -15,7 +15,7 @@ export const sampleDisplay = {
 };
 
 function display<S> ( typeName: string ): RunbookComponent<S, any> {
-  return st => props => <div><h1>{typeName}</h1>{jsonMe ( st )}</div>
+  return st => props => <div><h1>{typeName} - {modeFromProps ( props )}</h1>{jsonMe ( st )}</div>
 }
 export function sampleDisplayFn<S> (): NameAndDisplayGroupAndItem<S> {
   return {
@@ -37,14 +37,11 @@ export function sampleDisplayFn<S> (): NameAndDisplayGroupAndItem<S> {
 
 export const fixtureDisplayContext = <S extends any> (): DisplayContext<S> => {
   return {
-    displayFn: displayFnFromNameAnd ( sampleDisplayFn(), st => props => jsonMe ( st ) )
+    displayFn: displayFnFromNameAnd ( sampleDisplayFn (), st => props => jsonMe ( st ) )
   }
 }
 
-export interface HasSelectedForTest {
-  selected: string[]
-}
-export const fixtureNavContext = <S extends HasSelectedForTest> (): NavigationContext<S> => ({
 
+export const fixtureNavContext = <S extends any> (): NavigationContext<S> => ({
   displayInNav: ( path, t ) => true
 })

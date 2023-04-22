@@ -2,7 +2,6 @@ import {
   ExecuteOptions, executeSharedScriptInstrument, findScriptAndDisplay,
   SharedScriptInstrument, validateScriptInstrument, VaryingScriptInstrument
 } from "./scriptInstruments";
-import { echoScriptInstrument, gitScriptInstrument, lsScriptInstrument } from "@runbook/fixtures";
 
 const sharedI = ( script: string ): SharedScriptInstrument => ({
   type: "script",

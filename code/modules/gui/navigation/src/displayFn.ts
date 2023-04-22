@@ -2,7 +2,7 @@ import { RunbookComponent } from "@runbook/utilities_react";
 import { NameAnd } from "@runbook/utils";
 import { getOptional, parsePath } from "@runbook/optics";
 
-export type DisplayFn<S> = ( parentPath: string[], item: string, obj: any | undefined ) => RunbookComponent<S, any> | undefined
+export type DisplayFn<S> = ( parentPath: string[], item: string, mode: string, obj: any | undefined ) => RunbookComponent<S, any> | undefined
 
 
 export interface DisplayGroupAndItem<S> {
@@ -18,7 +18,7 @@ export interface NameAndDisplayGroupAndItem<S> extends NameAnd<DisplayGroupAndIt
 }
 
 export function displayFnFromNameAnd<S> ( na: NameAndDisplayGroupAndItem<S>, defFn: RunbookComponent<S, any> ): DisplayFn<S> {
-  return ( parentPath, item, obj ): RunbookComponent<S, any> => {
+  return ( parentPath, item, mode, obj ): RunbookComponent<S, any> => {
     const forParentPath: DisplayGroupAndItem<S> | RunbookComponent<S, any> | undefined = getOptional ( parsePath ( parentPath ), na );
     if ( forParentPath === undefined ) return defFn
     const path = [ ...parentPath, item ]

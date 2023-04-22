@@ -3,7 +3,7 @@ import { NameAnd } from "@runbook/utils";
 import { navigation } from "./navigation";
 import React from "react";
 import { DisplayStoryBook } from "@runbook/utilities_react";
-import { fixtureNavContext, HasSelectedForTest, sampleDisplay } from "./display.fixture";
+import { fixtureNavContext, sampleDisplay } from "./display.fixture";
 import { focusQuery, identity } from "@runbook/optics";
 
 
@@ -23,7 +23,7 @@ const meta: Meta<typeof Navigation> = {
 interface NavigationStoryArgs extends NavigationStoryState {
   data: NameAnd<any>
 }
-interface NavigationStoryState extends HasSelectedForTest {
+interface NavigationStoryState {
   selected: string[]
 }
 
@@ -34,7 +34,7 @@ type Story = StoryObj<NavigationStoryArgs>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
 
-const nc = fixtureNavContext<HasSelectedForTest> ()
+const nc = fixtureNavContext<NavigationStoryState> ()
 const selectionOpt = focusQuery ( identity<NavigationStoryState> (), 'selected' )
 const render = ( args: NavigationStoryArgs ) => {
   return <DisplayStoryBook s={{ selected: args.selected }} opt={selectionOpt}>
@@ -46,7 +46,7 @@ export const Primary: Story = {
   render: render,
   args: {
     selected: [ 'views' ],
-    data:sampleDisplay
+    data: sampleDisplay
   }
 }
 export const NoSelectedPage: Story = {
