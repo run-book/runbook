@@ -4,7 +4,7 @@ import { NameAnd, split } from "@runbook/utils";
 import React from "react";
 import { DisplayStoryBook, RunbookState } from "@runbook/utilities_react";
 import { DisplayContext, displayOnDemand } from "./displayOnDemand";
-import { fixtureDisplayContext, sampleDisplay } from "./display.fixture";
+import { fixtureDisplayContext, fixtureDisplayWithoutMode, sampleDisplay } from "./display.fixture";
 
 
 //exists to just finesse Storybook
@@ -30,7 +30,7 @@ type  DisplayStoryState = NameAnd<any>
 export default meta;
 type Story = StoryObj<DisplayStoryArgs>;
 
-const dc: DisplayContext<DisplayStoryState> = fixtureDisplayContext ()
+const dc: DisplayContext<DisplayStoryState> = fixtureDisplayContext<DisplayStoryState> (fixtureDisplayWithoutMode)
 
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
@@ -38,7 +38,7 @@ const dc: DisplayContext<DisplayStoryState> = fixtureDisplayContext ()
 const render = ( args: DisplayStoryArgs ) => {
   return <DisplayStoryBook s={args.data} opt={identity<DisplayStoryState> ()}>
     {( st: RunbookState<DisplayStoryState, DisplayStoryState> ) => props =>
-      displayOnDemand ( dc, split ( args.parentPath, '.' ), args.item, args.mode ) ( st ) ( { ...props, mode: args.mode } )}
+      displayOnDemand ( dc, split ( args.parentPath, '.' ), args.item ) ( st ) ( { ...props, mode: args.mode } )}
   </DisplayStoryBook>
 };
 
@@ -71,7 +71,6 @@ export const ViewV2_Edit: Story = {
   }
 }
 
-
 export const InstrumentsUnsupportedDisplay: Story = {
   render: render,
   args: {
@@ -85,6 +84,24 @@ export const InstrumentI1View: Story = {
   render: render,
   args: {
     mode: 'view',
+    parentPath: 'instruments',
+    item: 'I1',
+    data: sampleDisplay
+  }
+}
+export const InstrumentI1Run: Story = {
+  render: render,
+  args: {
+    mode: 'run',
+    parentPath: 'instruments',
+    item: 'I1',
+    data: sampleDisplay
+  }
+}
+export const InstrumentI1Edit: Story = {
+  render: render,
+  args: {
+    mode: 'edit',
     parentPath: 'instruments',
     item: 'I1',
     data: sampleDisplay

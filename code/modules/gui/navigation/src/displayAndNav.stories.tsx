@@ -4,8 +4,8 @@ import { NameAnd, RefAndData, split } from "@runbook/utils";
 import React from "react";
 import { DisplayStoryBook, RunbookState } from "@runbook/utilities_react";
 import { DisplayContext } from "./displayOnDemand";
-import { fixtureDisplayContext, fixtureNavContext, sampleDisplay } from "./display.fixture";
-import { displayAndNav, DisplayAndNavReference, RememberedMode } from "./displayAndNav";
+import { fixtureDisplayContext, fixtureDisplayWithMode, fixtureNavContext, sampleDisplay } from "./display.fixture";
+import { displayAndNav, RememberedMode, SelectionState } from "./displayAndNav";
 import { optionalForRefAndData } from "@runbook/optics/dist/src/refAndData.optics";
 
 
@@ -23,13 +23,13 @@ const meta: Meta<typeof DisplayAndNav> = {
 
 interface DisplayAndNavStoryArgs {
   path: string
-  rememberedMode?: RememberedMode
+
   mode?: string
   data: NameAnd<any>
 }
 
 interface DisplayAndNavStoryState {
-  selectionState: DisplayAndNavReference
+  selectionState: SelectionState
   data: NameAnd<any>
 }
 
@@ -37,22 +37,26 @@ export default meta;
 type Story = StoryObj<DisplayAndNavStoryArgs>;
 
 
-const dc: DisplayContext<DisplayAndNavStoryState> = fixtureDisplayContext ()
-
-const nc = fixtureNavContext<DisplayAndNavStoryState> ()
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
-const selectionOpt: Optional<DisplayAndNavStoryState, any> = focusQuery ( identity<DisplayAndNavStoryState> (), 'selectionState' )
-const dataOpt: Optional<DisplayAndNavStoryState, NameAnd<any>> = focusQuery ( identity<DisplayAndNavStoryState> (), 'data' )
-const refOpt: Optional<DisplayAndNavStoryState, RefAndData<DisplayAndNavReference, NameAnd<any>>> = optionalForRefAndData ( selectionOpt, dataOpt )
+let idOpt = identity<DisplayAndNavStoryState> ();
+const selectionOpt: Optional<DisplayAndNavStoryState, any> = focusQuery ( idOpt, 'selectionState' )
+const dataOpt: Optional<DisplayAndNavStoryState, NameAnd<any>> = focusQuery ( idOpt, 'data' )
+const refOpt: Optional<DisplayAndNavStoryState, RefAndData<SelectionState, NameAnd<any>>> = optionalForRefAndData ( selectionOpt, dataOpt )
+
+const dc: DisplayContext<DisplayAndNavStoryState> = fixtureDisplayContext<DisplayAndNavStoryState> ( fixtureDisplayWithMode(selectionOpt) )
+const nc = fixtureNavContext<DisplayAndNavStoryState> ()
 const render = ( args: DisplayAndNavStoryArgs ) => {
   const selection = split ( args.path, '.' )
 
-  const state: DisplayAndNavStoryState = { data: args.data, selectionState: { selection, rememberedMode: args.rememberedMode } }
+  const rememberedMode: RememberedMode = {}
+  rememberedMode[ args.path ] = args.mode as string
 
-  return <DisplayStoryBook s={state} opt={identity<DisplayAndNavStoryState> ()}>
+  const state: DisplayAndNavStoryState = { data: args.data, selectionState: { selection, rememberedMode } }
+
+  return <DisplayStoryBook s={state} opt={idOpt}>
     {st => props => {
-      let newSt: RunbookState<DisplayAndNavStoryState, RefAndData<DisplayAndNavReference, NameAnd<any>>> = st.withOpt ( refOpt );
+      let newSt: RunbookState<DisplayAndNavStoryState, RefAndData<SelectionState, NameAnd<any>>> = st.withOpt ( refOpt );
       return displayAndNav<DisplayAndNavStoryState> ( nc, dc ) ( newSt ) ( { focusedOn: newSt.optGet () } );
     }}
   </DisplayStoryBook>
@@ -70,6 +74,7 @@ export const ViewV1InViewMode: Story = {
   render: render,
   args: {
     path: 'views.v1',
+    mode: 'view',
     data: sampleDisplay
   }
 }
@@ -78,6 +83,7 @@ export const ViewV2InEditMode: Story = {
   render: render,
   args: {
     path: 'views.v2',
+    mode: 'edit',
     data: sampleDisplay
   }
 }

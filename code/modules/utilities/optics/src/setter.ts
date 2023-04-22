@@ -14,9 +14,8 @@ export function setOptionalOrOriginal<M, C> ( optic: SetOptionalFn<M, C>, model:
   const result = setOptionalFn ( optic ) ( model, child )
   return result === undefined ? model : result
 }
-export const mapOptionalOrOriginal = <M, C> ( optic: Optional<M, C>)=>( model: M, fn: ( child: C ) => C ): M => {
+export const mapOptionalOrOriginal = <M, C> ( optic: Optional<M, C>)=>( model: M, fn: ( child: C|undefined ) => C ): M => {
   const result = getOptional ( optic, model )
-  if ( result === undefined ) return model
   const newChild = fn ( result )
   return setOptionalOrOriginal ( optic, model, newChild )
 };

@@ -1,8 +1,10 @@
-import { jsonMe, modeFromProps, RunbookComponent } from "@runbook/utilities_react";
-import { displayFnFromNameAnd, NameAndDisplayGroupAndItem } from "./displayFn";
+import { jsonMe, modeFromProps, RunbookComponent, displayWithNewOpt } from "@runbook/utilities_react";
+import { DisplayComponent, displayFnFromNameAnd } from "./displayFn";
 import { DisplayContext } from "./displayOnDemand";
 import { NavigationContext } from "./navigation";
-import { DisplayAndNavReference } from "./displayAndNav";
+import { changeMode } from "./changeMode";
+import { SelectionState } from "./displayAndNav";
+import { Optional } from "@runbook/optics";
 
 export const sampleDisplay = {
   instruments: { 'I1': { name: 'inst 1' }, 'I2': { name: 'inst 2' }, 'I3': { name: 'inst 3' } },
@@ -14,17 +16,26 @@ export const sampleDisplay = {
   }
 };
 
-function display<S> ( typeName: string ): RunbookComponent<S, any> {
+export function fixtureDisplayWithoutMode<S> ( typeName: string ): RunbookComponent<S, any> {
   return st => props => <div><h1>{typeName} - {modeFromProps ( props )}</h1>{jsonMe ( st )}</div>
 }
-export function sampleDisplayFn<S> (): NameAndDisplayGroupAndItem<S> {
+
+export const fixtureDisplayWithMode = <S extends any> ( opt: Optional<S, SelectionState> ) => ( typeName: string ): RunbookComponent<S, any> =>
+  st => props => <div><h1>{typeName} - {modeFromProps ( props )}</h1>
+    {displayWithNewOpt ( changeMode<S> ( 'view' ), opt, st )}
+    {displayWithNewOpt ( changeMode<S> ( 'edit' ), opt, st )}
+    {jsonMe ( st )}</div>;
+export function sampleDisplayFn<S> ( display: ( typeName: string ) => RunbookComponent<S, any> ): DisplayComponent<S> {
   return {
     instruments: {
-      __item: display ( 'Instrument' )
+      __item: display ( 'Instrument' ),
+      __edit: display ( 'Edit Instrument' ),
+      __run: display ( 'Run Instrument' )
     },
     views: {
       __item: display ( 'View' ),
-      __group: display ( 'Views' )
+      __edit: display ( 'Edit' ),
+      __group: display ( 'View overview' )
     },
     ontology: {
       __group: display ( 'Ontology' ),
@@ -35,9 +46,9 @@ export function sampleDisplayFn<S> (): NameAndDisplayGroupAndItem<S> {
   }
 }
 
-export const fixtureDisplayContext = <S extends any> (): DisplayContext<S> => {
+export const fixtureDisplayContext = <S extends any> ( display: ( typeName: string ) => RunbookComponent<S, any> ): DisplayContext<S> => {
   return {
-    displayFn: displayFnFromNameAnd ( sampleDisplayFn (), st => props => jsonMe ( st ) )
+    displayFn: displayFnFromNameAnd ( sampleDisplayFn ( display ), st => props => jsonMe ( st ) )
   }
 }
 
