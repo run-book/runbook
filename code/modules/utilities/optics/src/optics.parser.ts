@@ -1,8 +1,9 @@
 import { appendItem, composeOptional, nthItem, Optional } from "./optional";
 import { focusQuery } from "./focuson";
 import { identity } from "./iso";
+import { addDescription } from "@runbook/utils";
 
-export function parsePath ( path: string[] ) {
+export function parsePath<M, C> ( path: string[] ): Optional<M, C> {
   try {
     function processPart ( acc: Optional<any, any>, part: string ): Optional<any, any> {
       try {
@@ -18,7 +19,7 @@ export function parsePath ( path: string[] ) {
         throw e
       }
     }
-    return path.reduce ( processPart, identity<any> () )
+    return addDescription ( path.reduce ( processPart, identity<any> () ), () =>path.join ( "." ) )
   } catch
     ( e: any ) {
     console.log ( 'Error in parsePath', path, e )

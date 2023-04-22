@@ -1,5 +1,6 @@
 import { ReverseGet } from "./setter";
 import { Getter } from "./getter";
+import { addDescription } from "@runbook/utils";
 
 export interface Iso<M, C> extends Getter<M, C>, ReverseGet<M, C> {
   get: ( model: M ) => C
@@ -17,10 +18,10 @@ export function composeIso<M, C, GC> ( first: Iso<M, C>, second: Iso<C, GC> ): I
 }
 
 export function identity<M> (): Iso<M, M> {
-  return {
+  return addDescription ( {
     get: ( model: M ) => model,
     reverseGet: ( child: M ) => child
-  }
+  }, () =>'identity' )
 }
 
 export function iso2<T1, T2, Res> ( to: ( t1: T1, t2: T2 ) => Res, from: ( res: Res ) => [ T1, T2 ] ): Iso<[ T1, T2 ], Res> {

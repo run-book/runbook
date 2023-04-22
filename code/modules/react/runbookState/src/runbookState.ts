@@ -1,4 +1,4 @@
-import { focusQuery, getOptional, Optional, setOptional, setOptionalOrOriginal } from "@runbook/optics";
+import { composeOptional, focusQuery, getOptional, Optional, setOptional, setOptionalOrOriginal } from "@runbook/optics";
 
 export interface RunbookProps<C> {
   focusedOn?: C
@@ -48,5 +48,6 @@ export class RunbookState<S, C> {
   optGet (): C | undefined { return getOptional ( this.opt, this.state ) }
   get (): C { return getOptional ( this.opt, this.state )!}
   withOpt<D> ( opt: Optional<S, D> ) {return new RunbookState ( this.state, opt, this.setS )}
+  chainOpt<D> ( opt: Optional<C, D> ) {return new RunbookState ( this.state, composeOptional(this.opt,opt), this.setS )}
 }
 

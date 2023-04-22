@@ -4,6 +4,7 @@ import { setOptionalFn } from "./setter";
 import { getOptionalFn } from "./getter";
 import { Iso } from "./iso";
 import { PrismR } from "./prism";
+import { appendDescription, getDescription } from "@runbook/utils";
 
 export type Optional<M, C> = OptionalR<M, C> | Iso<M, C> | LensR<M, C> | PrismR<M, C>
 export interface HasOptional<M, C> {
@@ -23,7 +24,7 @@ export function composeOptional<M, C, GC> ( first: Optional<M, C>, second: Optio
   const getSecond: ( model: C ) => (GC | undefined) = getOptionalFn ( second )
   const setFirst: ( model: M, child: C ) => (M | undefined) = setOptionalFn ( first )
   const setSecond: ( model: C, child: GC ) => (C | undefined) = setOptionalFn ( second )
-  return {
+  return appendDescription({
     getOptional: ( model: M ): (GC | undefined) => {
       let first = getFirst ( model );
       if ( first === undefined ) return undefined;
@@ -36,7 +37,7 @@ export function composeOptional<M, C, GC> ( first: Optional<M, C>, second: Optio
       if ( newFirst === undefined ) return undefined;
       return setFirst ( model, newFirst );
     }
-  }
+  },first, () =>getDescription(second))
 }
 
 export function nthItem<M> ( index: number ): OptionalR<M[], M> {

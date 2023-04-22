@@ -37,14 +37,13 @@ export default meta;
 type Story = StoryObj<DisplayAndNavStoryArgs>;
 
 
-
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
 let idOpt = identity<DisplayAndNavStoryState> ();
 const selectionOpt: Optional<DisplayAndNavStoryState, any> = focusQuery ( idOpt, 'selectionState' )
 const dataOpt: Optional<DisplayAndNavStoryState, NameAnd<any>> = focusQuery ( idOpt, 'data' )
-const refOpt: Optional<DisplayAndNavStoryState, RefAndData<SelectionState, NameAnd<any>>> = optionalForRefAndData ( selectionOpt, dataOpt )
+const refAndDataOpt: Optional<DisplayAndNavStoryState, RefAndData<SelectionState, NameAnd<any>>> = optionalForRefAndData ( selectionOpt, dataOpt )
 
-const dc: DisplayContext<DisplayAndNavStoryState> = fixtureDisplayContext<DisplayAndNavStoryState> ( fixtureDisplayWithMode(selectionOpt) )
+const dc: DisplayContext<DisplayAndNavStoryState> = fixtureDisplayContext<DisplayAndNavStoryState> ( fixtureDisplayWithMode ( selectionOpt ) )
 const nc = fixtureNavContext<DisplayAndNavStoryState> ()
 const render = ( args: DisplayAndNavStoryArgs ) => {
   const selection = split ( args.path, '.' )
@@ -56,7 +55,7 @@ const render = ( args: DisplayAndNavStoryArgs ) => {
 
   return <DisplayStoryBook s={state} opt={idOpt}>
     {st => props => {
-      let newSt: RunbookState<DisplayAndNavStoryState, RefAndData<SelectionState, NameAnd<any>>> = st.withOpt ( refOpt );
+      let newSt: RunbookState<DisplayAndNavStoryState, RefAndData<SelectionState, NameAnd<any>>> = st.withOpt ( refAndDataOpt );
       return displayAndNav<DisplayAndNavStoryState> ( nc, dc ) ( newSt ) ( { focusedOn: newSt.optGet () } );
     }}
   </DisplayStoryBook>
@@ -73,7 +72,7 @@ export const Views: Story = {
 export const ViewV1InViewMode: Story = {
   render: render,
   args: {
-    path: 'views.v1',
+    path: 'views.V1',
     mode: 'view',
     data: sampleDisplay
   }
@@ -82,7 +81,7 @@ export const ViewV1InViewMode: Story = {
 export const ViewV2InEditMode: Story = {
   render: render,
   args: {
-    path: 'views.v2',
+    path: 'views.V2',
     mode: 'edit',
     data: sampleDisplay
   }
@@ -99,7 +98,7 @@ export const Instruments: Story = {
 export const InstrumentI1: Story = {
   render: render,
   args: {
-    path: 'instruments.i1',
+    path: 'instruments.I1',
     data: sampleDisplay
   }
 }

@@ -1,7 +1,7 @@
 {
-  "name": "@runbook/instruments_react",
+  "name": "@runbook/utilities_react",
   "description": "",
-  "version": "0.0.30",
+  "version": "0.0.32",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,12 +17,9 @@
     ]
   },
   "dependencies": {
-    "@runbook/scriptinstruments": "0.0.30",
-    "@runbook/optics": "0.0.30",
-    "@runbook/utilities_react": "0.0.30",
+    "storybook": "^7.0.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "storybook": "^7.0.6",
     "typescript": "^5.0.4"
   },
   "devDependencies": {

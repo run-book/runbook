@@ -30,7 +30,7 @@ type  DisplayStoryState = NameAnd<any>
 export default meta;
 type Story = StoryObj<DisplayStoryArgs>;
 
-const dc: DisplayContext<DisplayStoryState> = fixtureDisplayContext<DisplayStoryState> (fixtureDisplayWithoutMode)
+const dc: DisplayContext<DisplayStoryState> = fixtureDisplayContext<DisplayStoryState> (fixtureDisplayWithoutMode )
 
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc

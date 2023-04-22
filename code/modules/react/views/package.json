@@ -1,7 +1,7 @@
 {
-  "name": "@runbook/navigation_react",
+  "name": "@runbook/views_react",
   "description": "",
-  "version": "0.0.30",
+  "version": "0.0.32",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,15 +17,12 @@
     ]
   },
   "dependencies": {
-    "@runbook/optics": "0.0.30",
-    "@runbook/utilities_react": "0.0.30",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "storybook": "^7.0.6",
     "typescript": "^5.0.4"
   },
   "devDependencies": {
-    "@sambego/storybook-state": "^2.0.1",
     "@storybook/addon-essentials": "7.0.6",
     "@storybook/addon-interactions": "7.0.6",
     "@storybook/addon-links": "7.0.6",

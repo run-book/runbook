@@ -25,7 +25,7 @@ export const fixtureDisplayWithMode = <S extends any> ( opt: Optional<S, Selecti
     {displayWithNewOpt ( changeMode<S> ( 'view' ), opt, st )}
     {displayWithNewOpt ( changeMode<S> ( 'edit' ), opt, st )}
     {jsonMe ( st )}</div>;
-export function sampleDisplayFn<S> ( display: ( typeName: string ) => RunbookComponent<S, any> ): DisplayComponent<S> {
+export function sampleDisplayComponent<S> ( display: ( typeName: string ) => RunbookComponent<S, any> ): DisplayComponent<S> {
   return {
     instruments: {
       __item: display ( 'Instrument' ),
@@ -48,7 +48,7 @@ export function sampleDisplayFn<S> ( display: ( typeName: string ) => RunbookCom
 
 export const fixtureDisplayContext = <S extends any> ( display: ( typeName: string ) => RunbookComponent<S, any> ): DisplayContext<S> => {
   return {
-    displayFn: displayFnFromNameAnd ( sampleDisplayFn ( display ), st => props => jsonMe ( st ) )
+    displayFn: displayFnFromNameAnd ( sampleDisplayComponent ( display ), st => props => jsonMe ( st ) )
   }
 }
 
