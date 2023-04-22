@@ -2,6 +2,7 @@ import { display, displayChild, isRunbookStateFor, jsonMe, RunbookComponent, Run
 import { isSharedScriptInstrument, isVaryingScriptInstument, ScriptInstrument, SharedScriptInstrument, VaryingScriptInstrument } from "@runbook/scriptinstruments";
 import { displayLabeledChild, labelAnd, integerInput, textarea, textInput, optionsInput, textareaForObj, AttributeValueList, displayLabeledChildWithLabel } from "@runbook/components";
 import { CommonInstrument, ScriptAndDisplay } from "@runbook/instruments";
+import { Layout } from "@runbook/components/dist/src/layout";
 
 
 export function scriptAndDisplay<S, C extends ScriptAndDisplay> ( prefix: string | undefined ): RunbookComponent<S, C> {
@@ -30,17 +31,21 @@ export function displayCommonScriptInstrument<S, C extends CommonInstrument> ():
 export function displayVaryingInstrument<S> (): RunbookComponent<S, VaryingScriptInstrument> {
   return st => ( props ) =>
     <AttributeValueList {...props}>
-      {displayCommonScriptInstrument<S, VaryingScriptInstrument> () ( st ) ( props )}
-      {displayChild ( st, props, 'linux', scriptAndDisplay<S, ScriptAndDisplay> ( 'Linux' ), )}
-      {displayChild ( st, props, 'windows', scriptAndDisplay<S, ScriptAndDisplay> ( 'Windows' ), )}
+      <Layout layout={[[1,1,1]]}>
+        {displayCommonScriptInstrument<S, VaryingScriptInstrument> () ( st ) ( props )}
+        {displayChild ( st, props, 'linux', scriptAndDisplay<S, ScriptAndDisplay> ( 'Linux' ), )}
+        {displayChild ( st, props, 'windows', scriptAndDisplay<S, ScriptAndDisplay> ( 'Windows' ), )}
+      </Layout>
     </AttributeValueList>
 }
 
 export function displaySharedInstrument<S> (): RunbookComponent<S, SharedScriptInstrument> {
   return st => ( props ) =>
     <AttributeValueList {...props}>
+      <Layout layout={[[1,1]]}>
       {displayCommonScriptInstrument<S, SharedScriptInstrument> () ( st ) ( props )}
       {display ( st, props, scriptAndDisplay<S, SharedScriptInstrument> ( undefined ) )}
+      </Layout>
     </AttributeValueList>
 }
 

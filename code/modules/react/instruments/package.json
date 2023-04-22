@@ -27,9 +27,11 @@
     "typescript": "^5.0.4"
   },
   "devDependencies": {
+    "bootstrap": "^5.2.3",
     "@storybook/addon-essentials": "7.0.6",
     "@storybook/addon-interactions": "7.0.6",
     "@storybook/addon-links": "7.0.6",
+    "@storybook/addon-styling": "^1.0.1",
     "@storybook/blocks": "7.0.6",
     "@storybook/react": "7.0.6",
     "@storybook/react-webpack5": "7.0.6",

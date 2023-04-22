@@ -2,7 +2,7 @@ import { RunbookComponent } from "@runbook/runbook_state";
 import { makeProps } from "./display";
 
 
-export function textInput<S extends any> ( extra?: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> ): RunbookComponent<S, string | undefined> {
+export function textInput<S extends any> ( extra?: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> ): RunbookComponent<S, string > {
   return st => props =>
     <input  {...(makeProps ( extra, props ))} type='text' value={st.optGet () || ''} onChange={e => st.set ( e.target.value )}></input>
 }
