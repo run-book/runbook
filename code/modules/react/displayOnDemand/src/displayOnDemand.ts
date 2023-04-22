@@ -3,7 +3,6 @@ import { getOptional, parsePath } from "@runbook/optics";
 import { DisplayFn } from "./displayFn";
 
 export interface DisplayContext<S> {
-
   displayFn: DisplayFn<S>
 }
 

@@ -55,5 +55,5 @@ export const fixtureDisplayContext = <S extends any> ( display: ( typeName: stri
 
 
 export const fixtureNavContext = <S extends any> (): NavigationContext<S> => ({
-  displayInNav: ( path, t ) => true
+  displayInNav: ( path, t ) => path.length<1
 })
