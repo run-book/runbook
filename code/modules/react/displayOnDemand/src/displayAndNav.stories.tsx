@@ -52,10 +52,10 @@ const render = ( args: DisplayAndNavStoryArgs ) => {
 
   const state: DisplayAndNavStoryState = { data: args.data, selectionState: { selection, rememberedMode } }
 
-  return <DisplayStoryBook s={state} opt={idOpt}>
+  return <DisplayStoryBook s={state} opt={idOpt} mode={args.mode}>
     {st => props => {
       let newSt: RunbookState<DisplayAndNavStoryState, RefAndData<SelectionState, NameAnd<any>>> = st.withOpt ( refAndDataOpt );
-      return displayAndNav<DisplayAndNavStoryState> ( nc, dc ) ( newSt ) ( { focusedOn: newSt.optGet () } );
+      return displayAndNav<DisplayAndNavStoryState> ( nc, dc ) ( newSt ) ( { ...props, focusedOn: newSt.optGet () } );
     }}
   </DisplayStoryBook>
 }

@@ -37,7 +37,7 @@ type Story = StoryObj<NavigationStoryArgs>;
 const nc = fixtureNavContext<NavigationStoryState> ()
 const selectionOpt = focusQuery ( identity<NavigationStoryState> (), 'selected' )
 const render = ( args: NavigationStoryArgs ) => {
-  return <DisplayStoryBook s={{ selected: args.selected }} opt={selectionOpt}>
+  return <DisplayStoryBook s={{ selected: args.selected }} opt={selectionOpt} mode={undefined}>
     {st => props =>
       navigation ( nc ) ( st ) ( { ...props, parentPath: [], parent: args.data } )}
   </DisplayStoryBook>
