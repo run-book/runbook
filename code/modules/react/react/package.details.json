@@ -13,6 +13,6 @@
     "publish":   false,
     "test":      false,
     "react":     true,
-    "storybook": true
+    "storybook": 6000
   }
 }

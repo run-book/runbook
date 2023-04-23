@@ -10,6 +10,7 @@
   "guards":      {
     "compile": true,
     "publish": false,
-    "test":    false
+    "test":    false,
+    "storybook": 6003
   }
 }

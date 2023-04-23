@@ -17,6 +17,8 @@
     ]
   },
   "dependencies": {
+    "@runbook/views": "0.0.32",
+    "@runbook/fixtures": "0.0.32",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "storybook": "^7.0.6",

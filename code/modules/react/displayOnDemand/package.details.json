@@ -11,6 +11,7 @@
     "compile": true,
     "publish": false,
     "test": false,
-    "react": true
+    "react": true,
+    "storybook": 6002
   }
 }
