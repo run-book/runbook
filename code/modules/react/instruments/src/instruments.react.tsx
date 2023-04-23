@@ -1,8 +1,9 @@
-import { display, displayChild, isRunbookStateFor, RunbookComponent, RunbookState } from "@runbook/runbook_state";
+import { display, displayChild, displayWithNewOpt, isRunbookStateFor, RunbookComponent, RunbookState } from "@runbook/runbook_state";
 import { isSharedScriptInstrument, isVaryingScriptInstument, ScriptInstrument, SharedScriptInstrument, VaryingScriptInstrument } from "@runbook/scriptinstruments";
 import { AttributeValueList, displayLabeledChild, displayLabeledChildWithLabel, displayLabeledQueryChild, integerInput, Layout, optionsInput, textArea, textAreaForObj, textInput } from "@runbook/components";
 import { CleanInstrumentParam, CommonInstrument, ScriptAndDisplay } from "@runbook/instruments";
 import { mapObjToArray, NameAnd, RefAndData, safeObject } from "@runbook/utils";
+import { focusQuery, getOptional, Optional, optionalForRefAndData } from "@runbook/optics";
 
 
 export function scriptAndDisplay<S, C extends ScriptAndDisplay> ( prefix: string | undefined ): RunbookComponent<S, C> {
@@ -31,6 +32,7 @@ export function displayCommonScriptInstrument<S, C extends CommonInstrument> ():
 
 export function displayNormalParams<S> (): RunbookComponent<S, NameAnd<string>> {
   return st => ( props ) => {
+    console.log ( 'displayNormalParams', props.focusedOn )
     return <Layout layout={[]}>{
       mapObjToArray ( safeObject ( props.focusedOn ), ( v, k ) => displayLabeledChild ( st, props, textInput (), k ) )
     }</Layout>
@@ -40,15 +42,30 @@ export function displayNormalParams<S> (): RunbookComponent<S, NameAnd<string>> 
 export function displayParamsFromReference<S> (): RunbookComponent<S, RefAndData<NameAnd<CleanInstrumentParam>, NameAnd<string>>> {
   return st => ( props ) => {
     const data = safeObject ( props.focusedOn?.data )
-    mapObjToArray ( safeObject ( props.focusedOn?.ref ), ( { description, default: def }, k ) => {
-      if ( data[ k ] === undefined ) data[ k ] = def || ''
-    } )
+    console.log ( 'displayParamsFromReference - initial data', { ...data } )
+    console.log ( 'displayParamsFromReference - ref', props.focusedOn?.ref )
+    //Here there is a little pain. We have the clean instruments that are the reference info and the data that is the actual data.
+    //We need to display the data, handle the default and make sure the label comes from the description
+    //So we are walking down two data structures at once
+    const dataSt = st.focusQuery ( 'data' )
+    return <Layout layout={[]}>{
+      mapObjToArray ( safeObject ( props.focusedOn?.ref ), ( { description, default: def }, k ) =>
+        displayLabeledChild ( dataSt, props, textInput (), k ) ) //just need how to work out default
+    }</Layout>
+    console.log ( 'displayParamsFromReference - final data', data )
     return displayChild ( st, props, 'data', displayNormalParams () )
   }
 }
-export function runInstrument<S> (): RunbookComponent<S, RefAndData<ScriptInstrument, NameAnd<CleanInstrumentParam>>> {
+
+/** OK A bit of a cheat going on here. We add a 'paramData' field to the instrument which isn't there to store the data */
+export function displayParamsFromInstrument<S> (): RunbookComponent<S, ScriptInstrument> {
   return st => ( props ) => {
-    return <div>Not yet done</div>
+    const dataOpt = focusQuery ( st.opt, 'paramData' as any )// this is the cheat. We create this space for the data to live
+    const refOpt: Optional<S, NameAnd<CleanInstrumentParam>> = focusQuery ( st.opt, 'params' ) as Optional<S, NameAnd<CleanInstrumentParam>>
+    const instrAndDataOpt = optionalForRefAndData ( refOpt, dataOpt )
+    console.log ( 'displayParamsFromInstrument', instrAndDataOpt )
+    console.log ( 'displayParamsFromInstrument - date and ref', getOptional ( instrAndDataOpt, st.state ) )
+    return displayWithNewOpt ( st, props, instrAndDataOpt, displayParamsFromReference<S> () )
   }
 }
 

@@ -9,13 +9,13 @@ import { displayNormalParams, displayParamsFromReference, displayScriptInstrumen
 import { NameAnd } from "@runbook/utils";
 
 //exists to just finesse Storybook
-const ParamsFromInstrument = <S extends any> (): JSX.Element => <div></div>;
+const ParamsFromCleanInstrumentParams = <S extends any> (): JSX.Element => <div></div>;
 
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-const meta: Meta<typeof ParamsFromInstrument> = {
-  title: 'ParamsFromInstrument',
-  component: ParamsFromInstrument,
+const meta: Meta<typeof ParamsFromCleanInstrumentParams> = {
+  title: 'ParamsFromCleanInstrumentParams',
+  component: ParamsFromCleanInstrumentParams,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
