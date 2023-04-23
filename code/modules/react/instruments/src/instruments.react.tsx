@@ -1,8 +1,8 @@
-import { display, displayChild, isRunbookStateFor, RunbookComponent, RunbookProps, RunbookState } from "@runbook/runbook_state";
+import { display, displayChild, isRunbookStateFor, RunbookComponent, RunbookState } from "@runbook/runbook_state";
 import { isSharedScriptInstrument, isVaryingScriptInstument, ScriptInstrument, SharedScriptInstrument, VaryingScriptInstrument } from "@runbook/scriptinstruments";
-import { AttributeValueList, displayLabeledChild, displayLabeledChildWithLabel, displayLabeledQueryChild, integerInput, optionsInput, textArea, textAreaForObj } from "@runbook/components";
-import { CommonInstrument, ScriptAndDisplay } from "@runbook/instruments";
-import { Layout } from "@runbook/components";
+import { AttributeValueList, displayLabeledChild, displayLabeledChildWithLabel, displayLabeledQueryChild, integerInput, Layout, optionsInput, textArea, textAreaForObj, textInput } from "@runbook/components";
+import { CleanInstrumentParam, CommonInstrument, ScriptAndDisplay } from "@runbook/instruments";
+import { mapObjToArray, NameAnd, RefAndData, safeObject } from "@runbook/utils";
 
 
 export function scriptAndDisplay<S, C extends ScriptAndDisplay> ( prefix: string | undefined ): RunbookComponent<S, C> {
@@ -26,6 +26,29 @@ export function displayCommonScriptInstrument<S, C extends CommonInstrument> ():
       {displayLabeledChild ( st, props, textAreaForObj ( { rows: 3 } ), 'params' )}
       {displayLabeledChild ( st, props, textAreaForObj ( { rows: 5 } ), 'format' )}
     </>
+  }
+}
+
+export function displayNormalParams<S> (): RunbookComponent<S, NameAnd<string>> {
+  return st => ( props ) => {
+    return <Layout layout={[]}>{
+      mapObjToArray ( safeObject ( props.focusedOn ), ( v, k ) => displayLabeledChild ( st, props, textInput (), k ) )
+    }</Layout>
+  }
+}
+
+export function displayParamsFromReference<S> (): RunbookComponent<S, RefAndData<NameAnd<CleanInstrumentParam>, NameAnd<string>>> {
+  return st => ( props ) => {
+    const data = safeObject ( props.focusedOn?.data )
+    mapObjToArray ( safeObject ( props.focusedOn?.ref ), ( { description, default: def }, k ) => {
+      if ( data[ k ] === undefined ) data[ k ] = def || ''
+    } )
+    return displayChild ( st, props, 'data', displayNormalParams () )
+  }
+}
+export function runInstrument<S> (): RunbookComponent<S, RefAndData<ScriptInstrument, NameAnd<CleanInstrumentParam>>> {
+  return st => ( props ) => {
+    return <div>Not yet done</div>
   }
 }
 

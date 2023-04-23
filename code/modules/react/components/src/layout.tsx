@@ -1,5 +1,6 @@
 import { RunbookComponent } from "@runbook/runbook_state";
 import { toArray } from "@runbook/utils";
+import { ReactNode } from "react";
 
 
 export type RowDefn = number | number[]
@@ -7,7 +8,7 @@ export type LayoutDefn = RowDefn[]
 
 export interface LayoutProps {
   layout: LayoutDefn
-  children: JSX.Element[]
+  children: ReactNode
 }
 export interface LaidOutCell<T> {
   width: number
@@ -27,10 +28,10 @@ export function canonicalLayoutDefn ( layout: LayoutDefn ): number[][] {
   return layout.map ( canonicalRowDefn )
 
 }
-export function splitUpByLayout<T> ( layout: LayoutDefn, children: T[] ): LaidOutCell<T>[][] {
+export function splitUpByLayout<T> ( layout: LayoutDefn, children: T | T[] ): LaidOutCell<T>[][] {
   const canonicalLayout = canonicalLayoutDefn ( layout )
   const result: LaidOutCell<T>[][] = []
-  const copy: T[] = [ ...children ].reverse ()
+  const copy: T[] = [ ...toArray ( children ) ].reverse ()
   for ( let row = 0; row < canonicalLayout.length; row++ ) {
     const currentRow = canonicalLayout[ row ]
     const resultRow: LaidOutCell<T>[] = []
@@ -61,7 +62,7 @@ export interface LayoutClassNames {
 export const LayoutRaw = ( layoutClass: LayoutClassNames ) => <S extends any> ( props: LayoutProps ): JSX.Element => {
   const { layout, children } = props
   const laidOut = splitUpByLayout ( layout, children )
-  return (<div className={layoutClass.container}x-Layout={JSON.stringify(layout)}>
+  return (<div className={layoutClass.container} x-Layout={JSON.stringify ( layout )}>
       {laidOut.map ( ( row, i ) => (
         <div className={layoutClass.row} key={i}>
           {row.map ( ( cell, j ) => (
