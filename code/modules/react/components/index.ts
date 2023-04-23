@@ -1,5 +1,6 @@
 export * from './src/attributeValueList'
 export * from './src/display'
 export * from './src/labelAnd'
+export * from './src/layout'
 export * from './src/textarea'
 export * from './src/textInput'

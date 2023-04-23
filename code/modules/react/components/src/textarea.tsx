@@ -1,15 +1,12 @@
 import { RunbookComponent } from "@runbook/runbook_state";
 import { makeProps } from "./display";
-
-export function textarea<S extends any> ( extra?: React.DetailedHTMLProps<React.TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> ): RunbookComponent<S, string> {
-  return st => props =>
-    <textarea  {...(makeProps ( extra, props ))} value={st.get ()} onChange={e => st.set ( e.target.value )}>{st.optGet ()}</textarea>
-}
+import { commonStringForObjectInputComponentConfig, commonStringInputComponentConfig, InputComponentConfig, propsFrom } from "./component.config";
 
 
-export function textareaForObj<S extends any> ( extra?: React.DetailedHTMLProps<React.TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> ): RunbookComponent<S, any> {
-  return st => props => {
-    let value: string = JSON.stringify ( st.optGet (), null, 2 );
-    return <textarea {...(makeProps ( extra, props ))} value={value} onChange={e => st.set ( JSON.parse ( e.target.value ) )}/>;
-  }
-}
+export type TextAreaProps = React.DetailedHTMLProps<React.TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>
+export const commonTextArea = <S extends any, C> ( config: InputComponentConfig<C, TextAreaProps> ) => ( extra: TextAreaProps | undefined ): RunbookComponent<S, C> =>
+  st => props =>
+    <textarea  {...(propsFrom ( st, props, config, extra ))} />;
+
+export const textArea: <S>( extra?: TextAreaProps ) => RunbookComponent<S, string> = commonTextArea ( commonStringInputComponentConfig )
+export const textAreaForObj: <S>( extra?: TextAreaProps ) => RunbookComponent<S, any> = commonTextArea ( commonStringForObjectInputComponentConfig )

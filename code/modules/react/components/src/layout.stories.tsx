@@ -29,23 +29,24 @@ interface TestArgsForTextInput {
   layout: LayoutDefn
 }
 function makeTestState ( prefix: string, count: number ): TestStateForLayout {
-  return Array.from ( { length: count }, ( _, i ) => prefix + i )
+  return Array.from ( { length: count }, ( _, i ) => prefix + (i + 1) )
 }
 
 
 const render = ( args: TestArgsForTextInput ) => {
   return <DisplayStoryBook s={makeTestState ( 'text', 12 )} opt={identity<string[]> ()} mode={args.mode}>{
-    st => props => <Layout layout={args.layout || []}>
+    st => props => <div><h1>Layout: {JSON.stringify ( args.layout )}</h1> <Layout layout={args.layout || []}>
       {[ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ].map ( i =>
-        displayWithNewOpt<TestStateForLayout, string> ( st, props, composeOptional ( st.opt, nthItem<string> ( i ) ),
-          labelAnd<TestStateForLayout, string> ( args.label + i, textInput () ) ) )}</Layout>
+
+        displayWithNewOpt<TestStateForLayout, string> ( st, props, composeOptional ( st.opt, nthItem<string> ( i - 1 ) ),
+          labelAnd<TestStateForLayout, string> ( args.label + i, textInput ( {} ) ) ) )}</Layout></div>
   }</DisplayStoryBook>
 };
 
 export const Layout2_2: Story = {
   render,
   args: {
-    layout: [ [ 2, 2 ], [1], [ 2, 2 ] ],
+    layout: [ [ 2, 2 ], [ 1 ], [ 2, 2 ] ],
     label: "Some label",
     mode: 'view'
   },
@@ -53,7 +54,7 @@ export const Layout2_2: Story = {
 export const Layout3_2_1: Story = {
   render,
   args: {
-    layout: [ [ 2, 2, 2 ], [2,2]],
+    layout: [ [ 2, 2, 2 ], [ 2, 2 ] ],
     label: "Some label",
     mode: 'edit',
   },

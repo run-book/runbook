@@ -35,7 +35,7 @@ interface TestArgsForTextInput {
 let textL: Optional<TestStateForTextInput, string> = focusOn ( identity<TestStateForTextInput> (), 'text' )
 
 const render = ( args: TestArgsForTextInput ) => {
-  return <DisplayStoryBook s={{ text: args.text }} opt={textL as any} mode={args.mode}>{labelAnd ( args.label, textInput () )}</DisplayStoryBook>
+  return <DisplayStoryBook s={{ text: args.text }} opt={textL as any} mode={args.mode}>{labelAnd ( args.label, textInput ({}) )}</DisplayStoryBook>
 };
 
 export const Text_View: Story = {
