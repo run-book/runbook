@@ -24,7 +24,7 @@ export function display<S, C> ( st: RunbookState<S, C>, props: RunbookProps<any>
 }
 
 export function displayChild<S, C, K extends keyof C> ( st: RunbookState<S, C>, props: RunbookProps<any>, k: K, r: RunbookComponent<S, C[K]> ): JSX.Element {
-  return displayWithNewOpt ( st, {...props, id: `${props.id}.${k.toString()}`}, focusQuery ( st.opt, k ), r );
+  return displayWithNewOpt ( st, { ...props, id: `${props.id}.${k.toString ()}` }, focusQuery ( st.opt, k ), r );
 }
 
 export function isRunbookStateFor<S, C> ( st: RunbookState<S, any>, isa: ( c: C ) => c is C ): st is RunbookState<S, C> {
@@ -55,6 +55,7 @@ export class RunbookState<S, C> {
   optGet (): C | undefined { return getOptional ( this.opt, this.state ) }
   get (): C { return getOptional ( this.opt, this.state )!}
   withOpt<D> ( opt: Optional<S, D> ) {return new RunbookState ( this.state, opt, this.setS )}
+  withNewState ( s: S ) {return new RunbookState ( s, this.opt, this.setS )}
   chainOpt<D> ( opt: Optional<C, D> ) {return new RunbookState ( this.state, composeOptional ( this.opt, opt ), this.setS )}
 }
 

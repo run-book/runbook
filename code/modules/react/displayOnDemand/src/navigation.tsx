@@ -52,8 +52,8 @@ export function navigation<S> ( nc: NavigationContext<S> ): RunbookComponentWith
     const { focusedOn, parentPath, parent } = props
     if ( isPrimitive ( parent ) ) return <div>Primitive {parent}</div>
     if ( Array.isArray ( parent ) ) return <div>Array{jsonMe ( st )}</div>
-    return <ul>{mapObjToArray ( parent, ( v, item ) =>
-      <li key={item}>{navItem ( nc ) ( st ) ( { ...props, item } )}</li> )}
+    return <ul className='navbar-nav'>{mapObjToArray ( parent, ( v, item ) =>
+      <li className="navbar-nav" key={item}>{navItem ( nc ) ( st ) ( { ...props, item } )}</li> )}
     </ul>
   }
 

@@ -1,6 +1,4 @@
-import { SharedScriptInstrument, VaryingScriptInstrument } from "./scriptInstruments";
-
-export const lsScriptInstrument: VaryingScriptInstrument = {
+export const lsScriptInstrument = {
   "type": "script",
   "description": "A demo instrument that displays the directory contents",
   "params": { "dir": { "default": ".", "description": "The directory to display" } },
@@ -18,7 +16,7 @@ export const lsScriptInstrument: VaryingScriptInstrument = {
     }
   }
 }
-export const echoScriptInstrument: SharedScriptInstrument = {
+export const echoScriptInstrument = {
   "type": "script",
   "description": "An instrument that sends its arguments to standard output",
   "params": "*",
@@ -28,7 +26,7 @@ export const echoScriptInstrument: SharedScriptInstrument = {
   "format": { "type": "table", "hideHeader": 1 }
 }
 
-export const gitScriptInstrument: SharedScriptInstrument = {
+export const gitScriptInstrument = {
   "type": "script",
   "description": "This will (when working) go get or update the repo",
   "params": {

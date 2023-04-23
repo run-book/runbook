@@ -1,11 +1,10 @@
 import { focusOn, identity, Optional, optionalForRefAndData } from "@runbook/optics";
 
-import { CleanInstrumentParam, CommonInstrument } from "@runbook/instruments";
+import { CleanInstrumentParam } from "@runbook/instruments";
 import { Meta, StoryObj } from "@storybook/react";
-import { DisplayStoryBook, RunbookComponent } from "@runbook/runbook_state";
+import { DisplayStoryBook } from "@runbook/runbook_state";
 import React from "react";
-import { echoScriptInstrument, gitScriptInstrument, lsScriptInstrument, ScriptInstrument } from "@runbook/scriptinstruments";
-import { displayNormalParams, displayParamsFromReference, displayScriptInstrument } from "./instruments.react";
+import { displayParamsFromReference } from "./instruments.react";
 import { NameAnd } from "@runbook/utils";
 
 //exists to just finesse Storybook

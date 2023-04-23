@@ -25,9 +25,11 @@ export function isTransformClear<M, C> ( t: TransformCmd<M, C> ): t is Transform
 }
 
 export function applyOneTransformFn<M, C> ( m: M, t: TransformCmd<M, C> ): M {
-  if ( isTransformMap ( t ) ) mapOptionalOrOriginal ( t.optional ) ( m, t.map )
-  if ( isTransformSet ( t ) ) mapOptionalOrOriginal ( t.optional ) ( m, () => t.set )
-  if ( isTransformClear ( t ) ) mapOptionalOrOriginal ( t.optional ) ( m, () => undefined as any )
+  if ( isTransformMap ( t ) ) return mapOptionalOrOriginal ( t.optional ) ( m, t.map )
+  if ( isTransformSet ( t ) ) return mapOptionalOrOriginal ( t.optional ) ( m, () => t.set )
+  if ( isTransformClear ( t ) ) return mapOptionalOrOriginal ( t.optional ) ( m, () => undefined as any )
+  console.log ( 'isTransformSet', isTransformSet ( t ), (t as any).set )
+  console.log ( 'unknown transform', t )
   throw new Error ( 'unknown transform' + JSON.stringify ( t ) )
 }
 
@@ -36,6 +38,8 @@ export function transformToString<State, T> ( t: TransformCmd<State, T> ): strin
   if ( isTransformMap ( t ) ) return `tx:map(${desc}, ${getDescription ( t.map, o => 'unknownFn' )})`
   if ( isTransformSet ( t ) ) return `tx:set(${desc}, ${JSON.stringify ( t.set )})`
   if ( isTransformClear ( t ) ) return `tx:clear()`
+  console.log ( 'isTransformSet', isTransformSet ( t ), (t as any).set )
+  console.log ( 'unknown transform', t )
   throw new Error ( 'unknown transform' + JSON.stringify ( t ) )
 }
 

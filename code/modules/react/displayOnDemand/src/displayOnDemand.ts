@@ -1,6 +1,7 @@
 import { display, jsonMe, RunbookComponent } from "@runbook/runbook_state";
 import { getOptional, parsePath } from "@runbook/optics";
 import { DisplayFn } from "./displayFn";
+import { safeArray } from "@runbook/utils";
 
 export interface DisplayContext<S> {
   displayFn: DisplayFn<S>
@@ -11,10 +12,11 @@ export interface DisplayContext<S> {
  */
 export function displayOnDemand<S> ( dc: DisplayContext<S>, parentPath: string[], item: string ): RunbookComponent<S, any> {
   return st => props => {
-    let pathOpt = parsePath ( [ ...parentPath, item ] );
-    const newSt = st.chainOpt ( pathOpt )
     console.log ( 'displayOnDemand', parentPath, item, props.mode )
     console.log ( 'displayOnDemand -st.optGet', st.optGet () )
+    if ( item === undefined ) return jsonMe ( st )
+    let pathOpt = parsePath ( [ ...safeArray ( parentPath ), item ] );
+    const newSt = st.chainOpt ( pathOpt )
     console.log ( 'displayOnDemand -pathOpt', pathOpt )
     console.log ( 'data at end of path', getOptional ( pathOpt, st.optGet () ) )
     console.log ( 'displayOnDemand -st', newSt )

@@ -30,14 +30,6 @@ export function displayCommonScriptInstrument<S, C extends CommonInstrument> ():
   }
 }
 
-export function displayNormalParams<S> (): RunbookComponent<S, NameAnd<string>> {
-  return st => ( props ) => {
-    console.log ( 'displayNormalParams', props.focusedOn )
-    return <Layout layout={[]}>{
-      mapObjToArray ( safeObject ( props.focusedOn ), ( v, k ) => displayLabeledChild ( st, props, textInput (), k ) )
-    }</Layout>
-  }
-}
 
 export function displayParamsFromReference<S> (): RunbookComponent<S, RefAndData<NameAnd<CleanInstrumentParam>, NameAnd<string>>> {
   return st => ( props ) => {
@@ -48,17 +40,16 @@ export function displayParamsFromReference<S> (): RunbookComponent<S, RefAndData
     //We need to display the data, handle the default and make sure the label comes from the description
     //So we are walking down two data structures at once
     const dataSt = st.focusQuery ( 'data' )
-    return <Layout layout={[]}>{
+    return <>{
       mapObjToArray ( safeObject ( props.focusedOn?.ref ), ( { description, default: def }, k ) =>
         displayLabeledChild ( dataSt, props, textInput (), k ) ) //just need how to work out default
-    }</Layout>
-    console.log ( 'displayParamsFromReference - final data', data )
-    return displayChild ( st, props, 'data', displayNormalParams () )
+    }</>
+
   }
 }
 
 /** OK A bit of a cheat going on here. We add a 'paramData' field to the instrument which isn't there to store the data */
-export function displayParamsFromInstrument<S> (): RunbookComponent<S, ScriptInstrument> {
+export function displayParamsFromInstrument<S> (): RunbookComponent<S, ScriptInstrument> {//TODO Merge with displayParamsFromReference
   return st => ( props ) => {
     const dataOpt = focusQuery ( st.opt, 'paramData' as any )// this is the cheat. We create this space for the data to live
     const refOpt: Optional<S, NameAnd<CleanInstrumentParam>> = focusQuery ( st.opt, 'params' ) as Optional<S, NameAnd<CleanInstrumentParam>>
@@ -69,10 +60,23 @@ export function displayParamsFromInstrument<S> (): RunbookComponent<S, ScriptIns
   }
 }
 
+export function displayRunForInstrument<S> (): RunbookComponent<S, ScriptInstrument> {
+  return st => ( props ) => {
+    return <div>
+      <h1>Run</h1>
+      <h2>Params</h2>
+      {display ( st, props, displayParamsFromInstrument<S> () )}
+      <button>Run!</button>
+      <h2>Results</h2>
+      {displayLabeledChild ( st, { ...props, mode: 'view' }, textArea ( { rows: 5 } ), 'result' as any )}
+    </div>
+  }
+}
+
 export function displayVaryingInstrument<S> (): RunbookComponent<S, VaryingScriptInstrument> {
   return st => ( props ) =>
     <AttributeValueList {...props}>
-      <Layout layout={[ [ 1, 1, 1 ] ]}>
+      <Layout layout={[ [ 1, 1, 1 ] ]} component='displayVaryingInstrument'>
         {displayCommonScriptInstrument<S, VaryingScriptInstrument> () ( st ) ( props )}
         {displayChild ( st, props, 'linux', scriptAndDisplay<S, ScriptAndDisplay> ( 'Linux' ), )}
         {displayChild ( st, props, 'windows', scriptAndDisplay<S, ScriptAndDisplay> ( 'Windows' ), )}
@@ -83,7 +87,7 @@ export function displayVaryingInstrument<S> (): RunbookComponent<S, VaryingScrip
 export function displaySharedInstrument<S> (): RunbookComponent<S, SharedScriptInstrument> {
   return st => ( props ) =>
     <AttributeValueList {...props}>
-      <Layout layout={[ [ 1, 1 ] ]}>
+      <Layout layout={[ [ 1, 1 ] ]} component='displaySharedInstrument'>
         {displayCommonScriptInstrument<S, SharedScriptInstrument> () ( st ) ( props )}
         {display ( st, props, scriptAndDisplay<S, SharedScriptInstrument> ( undefined ) )}
       </Layout>
@@ -93,8 +97,11 @@ export function displaySharedInstrument<S> (): RunbookComponent<S, SharedScriptI
 export function displayScriptInstrument<S> (): RunbookComponent<S, ScriptInstrument> {
   return st => ( props ) => {
     return <div><h1>Instrument</h1>
-      {isRunbookStateFor ( st, isSharedScriptInstrument ) && display<S, SharedScriptInstrument> ( st, props, displaySharedInstrument<S> () )}
-      {isRunbookStateFor ( st, isVaryingScriptInstument ) && display<S, VaryingScriptInstrument> ( st, props, displayVaryingInstrument<S> () )}
+      <Layout layout={[ 1, 1, 1 ]} component='displayScriptInstrument'>
+        {isRunbookStateFor ( st, isSharedScriptInstrument ) && display<S, SharedScriptInstrument> ( st, props, displaySharedInstrument<S> () )}
+        {isRunbookStateFor ( st, isVaryingScriptInstument ) && display<S, VaryingScriptInstrument> ( st, props, displayVaryingInstrument<S> () )}
+        {display<S, ScriptInstrument> ( st, {...props, mode: 'run'}, displayRunForInstrument<S> () )}
+      </Layout>
     </div>
   }
 }

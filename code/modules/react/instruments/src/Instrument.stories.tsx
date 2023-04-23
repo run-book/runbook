@@ -4,8 +4,9 @@ import { CommonInstrument } from "@runbook/instruments";
 import { Meta, StoryObj } from "@storybook/react";
 import { DisplayStoryBook, RunbookComponent } from "@runbook/runbook_state";
 import React from "react";
-import { echoScriptInstrument, gitScriptInstrument, lsScriptInstrument, ScriptInstrument } from "@runbook/scriptinstruments";
+import { echoScriptInstrument, gitScriptInstrument, lsScriptInstrument } from "@runbook/fixtures";
 import { displayScriptInstrument } from "./instruments.react";
+import { ScriptInstrument } from "@runbook/scriptinstruments";
 
 //exists to just finesse Storybook
 const Instrument = <S extends any> (): JSX.Element => <div></div>;
@@ -34,8 +35,7 @@ interface TestArgsForInstrument {
 const instrumentL: Optional<TestStateForInstrument, ScriptInstrument> = focusOn ( identity<TestStateForInstrument> (), 'instrument' )
 
 function scriptInstrument ( mode: string ): RunbookComponent<TestStateForInstrument, ScriptInstrument> {
-  if ( mode === 'view' ) return displayScriptInstrument<TestStateForInstrument> ()
-  return st => props => <div>Unknown mode</div>
+ return displayScriptInstrument<TestStateForInstrument> ()
 }
 const render = ( args: TestArgsForInstrument ) => {
   return <DisplayStoryBook s={{ instrument: args.instrument }} opt={instrumentL} mode={args.mode}>{scriptInstrument ( args.mode )}</DisplayStoryBook>
@@ -44,23 +44,23 @@ export const EchoView: Story = {
   render,
   args: {
     mode: 'view',
-    instrument: echoScriptInstrument
+    instrument: echoScriptInstrument as ScriptInstrument
   },
 }
 
-export const Ls: Story = {
+export const LsEdit: Story = {
   render,
   args: {
-    mode: 'view',
-    instrument: lsScriptInstrument
+    mode: 'edit',
+    instrument: lsScriptInstrument as ScriptInstrument
   },
 }
 
-export const Git: Story = {
+export const GitRun: Story = {
   render,
   args: {
-    mode: 'view',
-    instrument: gitScriptInstrument
+    mode: 'run',
+    instrument: gitScriptInstrument as ScriptInstrument
   },
 }
 

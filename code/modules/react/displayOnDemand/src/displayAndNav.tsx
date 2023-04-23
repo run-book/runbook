@@ -34,7 +34,7 @@ export function displayAndNav<S extends any> ( nc: NavigationContext<S>, dc: Dis
     console.log ( 'item', item )
     console.log ( 'mode', mode )
     return <div>
-      {navigation ( nc ) ( stForNav ) ( { focusedOn: stForNav.optGet (), parent: stForDisplay.optGet (), parentPath: [] } )}
+      <nav className='navbar navbar-expand-lg navbar-light bg-light'>     {navigation ( nc ) ( stForNav ) ( { focusedOn: stForNav.optGet (), parent: stForDisplay.optGet (), parentPath: [] } )}</nav>
       {displayOnDemand ( dc, parentPath, item ) ( stForDisplay ) ( { focusedOn: stForDisplay.optGet (), mode } )}
     </div>
   }

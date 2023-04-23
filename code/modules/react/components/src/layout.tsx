@@ -8,6 +8,7 @@ export type LayoutDefn = RowDefn[]
 
 export interface LayoutProps {
   layout: LayoutDefn
+  component?:string
   children: ReactNode
 }
 export interface LaidOutCell<T> {
@@ -58,11 +59,12 @@ export interface LayoutClassNames {
   container: string
   row: string
   col: ( width: number ) => string
+
 }
 export const LayoutRaw = ( layoutClass: LayoutClassNames ) => <S extends any> ( props: LayoutProps ): JSX.Element => {
-  const { layout, children } = props
+  const { layout, children,component } = props
   const laidOut = splitUpByLayout ( layout, children )
-  return (<div className={layoutClass.container} x-Layout={JSON.stringify ( layout )}>
+  return (<div className={layoutClass.container} x-Layout={JSON.stringify ( layout )} x-component={component}>
       {laidOut.map ( ( row, i ) => (
         <div className={layoutClass.row} key={i}>
           {row.map ( ( cell, j ) => (
