@@ -1,2 +1,2 @@
-export * from './src/example'
+export * from './src/view.react'
 

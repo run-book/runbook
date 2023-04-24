@@ -4,7 +4,7 @@ export function information<S extends any> ( title: string, info: string ): Runb
   return ( st: any ) => props => {
     return <div>
       <h1>{title}</h1>
-      <p>{info}</p>
+      <pre>{info}</pre>
     </div>
 
   }

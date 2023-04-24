@@ -9,8 +9,8 @@ export function displayFetcher<S> ( name: string ): RunbookComponent<S, Fetcher>
     return <div>
       <h1>{name}</h1>
       <Layout layout={[]} component='displayFetcher'>
-        {displayLabeledChild ( st, props, textAreaForObj ( { rows: 10 } ), 'ifTrue' )}
         {displayLabeledChild ( st, props, textAreaForObj ( { rows: 10 } ), 'condition' )}
+        {displayLabeledChild ( st, props, textAreaForObj ( { rows: 10 } ), 'ifTrue' )}
       </Layout>
     </div>
   };

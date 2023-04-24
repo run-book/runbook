@@ -7,7 +7,7 @@
     "devDependencies": {"react-scripts": "^5.0.1"},
     "scripts":         {"start": "react-scripts start"}
   },
-  "links":       ["@runbook/instruments_react", "@runbook/fixtures", "@runbook/store"],
+  "links":       ["@runbook/instruments_react", "@runbook/fixtures", "@runbook/store", "@runbook/views_react"],
   "guards":      {
     "compile":   true,
     "publish":   false,

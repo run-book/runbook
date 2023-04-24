@@ -17,6 +17,7 @@ import { createRoot } from "react-dom/client";
 import { addCmd, addListener, FullStore, newStore, startProcessing, Store } from "@runbook/store";
 import { displayScriptInstrument } from "@runbook/instruments_react";
 import { information } from "@runbook/components/dist/src/information";
+import { displayView } from "@runbook/views_react";
 
 
 export function getElement ( name: string ): HTMLElement {
@@ -53,10 +54,16 @@ const displayStructure: DisplayComponent<FullState> = {
     On their own they are not very useful, but they can be combined into views that show the data in a useful way.
     ` )
   },
-  views: {
-    __item: fixtureDisplayWithMode ( selectionStateOpt ) ( 'View' ),
+  view: {
+    __item: displayView('someName'),
     __edit: fixtureDisplayWithMode ( selectionStateOpt ) ( 'Edit' ),
-    __group: fixtureDisplayWithMode ( selectionStateOpt ) ( 'View overview' )
+    __group: information('Views',`Views are a way of combining instruments into a useful display. 
+    
+   Often they will 'go get something'  and then when found will 'go get something else'
+   
+   
+    
+    `)
   },
   mereology: {
     __item: fixtureDisplayWithMode ( selectionStateOpt ) ( 'Mereology' ),

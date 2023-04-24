@@ -2,6 +2,7 @@ import { mereology } from "./mereology.fixture";
 import { inheritanceDefn } from "./inheritance.fixture";
 import { ref } from "./reference.fixture";
 import { echoScriptInstrument, gitScriptInstrument, lsScriptInstrument } from "./instrument.fixture";
+import { fixtureView } from "./view.fixture";
 
 export const config = ({
   mereology,
@@ -18,5 +19,5 @@ export const config = ({
     ls: lsScriptInstrument,
     echo: echoScriptInstrument
   },
-  view: {}
+  view: {aView: fixtureView}
 })
