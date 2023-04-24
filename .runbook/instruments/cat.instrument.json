@@ -1,0 +1,20 @@
+{
+  "instrument": {
+    "catCsv": {
+      "type":        "script",
+      "description": "A demo instrument that displays a csv file",
+      "params":      {"file": {"description": "The file to display"}},
+      "staleness":   5000,
+      "cost":        "low",
+      "format":      {"type": "table", "hideHeader": 1},
+      "windows":     {
+        "script": "type {file}",
+        "format": {"type": "table", "hideHeader": 1}
+      },
+      "linux":       {
+        "script": "cat {file}",
+        "format": {"type": "table", "hideHeader": 1}
+      }
+    }
+  }
+}

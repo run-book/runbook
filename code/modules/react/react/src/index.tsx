@@ -46,8 +46,6 @@ const refAndDataOpt: Optional<FullState, RefAndData<SelectionState, CleanConfig>
 const displayStructure: DisplayComponent<FullState> = {
   instrument: {
     __item: displayScriptInstrument (),
-    __edit: fixtureDisplayWithMode ( selectionStateOpt ) ( 'Edit Instrument' ),
-    __run: fixtureDisplayWithMode ( selectionStateOpt ) ( 'Run Instrument' ),
     __group: information ( "Instruments", `Instruments are the basic components that 'get something'.
     Typically they are a bash script or a javascript component that returns either a column of data or javascript.
     
@@ -95,11 +93,14 @@ const dc: DisplayContext<FullState> = { displayFn }
 let initial: FullState = { config: config as CleanConfig, selectionState: { selection: [ 'situation' ] } };
 
 const store: Store<FullState> = newStore ( initial, 10 )
+
+
 const rs = new RunbookState<FullState, RefAndData<SelectionState, CleanConfig>> ( initial, refAndDataOpt,
   s => {
     console.log ( 'addCmd', s )
     addCmd ( store, { set: s, optional: idOpt } );
   } )
+
 addListener ( store, {
   updated: async ( s: FullState ) => {
     console.log ( 'updated', s );

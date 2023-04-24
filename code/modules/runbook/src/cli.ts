@@ -25,6 +25,7 @@ export function makeProgram ( cwd: string, withFromsConfig: CleanConfig, cleanCo
     .version ( version )
 
   const instruments = program.command ( 'instrument' ).description ( `Instruments are the raw tools that find things out` )
+
   mapObjValues ( safeObject ( cleanConfig?.instrument ), ( instrument, name ) =>
     addInstrumentCommand ( cwd, instruments.command ( name ), name, instrument, withFromsConfig ) )
 
