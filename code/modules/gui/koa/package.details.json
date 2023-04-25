@@ -1,0 +1,21 @@
+{
+  "template":    "typescript",
+  "name":        "@runbook/koa",
+  "description": "",
+  "packageJson": {
+    "dependencies":    {
+      "koa": "^2.14.2"
+    },
+    "devDependencies": {
+      "ts-node": "^10.9.1"
+    },
+    "scripts":         {"start": "react-scripts start"}
+  },
+  "links":       [],
+  "guards":      {
+    "compile": true,
+    "publish": false,
+    "test":    false,                                      
+    "react":   true
+  }
+}
