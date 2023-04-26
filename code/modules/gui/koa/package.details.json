@@ -7,10 +7,14 @@
       "koa": "^2.14.2"
     },
     "devDependencies": {
+      "jest": "29.5.0",
+      "ts-jest": "29.1.0",
       "ts-node": "^10.9.1",
-      "supertest": "^6.3.3"
+      "typescript": "^4.1.5"
     },
-    "scripts":         {"start": "react-scripts start"}
+    "scripts":         {
+      "start": "react-scripts start"
+    }
   },
   "links":       [],
   "guards":      {
