@@ -10,6 +10,7 @@ const defaultFiles = new Set(['index.html', 'default.html']);
 // Define default content types for the most common file types
 const contentTypes: Record<string, string> = {
   '.html': 'text/html',
+  '.txt': 'text/plain',
   '.htm': 'text/html',
   '.css': 'text/css',
   '.js': 'application/javascript',
