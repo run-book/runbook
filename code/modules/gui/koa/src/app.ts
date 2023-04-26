@@ -10,15 +10,20 @@ const defaultFiles = new Set(['index.html', 'default.html']);
 // Define default content types for the most common file types
 const contentTypes: Record<string, string> = {
   '.html': 'text/html',
+  '.htm': 'text/html',
   '.css': 'text/css',
   '.js': 'application/javascript',
   '.json': 'application/json',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
   '.gif': 'image/gif',
   '.svg': 'image/svg+xml',
-  '.pdf': 'application/pdf',
-  '.txt': 'text/plain',
+  '.ico': 'image/x-icon',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.ttf': 'font/ttf',
+  '.otf': 'font/otf',
 };
 
 async function serveStatic(ctx: Context, filePath: string) {
