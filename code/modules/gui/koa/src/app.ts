@@ -99,4 +99,19 @@ if (require.main === module) {
   });
 }
 
+// function to start app listen on port 3000 also able to cancel
+
+export function start(): http.Server {
+  const server = http.createServer(app.callback());
+  server.listen(3000, () => {
+    console.log(`Server started on http://localhost:3000 with root directory ${process.env.ROOT_DIR || 'public'}`);
+  });
+  return server;
+}
+
+export function stop(server: http.Server) {
+  server.close();
+}
+
+
 export default app;

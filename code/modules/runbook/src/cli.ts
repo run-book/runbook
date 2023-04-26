@@ -6,6 +6,8 @@ import { addAllReferenceCommands, addOntologyCommand } from "./reference.command
 import { addViewCommand } from "./view.command";
 import { addInstrumentCommand } from "./instrument.command";
 import { addConfigCommand } from "./config.command";
+import koa from "@runbook/koa";
+
 
 
 function argumentsForInstrument ( command: Command, instrument: ScriptInstrument ) {
@@ -41,8 +43,8 @@ export function makeProgram ( cwd: string, withFromsConfig: CleanConfig, cleanCo
   addConfigCommand ( program.command ( 'config' ).description ( 'Views the cleanConfig and any issues with it' ), cleanConfig, cwd );
 
   const gui: Command = program.command ( 'gui' ).description ( 'Starts the gui' ).action ( () => {
-
-    console.log ( 'starting gui' )
+    process.env.ROOT_DIR = './';
+    koa.start();	
   } )
 
   return program
