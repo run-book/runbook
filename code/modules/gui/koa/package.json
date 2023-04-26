@@ -19,7 +19,8 @@
   "dependencies": {
     "koa": "^2.14.2",
     "react": "16.14.0",
-    "react-dom": "16.14.0"
+    "react-dom": "16.14.0",
+    "supertest": "^6.3.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.6",
@@ -59,6 +60,7 @@
   "repository": "git@github.com:run-book/runbook.git",
   "scripts": {
     "test": "jest --config jest.config.json --env node",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "start": "ts-node ./src/app.ts "
   }
 }
