@@ -49,3 +49,12 @@ export function nameValueToNameAndString ( s: string[] ): ErrorsAnd<NameAnd<stri
     return { errors: [ e.toString () ] }
   }
 }
+
+export function isOnPath ( path: string[] | undefined, ps: string[] ) {
+  if ( !path ) return false
+  if ( ps.length > path.length ) return false
+  for ( let i = 0; i < ps.length; i++ ) {
+    if ( ps[ i ] !== path[ i ] ) return false
+  }
+  return true
+}

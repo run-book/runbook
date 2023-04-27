@@ -3,6 +3,7 @@
   "name":        "@runbook/react",
   "description": "",
   "packageJson": {
+    "files":           ["build/"],
     "dependencies":    {},
     "devDependencies": {"react-scripts": "^5.0.1"},
     "scripts":         {"start": "react-scripts start"}

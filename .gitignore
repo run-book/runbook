@@ -1,5 +1,6 @@
 # Laoban ignores
 .cache/
+build/
 .session/
 .log
 .status

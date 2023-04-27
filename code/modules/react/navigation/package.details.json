@@ -1,0 +1,17 @@
+{
+  "template": "react",
+  "name": "@runbook/navigation",
+  "description": "",
+  "packageJson": {
+    "dependencies": {   },
+    "devDependencies": { "@sambego/storybook-state": "^2.0.1"}
+  },
+  "links": ["@runbook/optics","@runbook/runbook_state"],
+  "guards": {
+    "compile": true,
+    "publish": false,
+    "test": false,
+    "react": true,
+    "storybook": 6005
+  }
+}
