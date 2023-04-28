@@ -1,5 +1,5 @@
-import { applyMenuDefn, MenuDefnFns, MenuFn } from "./navigation";
-import { menuDefn, sampleDisplay } from "./navigation.fixture";
+import { applyMenuDefn, MenuDefnFns, MenuFn } from "./menu";
+import { menuDefn, sampleDisplay } from "./menu.fixture";
 import { flatMap, indentAll, safeArray } from "@runbook/utils";
 
 

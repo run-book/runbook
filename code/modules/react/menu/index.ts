@@ -1,2 +1,3 @@
-export * from './src/navigation'
-export * from './src/bootstrapNav'
+export * from './src/bootstrapMenu'
+export * from './src/changeMode'
+export * from './src/menu'

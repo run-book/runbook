@@ -1,5 +1,5 @@
 import { RunbookComponent } from "@runbook/runbook_state";
-import { RememberedMode, SelectionState } from "./navigation";
+import { RememberedMode, SelectionState } from "./menu";
 import { focusQuery, Optional } from "@runbook/optics";
 
 export function changeMode<S> ( newMode: string ): RunbookComponent<S, SelectionState> {
@@ -11,7 +11,6 @@ export function changeMode<S> ( newMode: string ): RunbookComponent<S, Selection
       const rememberOpt: Optional<S, RememberedMode> = focusQuery ( st.opt, 'rememberedMode' ) as any
       st.withOpt ( rememberOpt ).mapWithDefForFrom ( mode => ({ ...mode, [ path ]: newMode }), {} )
     }
-
     return <button onClick={onClick}>{newMode}</button>
   }
 }
