@@ -1,7 +1,7 @@
 {
   "name": "@runbook/ontology_react",
   "description": "",
-  "version": "0.0.32",
+  "version": "0.0.35",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {

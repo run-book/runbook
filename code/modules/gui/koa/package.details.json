@@ -19,7 +19,7 @@
   "links":       [],
   "guards":      {
     "compile": true,
-    "publish": false,
+    "publish": true,
     "test":    false,                                      
     "react":   true
   }

@@ -11,7 +11,7 @@
   },
   "links":       [
     "@runbook/config", "@runbook/utils", "@runbook/files",
-    "@runbook/variables", "@runbook/scripts"
+    "@runbook/variables", "@runbook/scripts", "@runbook/koa"
   ],
   "guards":      {
     "compile": true,

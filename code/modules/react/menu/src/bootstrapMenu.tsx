@@ -1,8 +1,7 @@
 import { MenuAndDisplayFnsForRunbook, MenuFn, onMenuClick, SelectionState, toggleShowDropDown } from "./menu";
 import { isOnPath, safeArray, toArray } from "@runbook/utils";
 import React from "react";
-import { jsonMe, RunbookComponent, RunbookState } from "@runbook/runbook_state";
-
+import { jsonMe, RunbookComponent } from "@runbook/runbook_state";
 
 
 export function dropdownItem<S> (): MenuFn<RunbookComponent<S, SelectionState>> {

@@ -1,7 +1,7 @@
 {
   "name": "@runbook/scriptinstruments",
   "description": "",
-  "version": "0.0.32",
+  "version": "0.0.35",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,9 +17,9 @@
     ]
   },
   "dependencies": {
-    "@runbook/instruments": "0.0.32",
-    "@runbook/displayformat": "0.0.32",
-    "@runbook/fixtures": "0.0.32",
+    "@runbook/instruments": "0.0.35",
+    "@runbook/displayformat": "0.0.35",
+    "@runbook/fixtures": "0.0.35",
     "react": "16.14.0",
     "react-dom": "16.14.0"
   },

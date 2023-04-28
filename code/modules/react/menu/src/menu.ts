@@ -50,14 +50,14 @@ export function isFromNameAndDataMenuDefn<R> ( menuDefnItem?: MenuDefnItem<R> ):
 export interface FromSingleDataMenuDefn<R> extends CommonMenuDefn<R> {
   path: string[]
 }
-export function isFromSingleDataMenuDefn<R> ( menuDefnItem: MenuDefnItem<R> ): menuDefnItem is FromSingleDataMenuDefn<R> {
+export function isFromSingleDataMenuDefn<R> ( menuDefnItem: MenuDefnItem<R> | undefined ): menuDefnItem is FromSingleDataMenuDefn<R> {
   return (menuDefnItem as FromSingleDataMenuDefn<R>)?.path !== undefined && !isFromNameAndDataMenuDefn ( menuDefnItem )
 }
 
 export interface StaticMenuDefn<R> extends CommonMenuDefn <R> {
   children: MenuDefn<R>
 }
-export function isStaticMenuDefn<R> ( menuDefnItem: MenuDefnItem<R> ): menuDefnItem is StaticMenuDefn<R> {
+export function isStaticMenuDefn<R> ( menuDefnItem: MenuDefnItem<R> | undefined ): menuDefnItem is StaticMenuDefn<R> {
   return (menuDefnItem as StaticMenuDefn<R>)?.children !== undefined
 }
 
@@ -114,7 +114,7 @@ export const findDisplay = <S, Config> ( fns: MenuAndDisplayFnsForRunbook<S, Con
       const found: MenuDefnItem<RunbookComponent<S, any>> | undefined = findInMd ( md, displayPath )
       if ( !found ) {
         let parentPath = displayPath.slice ( 0, -1 );
-        const parentFound: MenuDefnItem<RunbookComponent<S, any>>|undefined = findInMd ( md, parentPath )
+        const parentFound: MenuDefnItem<RunbookComponent<S, any>> | undefined = findInMd ( md, parentPath )
         console.log ( 'parentPath/found', parentPath, parentFound, isFromNameAndDataMenuDefn ( parentFound ) )
         if ( parentFound && isFromNameAndDataMenuDefn ( parentFound ) ) {
           let lastPath: string = displayPath?.[ displayPath?.length - 1 ];
@@ -128,12 +128,13 @@ export const findDisplay = <S, Config> ( fns: MenuAndDisplayFnsForRunbook<S, Con
           if ( foundDisplay ) return display ( rsForPath, props, foundDisplay )
         }
       }
-      const rsForPath = rsForConfig.chainOpt ( parsePath ( displayPath ) )
-      console.log ( 'findDisplay - displayPath', displayPath )
+      const path = isFromSingleDataMenuDefn ( found ) ? found.path : displayPath
+      const rsForPath = rsForConfig.chainOpt ( parsePath ( path ) )
+      console.log ( 'findDisplay - path', path )
       console.log ( 'findDisplay - found', found )
       console.log ( 'findDisplay - rs', rsForPath )
-      if ( found?.display ) return display ( rsForPath, props, found.display ( displayPath ) )
-      return display ( rsForPath, props, fns.defaultDisplay ( displayPath ) )
+      if ( found?.display ) return display ( rsForPath, props, found.display ( path ) )
+      return display ( rsForPath, props, fns.defaultDisplay ( path ) )
     }
     return display ( rsForConfig, props, fns.displayNothing )
   };
@@ -152,7 +153,7 @@ export function findMenuAndDisplay<S, Config> ( prefix: string, fns: MenuAndDisp
 
 
 export function onMenuClick<S> ( rs: RunbookState<S, SelectionState>, menuPath: string[], selection: string[] | undefined ) {
-  return () => rs.set ( { selection, menuPath, displayPath: menuPath?.slice(1) } )
+  return () => rs.set ( { selection, menuPath, displayPath: menuPath?.slice ( 1 ) } )
 }
 export function toggleShowDropDown<S> ( rs: RunbookState<S, SelectionState>, menuPath: string[] ) {
   return () => {
