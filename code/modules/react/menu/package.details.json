@@ -1,6 +1,6 @@
 {
   "template": "react",
-  "name": "@runbook/navigation",
+  "name": "@runbook/menu_react",
   "description": "",
   "packageJson": {
     "dependencies": {   },

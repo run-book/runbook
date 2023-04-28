@@ -16,7 +16,7 @@ const demoMenuDefnFn: MenuDefnFns<string[]> = {
 
 describe ( "applyMenuDefn", () => {
   it ( "should apply menuDefn to menu and data", () => {
-    expect ( applyMenuDefn<string[]> ( 'nav', demoMenuDefnFn, menuDefn, sampleDisplay ) ).toEqual ( [] )
+    expect ( applyMenuDefn<string[]> ( 'nav', demoMenuDefnFn, menuDefn<string[]> ( () => () => [] ), sampleDisplay ) ).toEqual ( [] )
   } )
 } )
 

@@ -19,40 +19,45 @@ export interface MenuDefnFns<R> {
 
 
 export type MenuDefnType = keyof MenuDefnFns<any>
-export interface CommonMenuDefn {
+export interface CommonMenuDefn<R> {
   type: MenuDefnType
   name: string
+  display?: ( path: string[] ) => R
 }
 
-export interface FromNameAndDataMenuDefn extends CommonMenuDefn {
+interface FromDefn<R> {
+  path: string[],
+  display: ( path: string[] ) => R,
+  type: MenuDefnType
+}
+export interface FromNameAndDataMenuDefn<R> extends CommonMenuDefn<R> {
+  from: FromDefn<R>,
+}
+export function isFromNameAndDataMenuDefn<R> ( menuDefnItem: MenuDefnItem<R> ): menuDefnItem is FromNameAndDataMenuDefn<R> {
+  return (menuDefnItem as FromNameAndDataMenuDefn<R>).from !== undefined
+}
+export interface FromSingleDataMenuDefn<R> extends CommonMenuDefn<R> {
   path: string[]
-  fromNameAndData: MenuDefnType,
 }
-export function isFromNameAndDataMenuDefn ( menuDefnItem: MenuDefnItem ): menuDefnItem is FromNameAndDataMenuDefn {
-  return (menuDefnItem as FromSingleDataMenuDefn).path !== undefined && (menuDefnItem as FromNameAndDataMenuDefn).fromNameAndData !== undefined
-}
-export interface FromSingleDataMenuDefn extends CommonMenuDefn {
-  path: string[]
-}
-export function isFromSingleDataMenuDefn ( menuDefnItem: MenuDefnItem ): menuDefnItem is FromSingleDataMenuDefn {
-  return (menuDefnItem as FromSingleDataMenuDefn).path !== undefined && !isFromNameAndDataMenuDefn ( menuDefnItem )
+export function isFromSingleDataMenuDefn<R> ( menuDefnItem: MenuDefnItem<R> ): menuDefnItem is FromSingleDataMenuDefn<R> {
+  return (menuDefnItem as FromSingleDataMenuDefn<R>).path !== undefined && !isFromNameAndDataMenuDefn ( menuDefnItem )
 }
 
-export interface StaticMenuDefn extends CommonMenuDefn {
-  children: MenuDefn
+export interface StaticMenuDefn<R> extends CommonMenuDefn <R> {
+  children: MenuDefn<R>
 }
-export function isStaticMenuDefn ( menuDefnItem: MenuDefnItem ): menuDefnItem is StaticMenuDefn {
-  return (menuDefnItem as StaticMenuDefn).children !== undefined
+export function isStaticMenuDefn<R> ( menuDefnItem: MenuDefnItem<R> ): menuDefnItem is StaticMenuDefn<R> {
+  return (menuDefnItem as StaticMenuDefn<R>).children !== undefined
 }
 
-export type MenuDefnItem = FromNameAndDataMenuDefn | StaticMenuDefn | FromSingleDataMenuDefn
-export type MenuDefn = MenuDefnItem[]
+export type MenuDefnItem<R> = FromNameAndDataMenuDefn<R> | StaticMenuDefn<R> | FromSingleDataMenuDefn<R>
+export type MenuDefn<R> = MenuDefnItem<R>[]
 
-function findChildren<R> ( menuPath: string[], fns: MenuDefnFns<R>, data: any, m: MenuDefnItem ): any[] {
+function findChildren<S, R> ( menuPath: string[], fns: MenuDefnFns<R>, data: any, m: MenuDefnItem<R> ): any[] {
   if ( isStaticMenuDefn ( m ) ) return toArray ( m.children ).map ( applyMenuItem ( menuPath, fns, data ) )
   if ( isFromNameAndDataMenuDefn ( m ) ) {
-    const fn: MenuFn<R> = fns[ m.fromNameAndData ]
-    const dataPath = m.path;
+    const fn: MenuFn<R> = fns[ m.from.type ]
+    const dataPath = m.from.path;
     const obj = findFromPath ( data, dataPath )
     if ( typeof obj === 'object' ) return Object.keys ( safeObject ( obj ) ).map ( k =>
       fn ( makeNewPath ( menuPath, k ), makeNewPath ( dataPath, k ), k, [] ) )
@@ -65,7 +70,7 @@ function makeNewPath ( path: string[] | undefined, name: string ) {
   if ( path === undefined ) return [ name ]
   return [ ...path, name ];
 }
-const applyMenuItem = <R> ( menuPath: string[], fns: MenuDefnFns<R>, data: any ) => ( m: MenuDefnItem ) => {
+const applyMenuItem = <S, R> ( menuPath: string[], fns: MenuDefnFns<R>, data: any ) => ( m: MenuDefnItem<R> ) => {
   try {
     let newMenuPath = makeNewPath ( menuPath, m.name );
     return fns[ m.type ] ( newMenuPath, (m as any).path, m.name, findChildren ( newMenuPath, fns, data, m ) );
@@ -76,5 +81,5 @@ const applyMenuItem = <R> ( menuPath: string[], fns: MenuDefnFns<R>, data: any )
 }
 
 
-export const applyMenuDefn = <R> ( prefix: string, fns: MenuDefnFns<R>, md: MenuDefn, data: any ): R =>
+export const applyMenuDefn = <R> ( prefix: string, fns: MenuDefnFns<R>, md: MenuDefn<R>, data: any ): R =>
   applyMenuItem ( [], fns, data ) ( { type: 'navBar', name: prefix, children: md } )
