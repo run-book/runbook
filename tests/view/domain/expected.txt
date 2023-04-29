@@ -1,5 +1,3 @@
-{"env":"local","ser":"leo","port":"8080","domain":"localhost"}
-{"env":"local","ser":"npx","port":"8090","domain":"localhost"}
 {"env":"test","ser":"leo","port":"80","domain":"test.leo"}
 {"env":"test","ser":"npx","port":"80","domain":"test.npx"}
 {"env":"dev","ser":"leo","port":"80","domain":"dev.leo"}

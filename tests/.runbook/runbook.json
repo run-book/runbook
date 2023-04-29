@@ -7,8 +7,8 @@
       "local"
     ],
     "__from": [
-      "inheritance/environment.inheritance.json",
-      "inheritance/service.inheritance.json"
+      "inheritance\\environment.inheritance.json",
+      "inheritance\\service.inheritance.json"
     ],
     "service": [
       "leo",
@@ -16,16 +16,16 @@
     ]
   },
   "__from": [
-    "inheritance/environment.inheritance.json",
-    "inheritance/service.inheritance.json",
-    "instruments/echo.instrument.json",
-    "instruments/git/cloneOrFetch.instrument.json",
-    "instruments/ls.instrument.json",
-    "mereology/main.mereology.json",
-    "reference/reference.json",
-    "situation/situation.json",
-    "views/debug/displayGit.view.json",
-    "views/debug/domain.view.json"
+    "inheritance\\environment.inheritance.json",
+    "inheritance\\service.inheritance.json",
+    "instruments\\echo.instrument.json",
+    "instruments\\git\\cloneOrFetch.instrument.json",
+    "instruments\\ls.instrument.json",
+    "mereology\\main.mereology.json",
+    "reference\\reference.json",
+    "situation\\situation.json",
+    "views\\debug\\displayGit.view.json",
+    "views\\debug\\domain.view.json"
   ],
   "instrument": {
     "echo": {
@@ -43,13 +43,13 @@
         "hideHeader": 1
       },
       "__from": [
-        "instruments/echo.instrument.json"
+        "instruments\\echo.instrument.json"
       ]
     },
     "__from": [
-      "instruments/echo.instrument.json",
-      "instruments/git/cloneOrFetch.instrument.json",
-      "instruments/ls.instrument.json"
+      "instruments\\echo.instrument.json",
+      "instruments\\git\\cloneOrFetch.instrument.json",
+      "instruments\\ls.instrument.json"
     ],
     "getRepo": {
       "type": "script",
@@ -75,7 +75,7 @@
         "hideHeader": 1
       },
       "__from": [
-        "instruments/git/cloneOrFetch.instrument.json"
+        "instruments\\git\\cloneOrFetch.instrument.json"
       ]
     },
     "ls": {
@@ -114,7 +114,7 @@
         }
       },
       "__from": [
-        "instruments/ls.instrument.json"
+        "instruments\\ls.instrument.json"
       ]
     }
   },
@@ -124,7 +124,7 @@
       "database"
     ],
     "__from": [
-      "mereology/main.mereology.json"
+      "mereology\\main.mereology.json"
     ]
   },
   "setup": {
@@ -134,7 +134,7 @@
         "default": "${this.name}"
       },
       "__from": [
-        "mereology/main.mereology.json"
+        "mereology\\main.mereology.json"
       ]
     },
     "service": {
@@ -147,148 +147,121 @@
         "port": "The port that this service will listen on in this environment"
       },
       "__from": [
-        "mereology/main.mereology.json"
+        "mereology\\main.mereology.json"
       ]
     },
     "__from": [
-      "mereology/main.mereology.json"
+      "mereology\\main.mereology.json"
     ]
   },
   "reference": {
-    "bound": {
-      "environment": {
-        "dev": {
-          "direct": {
-            "database": {
-              "ngtest": {}
-            },
-            "service": {
-              "leo": {
-                "domain": "dev.leo",
-                "port": 80
-              },
-              "npx": {
-                "domain": "dev.npx",
-                "port": 80
-              }
-            }
-          }
-        },
-        "local": {
-          "direct": {
-            "database": {
-              "ngtest": {}
-            },
-            "service": {
-              "leo": {
-                "domain": "localhost",
-                "port": 8080
-              },
-              "npx": {
-                "domain": "localhost",
-                "port": 8090
-              }
-            }
-          }
-        },
-        "test": {
-          "direct": {
-            "database": {
-              "ngtest": {}
-            },
-            "service": {
-              "leo": {
-                "domain": "test.leo",
-                "port": 80
-              },
-              "npx": {
-                "domain": "test.npx",
-                "port": 80
-              }
-            }
-          }
-        }
+    "dev:environment": {
+      "ngtest:database": {},
+      "leo:service": {
+        "domain": "dev.leo",
+        "port": 80
       },
+      "npx:service": {
+        "domain": "dev.npx",
+        "port": 80
+      },
+      "gitTag": "dev",
       "__from": [
-        "reference/reference.json"
+        "reference\\reference.json"
       ]
     },
-    "direct": {
-      "environment": {
-        "dev": {
-          "git": {
-            "gittag": "dev"
-          }
-        },
-        "test": {
-          "git": {
-            "gittag": "test"
-          }
-        },
-        "prod": {
-          "git": {
-            "gittag": "prod"
-          }
-        }
+    "test:environment": {
+      "ngtest:database": {},
+      "leo:service": {
+        "domain": "test.leo",
+        "port": 80
       },
-      "database": {
-        "ngprod": {
-          "url": "ngprod.url"
-        },
-        "ngtest": {
-          "url": "ngtest.url"
-        }
+      "npx:service": {
+        "domain": "test.npx",
+        "port": 80
       },
-      "service": {
-        "leo": {
-          "git": {
-            "url": "leo.git.url",
-            "directory": "c:/git/leo"
-          }
-        },
-        "npx": {
-          "git": {
-            "url": "npx.git.url",
-            "directory": "c:/git/npx"
-          }
-        }
+      "gitTag": "test",
+      "__from": [
+        "reference\\reference.json"
+      ]
+    },
+    "prod:environment": {
+      "ngprod:database": {},
+      "leo:service": {
+        "domain": "prod.leo",
+        "port": 80
+      },
+      "npx:service": {
+        "domain": "prod.npx",
+        "port": 80
+      },
+      "gitTag": "prod",
+      "__from": [
+        "reference\\reference.json"
+      ]
+    },
+    "ngprod:database": {
+      "url": "ngprod.url",
+      "type": "oracle",
+      "__from": [
+        "reference\\reference.json"
+      ]
+    },
+    "ngtest:database": {
+      "url": "ngtest.url",
+      "type": "oracle",
+      "__from": [
+        "reference\\reference.json"
+      ]
+    },
+    "leo:service": {
+      "git": {
+        "url": "leo.git.url"
       },
       "__from": [
-        "reference/reference.json"
+        "reference\\reference.json"
+      ]
+    },
+    "npx:service": {
+      "git": {
+        "url": "npx.git.url"
+      },
+      "__from": [
+        "reference\\reference.json"
       ]
     },
     "__from": [
-      "reference/reference.json"
+      "reference\\reference.json"
     ]
   },
   "situation": {
     "leo": {
       "__from": [
-        "situation/situation.json"
+        "situation\\situation.json"
       ]
     },
     "local": {
       "__from": [
-        "situation/situation.json"
+        "situation\\situation.json"
       ]
     },
     "npx": {
       "__from": [
-        "situation/situation.json"
+        "situation\\situation.json"
       ]
     },
     "test": {
       "__from": [
-        "situation/situation.json"
+        "situation\\situation.json"
       ]
     },
     "dev": {
       "__from": [
-        "situation/situation.json"
+        "situation\\situation.json"
       ]
     },
     "__from": [
-      "situation/situation.json"
+      "situation\\situation.json"
     ]
   },
   "view": {
@@ -306,14 +279,11 @@
         "gitClone": {
           "condition": {
             "{env:environment}": {
-              "git": {
-                "gittag": "{tag}"
-              }
+              "gitTag": "{tag}"
             },
             "{ser:service}": {
               "git": {
-                "url": "{url}",
-                "directory": "{dir}"
+                "url": "{url}"
               }
             }
           },
@@ -326,12 +296,12 @@
         }
       },
       "__from": [
-        "views/debug/displayGit.view.json"
+        "views\\debug\\displayGit.view.json"
       ]
     },
     "__from": [
-      "views/debug/displayGit.view.json",
-      "views/debug/domain.view.json"
+      "views\\debug\\displayGit.view.json",
+      "views\\debug\\domain.view.json"
     ],
     "domain": {
       "type": "view",
@@ -361,7 +331,7 @@
         }
       },
       "__from": [
-        "views/debug/domain.view.json"
+        "views\\debug\\domain.view.json"
       ]
     }
   }

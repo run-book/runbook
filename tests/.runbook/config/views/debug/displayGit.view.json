@@ -13,8 +13,8 @@
       "fetchers":      {
         "gitClone": {
           "condition": {
-            "{env:environment}": {"git": {"gittag": "{tag}"}},
-            "{ser:service}":     {"git": {"url": "{url}", "directory": "{dir}"}}
+            "{env:environment}": {"gitTag":"{tag}"},
+            "{ser:service}":     {"git": {"url": "{url}"}}
           },
           "ifTrue":    {
             "type":   "instrument",
