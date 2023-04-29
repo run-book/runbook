@@ -1,6 +1,5 @@
 import { ref } from "@runbook/fixtures";
 import { allDataFor, fromReferenceData, ReferenceData, validateReferenceData } from "./reference.data";
-import { fail } from "assert";
 
 export const checkRef: ReferenceData = ref
 describe ( "it should get direct objects from the mereology", () => {
@@ -36,29 +35,10 @@ describe ( "validateReferenceData", () => {
 describe ( "allDataFor", () => {
   it ( 'should retrieve all the data about an environment', () => {
     expect ( allDataFor ( ref ) ( 'leo:service' ) ).toEqual ( {
-      "dev:environment": {
-        "leo:service": {
-          "domain": "dev.leo",
-          "port": 80
-        }
-      },
-      "leo:service": {
-        "git": {
-          "url": "leo.git.url"
-        }
-      },
-      "prod:environment": {
-        "leo:service": {
-          "domain": "prod.leo",
-          "port": 80
-        }
-      },
-      "test:environment": {
-        "leo:service": {
-          "domain": "test.leo",
-          "port": 80
-        }
-      }
+      "dev:environment": { "leo:service": { "domain": "dev.leo", "port": 80 } },
+      "leo:service": { "git": { "url": "leo.git.url" } },
+      "prod:environment": { "leo:service": { "domain": "prod.leo", "port": 80 } },
+      "test:environment": { "leo:service": { "domain": "test.leo", "port": 80 } }
     } )
   } )
 } )

@@ -3,8 +3,8 @@ export function flatMap<T, T1> ( l: T[], fn: ( x: T, index: number ) => T1[] ): 
   return l.reduce ( ( a, x ) => a.concat ( fn ( x, index++ ) ), [] as T1[] );
 }
 
-export function flatten<T>(l: T[][]): T[] {
-  return flatMap(l, x => x)
+export function flatten<T> ( l: T[][] ): T[] {
+  return flatMap ( l, x => x )
 }
 
 export function filterToType<T, T1 extends T> ( ts: T[], filter: ( t: T ) => t is T1 ) {
@@ -26,3 +26,6 @@ export const changeLastItem = <T> ( t: T ) => ( ts: T[] ): T[] => {
   result[ result.length - 1 ] = t
   return result
 };
+export function unique<T> ( ts: T[] ): T[] {
+  return ts.filter ( ( t, i ) => ts.indexOf ( t ) === i )
+}

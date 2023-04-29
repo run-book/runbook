@@ -1,9 +1,9 @@
 {
   "situation": {
-    "leo":   {},
-    "local": {},
-    "npx":   {},
-    "test":  {},
-    "dev":   {}
+    "leo:service":       {},
+    "npx:service":       {},
+    "dev:environment":   {},
+    "local:environment": {},
+    "test:environment":  {}
   }
 }

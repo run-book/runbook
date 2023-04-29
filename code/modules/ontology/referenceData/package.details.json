@@ -6,7 +6,7 @@
     "dependencies":    {},
     "devDependencies": {}
   },
-  "links":       ["@runbook/fixtures"],
+  "links":       ["@runbook/fixtures", "@runbook/mereology"],
   "guards":      {
     "compile": true,
     "publish": true,

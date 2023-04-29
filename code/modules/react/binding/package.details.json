@@ -1,0 +1,16 @@
+{
+  "template":    "react",
+  "name":        "@runbook/bindings_react",
+  "description": "",
+  "packageJson": {
+    "dependencies":    {},
+    "devDependencies": {}
+  },
+  "links":       ["@runbook/bindings", "@runbook/fixtures"],
+  "guards":      {
+    "compile":   true,
+    "publish":   false,
+    "test":      false,
+    "storybook": 6004
+  }
+}

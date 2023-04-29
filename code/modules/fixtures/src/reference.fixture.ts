@@ -1,31 +1,3 @@
-export const mereologyDefn =
-               {
-                 "environments": {
-                   "dev:environment": {
-                     "services": {
-                       "leo:service": { domain: 'dev.leo', port: 80 },
-                       "npx:service": { domain: 'dev.npx', port: 80 }
-                     },
-                     database: { "ngtest": {} }
-                   },
-                   "test:environment": {
-                     "services": {
-                       "leo:service": { domain: 'test.leo', port: 80 },
-                       "npx:service": { domain: 'test.npx', port: 80 }
-                     },
-                     database: { "ngtest": {} }
-                   }
-                 },
-                 databases: {
-                   "ngprod:database": { url: "ngprod.url" },
-                   "ngtest:database": { url: "ngtest.url" },
-                 },
-                 services: {
-                   "leo:service": { git: { url: 'leo.git.url' } },
-                   "npx:service": { git: { url: 'npx.git.url' } }
-                 }
-               }
-
 
 export const ref = {
   "dev:environment": {

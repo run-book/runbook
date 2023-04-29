@@ -22,6 +22,8 @@ describe ( "binding into mereology", () => {
       "service": { "path": [ "leo" ], "value": "leo", "namespace": "service" }
     } ] )
   } )
+
+
   it ( "should be able to retrieve a value from a bound mereology when the order is different", () => {
     const situation = { test: {}, leo: {} }
     const condition = { "{env:environment}": {}, "{service:service}": { "git": { url: "{giturl}" }, domain: "{domain}" }, }

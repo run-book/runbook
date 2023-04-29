@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@runbook/fixtures": "0.1.2",
+    "@runbook/mereology": "0.1.2",
     "react": "16.14.0",
     "react-dom": "16.14.0"
   },

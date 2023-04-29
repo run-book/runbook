@@ -9,6 +9,18 @@ export function mapObjValues<T, T1> ( obj: NameAnd<T>, fn: ( t: T, name: string,
   for ( const name in obj ) result[ name ] = fn ( obj[ name ], name, i++ )
   return result
 }
+
+export function recursivelyMap<T, T1> ( obj: NameAnd<T>, fn: ( path: string[], name: string, value: T ) => T1 ): T1[] {
+  function recurse ( path: string[], obj: any ): T1[] {
+    if ( typeof obj !== 'object' ) return []
+    return flatMapEntries ( obj, ( t, n ) => {
+      let thisOne = fn ( path, n, t as T );
+      const children = (typeof t === "object") ? recurse ( [ ...path, n ], t ) : []
+      return [ thisOne, ...children ];
+    } )
+  }
+  return recurse ( [], obj )
+}
 export function collectObjValues<T, T1> ( obj: NameAnd<T>, acceptor: ( t: T, name: string, i: number ) => boolean, fn: ( t: T, name: string, i: number ) => T1 ): NameAnd<T1> {
   const result: NameAnd<T1> = {}
   let i = 0

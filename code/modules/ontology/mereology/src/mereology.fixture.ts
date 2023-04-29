@@ -1,5 +1,5 @@
-import { Mereology, MereologyDefn } from "./mereology";
-import { mereology, mereologyDefn } from "@runbook/fixtures";
+import { Mereology } from "./mereology";
+import { mereology } from "@runbook/fixtures";
 
-const checkMereologyDefn: MereologyDefn = mereologyDefn
+
 const checkMereology: Mereology = mereology

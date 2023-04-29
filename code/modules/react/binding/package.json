@@ -1,5 +1,5 @@
 {
-  "name": "@runbook/ontology_react",
+  "name": "@runbook/bindings_react",
   "description": "",
   "version": "0.1.2",
   "main": "dist/index",
@@ -17,6 +17,8 @@
     ]
   },
   "dependencies": {
+    "@runbook/bindings": "0.1.2",
+    "@runbook/fixtures": "0.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "storybook": "^7.0.6",
