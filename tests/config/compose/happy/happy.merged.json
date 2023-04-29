@@ -7,8 +7,8 @@
       "local"
     ],
     "__from": [
-      "inheritance\\environment.inheritance.json",
-      "inheritance\\service.inheritance.json"
+      "inheritance/environment.inheritance.json",
+      "inheritance/service.inheritance.json"
     ],
     "service": [
       "leo",
@@ -16,16 +16,16 @@
     ]
   },
   "__from": [
-    "inheritance\\environment.inheritance.json",
-    "inheritance\\service.inheritance.json",
-    "instruments\\echo.instrument.json",
-    "instruments\\git\\cloneOrFetch.instrument.json",
-    "instruments\\ls.instrument.json",
-    "mereology\\main.mereology.json",
-    "reference\\reference.json",
-    "situation\\situation.json",
-    "views\\debug\\displayGit.view.json",
-    "views\\debug\\domain.view.json"
+    "inheritance/environment.inheritance.json",
+    "inheritance/service.inheritance.json",
+    "instruments/echo.instrument.json",
+    "instruments/git/cloneOrFetch.instrument.json",
+    "instruments/ls.instrument.json",
+    "mereology/main.mereology.json",
+    "reference/reference.json",
+    "situation/situation.json",
+    "views/debug/displayGit.view.json",
+    "views/debug/domain.view.json"
   ],
   "instrument": {
     "echo": {
@@ -43,13 +43,13 @@
         "hideHeader": 1
       },
       "__from": [
-        "instruments\\echo.instrument.json"
+        "instruments/echo.instrument.json"
       ]
     },
     "__from": [
-      "instruments\\echo.instrument.json",
-      "instruments\\git\\cloneOrFetch.instrument.json",
-      "instruments\\ls.instrument.json"
+      "instruments/echo.instrument.json",
+      "instruments/git/cloneOrFetch.instrument.json",
+      "instruments/ls.instrument.json"
     ],
     "getRepo": {
       "type": "script",
@@ -75,7 +75,7 @@
         "hideHeader": 1
       },
       "__from": [
-        "instruments\\git\\cloneOrFetch.instrument.json"
+        "instruments/git/cloneOrFetch.instrument.json"
       ]
     },
     "ls": {
@@ -114,7 +114,7 @@
         }
       },
       "__from": [
-        "instruments\\ls.instrument.json"
+        "instruments/ls.instrument.json"
       ]
     }
   },
@@ -124,7 +124,7 @@
       "database"
     ],
     "__from": [
-      "mereology\\main.mereology.json"
+      "mereology/main.mereology.json"
     ]
   },
   "setup": {
@@ -134,7 +134,7 @@
         "default": "${this.name}"
       },
       "__from": [
-        "mereology\\main.mereology.json"
+        "mereology/main.mereology.json"
       ]
     },
     "service": {
@@ -147,11 +147,11 @@
         "port": "The port that this service will listen on in this environment"
       },
       "__from": [
-        "mereology\\main.mereology.json"
+        "mereology/main.mereology.json"
       ]
     },
     "__from": [
-      "mereology\\main.mereology.json"
+      "mereology/main.mereology.json"
     ]
   },
   "reference": {
@@ -210,7 +210,7 @@
         }
       },
       "__from": [
-        "reference\\reference.json"
+        "reference/reference.json"
       ]
     },
     "direct": {
@@ -243,52 +243,52 @@
         "leo": {
           "git": {
             "url": "leo.git.url",
-            "directory": "c:\\git\\leo"
+            "directory": "c:/git/leo"
           }
         },
         "npx": {
           "git": {
             "url": "npx.git.url",
-            "directory": "c:\\git\\npx"
+            "directory": "c:/git/npx"
           }
         }
       },
       "__from": [
-        "reference\\reference.json"
+        "reference/reference.json"
       ]
     },
     "__from": [
-      "reference\\reference.json"
+      "reference/reference.json"
     ]
   },
   "situation": {
     "leo": {
       "__from": [
-        "situation\\situation.json"
+        "situation/situation.json"
       ]
     },
     "local": {
       "__from": [
-        "situation\\situation.json"
+        "situation/situation.json"
       ]
     },
     "npx": {
       "__from": [
-        "situation\\situation.json"
+        "situation/situation.json"
       ]
     },
     "test": {
       "__from": [
-        "situation\\situation.json"
+        "situation/situation.json"
       ]
     },
     "dev": {
       "__from": [
-        "situation\\situation.json"
+        "situation/situation.json"
       ]
     },
     "__from": [
-      "situation\\situation.json"
+      "situation/situation.json"
     ]
   },
   "view": {
@@ -326,12 +326,12 @@
         }
       },
       "__from": [
-        "views\\debug\\displayGit.view.json"
+        "views/debug/displayGit.view.json"
       ]
     },
     "__from": [
-      "views\\debug\\displayGit.view.json",
-      "views\\debug\\domain.view.json"
+      "views/debug/displayGit.view.json",
+      "views/debug/domain.view.json"
     ],
     "domain": {
       "type": "view",
@@ -361,7 +361,7 @@
         }
       },
       "__from": [
-        "views\\debug\\domain.view.json"
+        "views/debug/domain.view.json"
       ]
     }
   }

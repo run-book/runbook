@@ -16,10 +16,10 @@ export function findDirectoryHoldingFileOrError ( directory: string, file: strin
   if ( dir === undefined ) return { errors: [ `Cannot find ${file}. Started looking in ${directory}` ] }
   return dir
 }
-export function loadFileInDirectory ( cwd: string, errorString: string, marker: string, filename: string ) {
+export function loadFileInDirectory ( cwd: string, errorString: string, marker: string, filenameFn: ( dir: string ) => string ) {
   const dir = findDirectoryHoldingFileOrError ( cwd, marker )
   if ( isErrors ( dir ) ) return dir
-  const file = Path.join ( dir, marker, filename )
+  const file = filenameFn ( Path.join ( dir, marker ) )
   try {
     const contents = fs.readFileSync ( file ).toString ( 'utf-8' )
     try {

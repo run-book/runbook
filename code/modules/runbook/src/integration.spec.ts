@@ -2,6 +2,7 @@ import { findDirectoryHoldingFileOrThrow, readExpected, readTestFile } from "@ru
 import { executeScriptInShell } from "@runbook/scripts";
 import * as path from "path";
 import * as fs from "fs";
+import { toForwardSlash } from "@runbook/utils";
 
 export const inCi = process.env[ 'CI' ] === 'true'
 export const codeRootDir = findDirectoryHoldingFileOrThrow ( process.cwd (), "laoban.json" );
@@ -9,7 +10,7 @@ export const testRoot = path.resolve ( codeRootDir, '..', 'tests' );
 export const codePath = path.resolve ( codeRootDir, "modules/runbook/dist/index.js" )
 
 export function executeRunbook ( cwd: string, cmd: string ): Promise<string> {
-  let fullCmd = `node ${codePath} ${cmd}`;
+  const fullCmd = `node ${codePath} ${cmd}`;
   // console.log ( 'executeRunbook', cwd, fullCmd )
   return executeScriptInShell ( cwd, fullCmd )
 }
@@ -21,10 +22,10 @@ describe ( 'runbook', () => {
     it ( 'happy', async () => {
       const testDir = path.resolve ( configDir, 'happy' )
       const runbookDir = path.join ( testDir, '.runbook' )
-      let runbookFileName = path.join ( runbookDir, 'runbook.json' );
-      fs.writeFileSync( runbookFileName, "{ }" )
-      expect ( await executeRunbook ( testDir, 'config compose' ) ).toEqual ( readExpected ( testDir ) )
-      expect ( readTestFile ( runbookDir, 'runbook.json' ) ).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
+      const runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      fs.writeFileSync ( runbookFileName, "{ }" )
+      expect ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ).toEqual ( readExpected ( testDir ) )
+      expect ( toForwardSlash ( readTestFile ( runbookDir, 'runbook.json' ) )).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
       fs.rmSync ( runbookFileName, { force: true } )
     } )
 
@@ -32,9 +33,17 @@ describe ( 'runbook', () => {
 
       const testDir = path.resolve ( configDir, 'malformed' )
       const runbookDir = path.join ( testDir, '.runbook' )
-      let runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      const runbookFileName = path.join ( runbookDir, 'runbook.json' );
       fs.rmSync ( runbookFileName, { force: true } )
-      expect ( await executeRunbook ( testDir, 'config compose' ) ).toEqual ( readExpected ( testDir ) )
+      expect ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ).toEqual ( readExpected ( testDir ) )
+      expect ( fs.existsSync ( runbookFileName ) ).toBeFalsy ()
+    } )
+    it ( 'noConfigSubDir', async () => {
+      const testDir = path.resolve ( configDir, 'noConfigSubDir' )
+      const runbookDir = path.join ( testDir, '.runbook' )
+      const runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      fs.rmSync ( runbookFileName, { force: true } )
+      expect ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ).toEqual ( readExpected ( testDir ) )
       expect ( fs.existsSync ( runbookFileName ) ).toBeFalsy ()
     } )
   } )
@@ -43,14 +52,44 @@ describe ( 'runbook', () => {
     it ( 'happy', async () => {
       const testDir = path.resolve ( configDir, 'happy' )
       const runbookDir = path.join ( testDir, '.runbook' )
-      let runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      const runbookFileName = path.join ( runbookDir, 'runbook.json' );
       expect ( await executeRunbook ( testDir, 'config issues' ) ).toEqual ( readExpected ( testDir ) )
     } )
     it ( 'malformed', async () => {
       const testDir = path.resolve ( configDir, 'malformed' )
       const runbookDir = path.join ( testDir, '.runbook' )
-      let runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      const runbookFileName = path.join ( runbookDir, 'runbook.json' );
       expect ( await executeRunbook ( testDir, 'config issues' ) ).toEqual ( readExpected ( testDir ) )
+
+    } )
+    it ( 'noConfigSubDir', async () => {
+      const testDir = path.resolve ( configDir, 'noConfigSubDir' )
+      const runbookDir = path.join ( testDir, '.runbook' )
+      const runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      expect ( await executeRunbook ( testDir, 'config issues' ) ).toEqual ( readExpected ( testDir ) )
+
+    } )
+  } )
+  describe ( "config validateBeforeCompose", () => {
+    const configDir = path.resolve ( testRoot, 'config', 'validateBeforeCompose' )
+    it ( 'happy', async () => {
+      const testDir = path.resolve ( configDir, 'happy' )
+      const runbookDir = path.join ( testDir, '.runbook' )
+      const runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      expect ( await executeRunbook ( testDir, 'config validateBeforeCompose' ) ).toEqual ( readExpected ( testDir ) )
+    } )
+    it ( 'malformed', async () => {
+      const testDir = path.resolve ( configDir, 'malformed' )
+      const runbookDir = path.join ( testDir, '.runbook' )
+      const runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      expect ( await executeRunbook ( testDir, 'config validateBeforeCompose' ) ).toEqual ( readExpected ( testDir ) )
+
+    } )
+    it ( 'noConfigSubDir', async () => {
+      const testDir = path.resolve ( configDir, 'noConfigSubDir' )
+      const runbookDir = path.join ( testDir, '.runbook' )
+      const runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      expect ( await executeRunbook ( testDir, 'config validateBeforeCompose' ) ).toEqual ( readExpected ( testDir ) )
 
     } )
   } )
@@ -99,11 +138,11 @@ describe ( 'runbook', () => {
     } )
     it ( 'ontology reference all', async () => {
       const testDir = path.resolve ( ontologyDir, 'reference', 'all' )
-      expect ( await executeRunbook ( testDir, 'ontology reference all' ) ).toEqual ( readExpected ( testDir ) )
+      expect ( toForwardSlash ( await executeRunbook ( testDir, 'ontology reference all' ) ) ).toEqual ( readExpected ( testDir ) )
     } )
     it ( 'ontology reference direct', async () => {
       const testDir = path.resolve ( ontologyDir, 'reference', 'direct' )
-      expect ( await executeRunbook ( testDir, 'ontology reference direct' ) ).toEqual ( readExpected ( testDir ) )
+      expect ( toForwardSlash ( await executeRunbook ( testDir, 'ontology reference direct' ) ) ).toEqual ( readExpected ( testDir ) )
     } )
     it ( 'ontology reference bound', async () => {
       const testDir = path.resolve ( ontologyDir, 'reference', 'bound' )
@@ -122,7 +161,7 @@ describe ( 'runbook', () => {
     } )
     it ( 'view displayGit', async () => {
       const testDir = path.resolve ( viewDir, 'displayGit' )
-      expect ( await executeRunbook ( testDir, 'view displayGit' ) ).toEqual ( readExpected ( testDir ) )
+      expect ( toForwardSlash ( await executeRunbook ( testDir, 'view displayGit' ) ) ).toEqual ( readExpected ( testDir ) )
     } )
     it ( 'view domain', async () => {
       const testDir = path.resolve ( viewDir, 'domain' )

@@ -54,10 +54,15 @@ export function consoleLogValidationAndShouldExit ( fs: ErrorsAnd<DisplayValidat
   return false
 }
 export async function validateJsonFiles ( dir: string, acceptor: ( f: string ) => boolean, validator: NameAndValidator<any> ): Promise<ErrorsAnd<FileAndResult<any>[]>> {
-  return loadAllFiles ( acceptor, dir, ( dir, f, json ) => {
-    const file = path.relative ( dir, f );
-    return ({ file, result: validator ( file ) ( json ) });
-  } )
+  try {
+    return await loadAllFiles ( acceptor, dir, ( dir, f, json ) => {
+      const file = path.relative ( dir, f );
+      return ({ file, result: validator ( file ) ( json ) });
+    } )
+  } catch ( e ) {
+    if ( !fs.existsSync ( dir ) ) return { errors: [ `Error loading files. Directory ${dir} doesn't exist` ] }
+    throw e
+  }
 }
 export function addFromMutator ( dir: string, file: string, json: any ) {
   function withDepth ( json: any, depth: number ): any {

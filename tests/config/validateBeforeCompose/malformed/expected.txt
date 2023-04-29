@@ -1,0 +1,5 @@
+Errors accessing files
+  Malformed JSON in C:\git\runbook\tests\config\validateBeforeCompose\malformed\.runbook\config\instruments\ls.instrument.json. Error SyntaxError: Unexpected end of JSON input
+  Malformed JSON in C:\git\runbook\tests\config\validateBeforeCompose\malformed\.runbook\config\reference\environment.json. Error SyntaxError: Unexpected token s in JSON at position 150
+
+There were errors in the runbook config file. Use 'runbook config' to see the issues

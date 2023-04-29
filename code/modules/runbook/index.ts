@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { loadFileInDirectory } from "@runbook/files";
-import { CleanConfig, configFileName, runbookMarker, validateConfig } from "@runbook/config";
+import { CleanConfig, configFile, configFileName, configSubDir, findRunbookDirectory, runbookMarker, validateConfig } from "@runbook/config";
 import { makeProgram, processProgram } from "./src/cli";
 import { prune } from "@runbook/utils";
 
@@ -19,7 +19,8 @@ function processCli ( cwd: string, config: CleanConfig, cleanConfig: CleanConfig
   return processProgram ( program, argV );
 }
 
-const config = loadFileInDirectory ( process.cwd (), 'loading runbook config', runbookMarker, configFileName );
+
+const config = loadFileInDirectory ( process.cwd (), 'loading runbook config', runbookMarker, configFile );
 const cleanConfig = prune ( config, '__from' ) as CleanConfig
 const errors = validateConfig () ( configFileName ) ( cleanConfig );
 if ( errors.length > 0 ) console.error ( "There were errors in the runbook config file. Use 'runbook config' to see the issues" )

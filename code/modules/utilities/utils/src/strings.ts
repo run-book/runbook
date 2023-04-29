@@ -34,7 +34,7 @@ export function cleanLineEndings ( text: string ) {
   return text.replace ( /((?<!\r)\n|\r(?!\n))/g, '\r\n' )
 }
 export function toForwardSlash ( s: string ): string {
-  return s.replace ( /\\/g, '/' )
+  return s.replace ( /\\\\/g, '/' ).replace ( /\\/g, '/' )
 }
 export function nameValueToNameAndString ( s: string[] ): ErrorsAnd<NameAnd<string>> {
   try {

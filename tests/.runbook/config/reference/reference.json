@@ -42,8 +42,8 @@
         "ngtest": {"url": "ngtest.url"}
       },
       "service":     {
-        "leo": {"git": {"url": "leo.git.url", "directory": "c:\\git\\leo"}},
-        "npx": {"git": {"url": "npx.git.url", "directory": "c:\\git\\npx"}}
+        "leo": {"git": {"url": "leo.git.url", "directory": "c:/git/leo"}},
+        "npx": {"git": {"url": "npx.git.url", "directory": "c:/git/npx"}}
       }
     }
   }

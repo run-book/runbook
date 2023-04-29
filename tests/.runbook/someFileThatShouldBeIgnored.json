@@ -1,0 +1,2 @@
+This is here to make sure that we don't read and process it
+This lets us ensure that we can expand the config in the future without breaking old configs.

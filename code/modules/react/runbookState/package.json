@@ -1,7 +1,7 @@
 {
   "name": "@runbook/runbook_state",
   "description": "",
-  "version": "0.0.35",
+  "version": "0.1.0",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
