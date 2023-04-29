@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { ReferenceData } from "@runbook/referencedata";
+import { allDataFor, ReferenceData } from "@runbook/referencedata";
 
 export function addOntologyCommand ( command: Command, name: string, thing: any, description: string ) {
   return command.command ( name ).description ( description )
@@ -9,12 +9,14 @@ export function addOntologyCommand ( command: Command, name: string, thing: any,
 
 
 }
-function addReferenceCommand ( refCmd: Command, name: string, data: any, description: string ) {
-  refCmd.command ( name ).description ( description ).action ( () => console.log ( JSON.stringify ( data, null, 2 ) ) )
-}
-export function addAllReferenceCommands ( ontology: Command, name: string, reference: ReferenceData, description: string ) {
-  // const ontCmd = ontology.command ( name ).description ( description )
-  addReferenceCommand ( ontology, 'reference', reference, description )
-  // addReferenceCommand ( ontCmd, 'direct', reference?.direct, 'All the data that can be looked up given the namespace and name' )
-  // addReferenceCommand ( ontCmd, 'bound', reference?.bound, `Data that needs more context. Such as 'this service in this environment'` )
+
+export function addAllReferenceCommands ( ontCmd: Command, name: string, reference: ReferenceData, description: string ) {
+
+  const refCmd = ontCmd.command ( name ).description ( description )
+  refCmd.command ( 'all' ).description ( description ).action ( () => console.log ( JSON.stringify ( reference, null, 2 ) ) )
+  refCmd.command ( 'for' )
+    .description ( 'Retreive the reference data about one thing, For example \'leo:service\' means get me all the reference data about the service leo' )
+    .argument ( '<thing>', `for example 'leo:service' means get me all the reference data about the service leo` )
+    .action ( ( thing ) => console.log ( JSON.stringify ( allDataFor ( reference ) ( thing ), null, 2 ) ) )
+
 }

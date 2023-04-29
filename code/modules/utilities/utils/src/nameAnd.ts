@@ -9,6 +9,13 @@ export function mapObjValues<T, T1> ( obj: NameAnd<T>, fn: ( t: T, name: string,
   for ( const name in obj ) result[ name ] = fn ( obj[ name ], name, i++ )
   return result
 }
+export function collectObjValues<T, T1> ( obj: NameAnd<T>, acceptor: ( t: T, name: string, i: number ) => boolean, fn: ( t: T, name: string, i: number ) => T1 ): NameAnd<T1> {
+  const result: NameAnd<T1> = {}
+  let i = 0
+  for ( const name in obj )
+    if ( acceptor ( obj[ name ], name, i ) ) result[ name ] = fn ( obj[ name ], name, i++ )
+  return result
+}
 
 export async function mapObjValuesK<T, T1> ( obj: NameAnd<T>, fn: ( t: T, name: string, i: number ) => Promise<T1> ): Promise<NameAnd<T1>> {
   const promises: Promise<[ string, T1 ]>[] = Object.keys ( obj ).map ( ( name, i ) => fn ( obj[ name ], name, i ).then ( t1 => [ name, t1 ] ) )

@@ -1,56 +1,15 @@
-{
-  "dev:environment": {
-    "ngtest:database": {},
-    "leo:service": {
-      "domain": "dev.leo",
-      "port": 80
-    },
-    "npx:service": {
-      "domain": "dev.npx",
-      "port": 80
-    },
-    "gitTag": "dev"
-  },
-  "test:environment": {
-    "ngtest:database": {},
-    "leo:service": {
-      "domain": "test.leo",
-      "port": 80
-    },
-    "npx:service": {
-      "domain": "test.npx",
-      "port": 80
-    },
-    "gitTag": "test"
-  },
-  "prod:environment": {
-    "ngprod:database": {},
-    "leo:service": {
-      "domain": "prod.leo",
-      "port": 80
-    },
-    "npx:service": {
-      "domain": "prod.npx",
-      "port": 80
-    },
-    "gitTag": "prod"
-  },
-  "ngprod:database": {
-    "url": "ngprod.url",
-    "type": "oracle"
-  },
-  "ngtest:database": {
-    "url": "ngtest.url",
-    "type": "oracle"
-  },
-  "leo:service": {
-    "git": {
-      "url": "leo.git.url"
-    }
-  },
-  "npx:service": {
-    "git": {
-      "url": "npx.git.url"
-    }
-  }
-}
+
+Usage: run-book ontology reference [options] [command]
+
+Reference data such as 'the git repo for this service is here'
+
+Options:
+  -h, --help      display help for command
+
+Commands:
+  all             Reference data such as 'the git repo for this service is
+                  here'
+  for <thing>     Retreive the reference data about one thing, For example
+                  'leo:service' means get me all the reference data about the
+                  service leo
+  help [command]  display help for command

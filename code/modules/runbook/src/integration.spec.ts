@@ -25,7 +25,7 @@ describe ( 'runbook', () => {
       const runbookFileName = path.join ( runbookDir, 'runbook.json' );
       fs.writeFileSync ( runbookFileName, "{ }" )
       expect ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ).toEqual ( readExpected ( testDir ) )
-      expect ( toForwardSlash ( readTestFile ( runbookDir, 'runbook.json' ) )).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
+      expect ( toForwardSlash ( readTestFile ( runbookDir, 'runbook.json' ) ) ).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
       fs.rmSync ( runbookFileName, { force: true } )
     } )
 
@@ -135,6 +135,14 @@ describe ( 'runbook', () => {
     it ( 'ontology reference', async () => {
       const testDir = path.resolve ( ontologyDir, 'reference' )
       expect ( await executeRunbook ( testDir, 'ontology reference' ) ).toEqual ( readExpected ( testDir ) )
+    } )
+    it ( 'ontology reference all', async () => {
+      const testDir = path.resolve ( ontologyDir, 'reference/all' )
+      expect ( await executeRunbook ( testDir, 'ontology reference all' ) ).toEqual ( readExpected ( testDir ) )
+    } )
+    it ( 'ontology reference for leo:service', async () => {
+      const testDir = path.resolve ( ontologyDir, 'reference/for' )
+      expect ( await executeRunbook ( testDir, 'ontology reference for leo:service' ) ).toEqual ( readExpected ( testDir ) )
     } )
     it ( 'ontology mereology', async () => {
       const testDir = path.resolve ( ontologyDir, 'mereology' )

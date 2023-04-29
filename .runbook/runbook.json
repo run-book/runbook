@@ -26,6 +26,7 @@
     "reference\\reference.json",
     "situation\\situation.json",
     "views\\debug\\displayGit.view.json",
+    "views\\debug\\domain.cat.view.json",
     "views\\debug\\domain.view.json"
   ],
   "instrument": {
@@ -89,6 +90,10 @@
       "type": "script",
       "description": "This will (when working) go get or update the repo",
       "params": {
+        "gitDir": {
+          "description": "directory that holds all the git reports",
+          "default": "c:\\git"
+        },
         "service": {
           "description": "The service for the repo",
           "default": "leo"
@@ -101,8 +106,8 @@
       "staleness": 5000,
       "cost": "low",
       "script": [
-        "echo {argsNames}",
-        "echo {allArgs}"
+        "mkdir {gitDir}",
+        "echo git clone {repoUrl} {gitDir}/{service}"
       ],
       "format": {
         "type": "table",
@@ -189,103 +194,76 @@
     ]
   },
   "reference": {
-    "bound": {
-      "environment": {
-        "dev": {
-          "direct": {
-            "database": {
-              "ngtest": {}
-            },
-            "service": {
-              "leo": {
-                "domain": "dev.leo",
-                "port": 80
-              },
-              "npx": {
-                "domain": "dev.npx",
-                "port": 80
-              }
-            }
-          }
-        },
-        "local": {
-          "direct": {
-            "database": {
-              "ngtest": {}
-            },
-            "service": {
-              "leo": {
-                "domain": "localhost",
-                "port": 8080
-              },
-              "npx": {
-                "domain": "localhost",
-                "port": 8090
-              }
-            }
-          }
-        },
-        "test": {
-          "direct": {
-            "database": {
-              "ngtest": {}
-            },
-            "service": {
-              "leo": {
-                "domain": "test.leo",
-                "port": 80
-              },
-              "npx": {
-                "domain": "test.npx",
-                "port": 80
-              }
-            }
-          }
-        }
+    "dev:environment": {
+      "ngtest:database": {},
+      "leo:service": {
+        "domain": "dev.leo",
+        "port": 80
+      },
+      "npx:service": {
+        "domain": "dev.npx",
+        "port": 80
+      },
+      "gitTag": "dev",
+      "__from": [
+        "reference\\reference.json"
+      ]
+    },
+    "test:environment": {
+      "ngtest:database": {},
+      "leo:service": {
+        "domain": "test.leo",
+        "port": 80
+      },
+      "npx:service": {
+        "domain": "test.npx",
+        "port": 80
+      },
+      "gitTag": "test",
+      "__from": [
+        "reference\\reference.json"
+      ]
+    },
+    "prod:environment": {
+      "ngprod:database": {},
+      "leo:service": {
+        "domain": "prod.leo",
+        "port": 80
+      },
+      "npx:service": {
+        "domain": "prod.npx",
+        "port": 80
+      },
+      "gitTag": "prod",
+      "__from": [
+        "reference\\reference.json"
+      ]
+    },
+    "ngprod:database": {
+      "url": "ngprod.url",
+      "type": "oracle",
+      "__from": [
+        "reference\\reference.json"
+      ]
+    },
+    "ngtest:database": {
+      "url": "ngtest.url",
+      "type": "oracle",
+      "__from": [
+        "reference\\reference.json"
+      ]
+    },
+    "leo:service": {
+      "git": {
+        "url": "leo.git.url"
       },
       "__from": [
         "reference\\reference.json"
       ]
     },
-    "direct": {
-      "environment": {
-        "dev": {
-          "git": {
-            "gittag": "dev"
-          }
-        },
-        "test": {
-          "git": {
-            "gittag": "test"
-          }
-        },
-        "prod": {
-          "git": {
-            "gittag": "prod"
-          }
-        }
-      },
-      "database": {
-        "ngprod": {
-          "url": "ngprod.url"
-        },
-        "ngtest": {
-          "url": "ngtest.url"
-        }
-      },
-      "service": {
-        "leo": {
-          "git": {
-            "url": "leo.git.url",
-            "directory": "c:\\git\\leo"
-          }
-        },
-        "npx": {
-          "git": {
-            "url": "npx.git.url",
-            "directory": "c:\\git\\npx"
-          }
-        }
+    "npx:service": {
+      "git": {
+        "url": "npx.git.url"
       },
       "__from": [
         "reference\\reference.json"
@@ -365,8 +343,41 @@
     },
     "__from": [
       "views\\debug\\displayGit.view.json",
+      "views\\debug\\domain.cat.view.json",
       "views\\debug\\domain.view.json"
     ],
+    "domainCat": {
+      "type": "view",
+      "description": "Display a csv file for each dmain in each environment",
+      "usage": [
+        "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
+      ],
+      "preconditions": [
+        "The environments and services need to be in the ontology",
+        "The domain and port need to be in the reference data"
+      ],
+      "fetchers": {
+        "displayTheStuff": {
+          "condition": {
+            "{env:environment}": {},
+            "{ser:service}": {
+              "domain": "{domain}"
+            }
+          },
+          "ifTrue": {
+            "type": "instrument",
+            "name": "catCsv",
+            "params": {
+              "file": "{env}.{domain}.csv"
+            },
+            "addTo": "ser"
+          }
+        }
+      },
+      "__from": [
+        "views\\debug\\domain.cat.view.json"
+      ]
+    },
     "domain": {
       "type": "view",
       "description": "Lists the domain and port of the services",

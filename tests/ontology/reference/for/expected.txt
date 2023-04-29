@@ -1,0 +1,25 @@
+{
+  "leo:service": {
+    "git": {
+      "url": "leo.git.url"
+    }
+  },
+  "dev:environment": {
+    "leo:service": {
+      "domain": "dev.leo",
+      "port": 80
+    }
+  },
+  "test:environment": {
+    "leo:service": {
+      "domain": "test.leo",
+      "port": 80
+    }
+  },
+  "prod:environment": {
+    "leo:service": {
+      "domain": "prod.leo",
+      "port": 80
+    }
+  }
+}

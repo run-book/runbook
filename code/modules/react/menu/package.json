@@ -1,7 +1,7 @@
 {
   "name": "@runbook/menu_react",
   "description": "",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,8 +17,8 @@
     ]
   },
   "dependencies": {
-    "@runbook/optics": "0.1.0",
-    "@runbook/runbook_state": "0.1.0",
+    "@runbook/optics": "0.1.2",
+    "@runbook/runbook_state": "0.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "storybook": "^7.0.6",

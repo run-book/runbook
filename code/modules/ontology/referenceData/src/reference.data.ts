@@ -1,4 +1,5 @@
-import { composeNameAndValidators, deepCombineTwoObjects, NameAnd, NameAndValidator, NameSpaceAndValue, validateAny, validateNameAnd } from "@runbook/utils";
+import { collectObjValues, composeNameAndValidators, deepCombineTwoObjects, flatMapEntries, mapObjToArray, mapObjValues, NameAnd, NameAndValidator, NameSpaceAndValue, validateAny, validateNameAnd } from "@runbook/utils";
+import { ref } from "@runbook/fixtures";
 
 
 export type ReferenceData = NameAnd<any>
@@ -19,6 +20,19 @@ export const fromReferenceData = ( refData: ReferenceData ): FromReferenceDataFn
     return result
   } )
   return fromBindings.reduce ( ( acc, val ) => deepCombineTwoObjects ( acc, val ), direct )
+};
+
+export const allDataFor = ( refData: ReferenceData ) => ( thing: string ): any => {
+  if ( refData === undefined || typeof refData !== 'object' ) return {}
+  const result: NameAnd<any> = {}
+
+  const found = refData[ thing ]
+  if ( found ) result[ thing ] = found
+  for ( let name in refData ) {
+    const refValue = allDataFor ( refData[ name ] ) ( thing )
+    if ( Object.keys ( refValue )?.length > 0 ) result[ name ]= refValue
+  }
+  return result
 };
 
 export const validateReferenceData: NameAndValidator<ReferenceData> = composeNameAndValidators (
