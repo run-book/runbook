@@ -136,18 +136,6 @@ describe ( 'runbook', () => {
       const testDir = path.resolve ( ontologyDir, 'reference' )
       expect ( await executeRunbook ( testDir, 'ontology reference' ) ).toEqual ( readExpected ( testDir ) )
     } )
-    it ( 'ontology reference all', async () => {
-      const testDir = path.resolve ( ontologyDir, 'reference', 'all' )
-      expect ( toForwardSlash ( await executeRunbook ( testDir, 'ontology reference all' ) ) ).toEqual ( readExpected ( testDir ) )
-    } )
-    it ( 'ontology reference direct', async () => {
-      const testDir = path.resolve ( ontologyDir, 'reference', 'direct' )
-      expect ( toForwardSlash ( await executeRunbook ( testDir, 'ontology reference direct' ) ) ).toEqual ( readExpected ( testDir ) )
-    } )
-    it ( 'ontology reference bound', async () => {
-      const testDir = path.resolve ( ontologyDir, 'reference', 'bound' )
-      expect ( await executeRunbook ( testDir, 'ontology reference bound' ) ).toEqual ( readExpected ( testDir ) )
-    } )
     it ( 'ontology mereology', async () => {
       const testDir = path.resolve ( ontologyDir, 'mereology' )
       expect ( await executeRunbook ( testDir, 'ontology mereology' ) ).toEqual ( readExpected ( testDir ) )

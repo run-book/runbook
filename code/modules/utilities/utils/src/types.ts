@@ -6,5 +6,8 @@ export function isPrimitive ( a: any ): a is Primitive {
   return a === null || a == undefined || t === 'string' || t === 'number' || t === 'boolean'
 }
 
-export type Kleisli<A,B> = ( a: A ) => Promise<B>
-export type KleisliWithErrors<A,B> = ( a: A ) => Promise<ErrorsAnd<B>>
+export type Kleisli<A, B> = ( a: A ) => Promise<B>
+export type KleisliWithErrors<A, B> = ( a: A ) => Promise<ErrorsAnd<B>>
+
+export type NameSpaceAndValue = { namespace?: string, value: Primitive } //the value is the name...
+

@@ -1,12 +1,12 @@
 {
   "template":    "typescript",
-  "name":        "@runbook/bindings",
+  "name":        "@runbook/referencedata",
   "description": "",
   "packageJson": {
     "dependencies":    {},
     "devDependencies": {}
   },
-  "links":       ["@runbook/mereology", "@runbook/referencedata"],
+  "links":       ["@runbook/fixtures"],
   "guards":      {
     "compile": true,
     "publish": true,

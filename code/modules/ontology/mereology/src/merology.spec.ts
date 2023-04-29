@@ -1,6 +1,5 @@
 import { validateMereology } from "./mereology";
-import { mereology, ref } from "@runbook/fixtures";
-import { fromReferenceData } from "./reference.data";
+import { mereology } from "@runbook/fixtures";
 
 
 describe ( "validateMereology", () => {

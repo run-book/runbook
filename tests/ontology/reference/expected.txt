@@ -1,15 +1,98 @@
-
-Usage: run-book ontology reference [options] [command]
-
-Reference data such as 'the git repo for this service is here'
-
-Options:
-  -h, --help      display help for command
-
-Commands:
-  all             All the reference data
-  direct          All the data that can be looked up given the namespace and
-                  name
-  bound           Data that needs more context. Such as 'this service in this
-                  environment'
-  help [command]  display help for command
+{
+  "bound": {
+    "environment": {
+      "dev": {
+        "direct": {
+          "database": {
+            "ngtest": {}
+          },
+          "service": {
+            "leo": {
+              "domain": "dev.leo",
+              "port": 80
+            },
+            "npx": {
+              "domain": "dev.npx",
+              "port": 80
+            }
+          }
+        }
+      },
+      "local": {
+        "direct": {
+          "database": {
+            "ngtest": {}
+          },
+          "service": {
+            "leo": {
+              "domain": "localhost",
+              "port": 8080
+            },
+            "npx": {
+              "domain": "localhost",
+              "port": 8090
+            }
+          }
+        }
+      },
+      "test": {
+        "direct": {
+          "database": {
+            "ngtest": {}
+          },
+          "service": {
+            "leo": {
+              "domain": "test.leo",
+              "port": 80
+            },
+            "npx": {
+              "domain": "test.npx",
+              "port": 80
+            }
+          }
+        }
+      }
+    }
+  },
+  "direct": {
+    "environment": {
+      "dev": {
+        "git": {
+          "gittag": "dev"
+        }
+      },
+      "test": {
+        "git": {
+          "gittag": "test"
+        }
+      },
+      "prod": {
+        "git": {
+          "gittag": "prod"
+        }
+      }
+    },
+    "database": {
+      "ngprod": {
+        "url": "ngprod.url"
+      },
+      "ngtest": {
+        "url": "ngtest.url"
+      }
+    },
+    "service": {
+      "leo": {
+        "git": {
+          "url": "leo.git.url",
+          "directory": "c:/git/leo"
+        }
+      },
+      "npx": {
+        "git": {
+          "url": "npx.git.url",
+          "directory": "c:/git/npx"
+        }
+      }
+    }
+  }
+}

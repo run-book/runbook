@@ -1,10 +1,10 @@
 import { fixtureView, inheritance, mereology, ref } from "@runbook/fixtures";
 import { inheritsFrom, mapObjValues } from "@runbook/utils";
 import { BindingContext } from "@runbook/bindings";
-import { fromReferenceData } from "@runbook/mereology";
 import { applyTrueConditions, bindingsToDictionary, evaluateViewConditions } from "./evaluateViews";
 import { bindings2, bindings1, situation1, situation2 } from "./views.fixture";
 import { validateView } from "./views";
+import { fromReferenceData } from "@runbook/referencedata";
 
 
 export const bc: BindingContext = {

@@ -3,12 +3,12 @@ import { CleanConfig } from "@runbook/config";
 import { applyTrueConditions, evaluateViewConditions, View } from "@runbook/views";
 import { inheritsFrom, makeStringDag, mapObjValues, NameAnd, Primitive, safeArray, toArray } from "@runbook/utils";
 import { BindingContext } from "@runbook/bindings";
-import { fromReferenceData } from "@runbook/mereology";
 import { executeScriptInstrument, findScriptAndDisplay } from "@runbook/scriptinstruments";
 import { executeScriptInShell, executeScriptLinesInShell, osType } from "@runbook/scripts";
 import { jsonToDisplay } from "@runbook/displayformat";
 import { addDisplayOptions, optionToDisplayFormat } from "./display";
 import { addEditViewOptions, executeAndEditViewAndExit } from "./editView";
+import { fromReferenceData } from "@runbook/referencedata";
 
 export function addViewCommand ( command: Command, cwd: string, name: string, configWithFroms: CleanConfig, config: CleanConfig, view: View ) {
   addEditViewOptions ( 'view', addDisplayOptions ( command ) )

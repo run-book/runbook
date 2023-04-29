@@ -1,12 +1,14 @@
 import { BindingContext } from "./binding";
-import { fromReferenceData, Mereology, ReferenceData } from "@runbook/mereology";
+import { Mereology } from "@runbook/mereology";
 import { inheritsFrom } from "@runbook/utils";
 import { inheritance, mereology, ref } from "@runbook/fixtures";
+import { fromReferenceData, ReferenceData } from "@runbook/referencedata";
 
 
 export const checkMereology: Mereology = mereology
 
 export const checkRef: ReferenceData = ref
+
 
 export const bc: BindingContext = {
   debug: false,

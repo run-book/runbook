@@ -1,6 +1,6 @@
 import { BindingContext, evaluate } from "./binding";
 import { bc } from "./binding.fixture";
-import { isDescendantOfInNameAnd, inheritsFrom, makeStringDag, NameAnd } from "@runbook/utils";
+import { inheritsFrom, makeStringDag, NameAnd } from "@runbook/utils";
 
 const children: NameAnd<string[]> = {
   animal: [ "mammal", "bird", "fish" ],

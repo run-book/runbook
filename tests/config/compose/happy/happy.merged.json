@@ -155,103 +155,76 @@
     ]
   },
   "reference": {
-    "bound": {
-      "environment": {
-        "dev": {
-          "direct": {
-            "database": {
-              "ngtest": {}
-            },
-            "service": {
-              "leo": {
-                "domain": "dev.leo",
-                "port": 80
-              },
-              "npx": {
-                "domain": "dev.npx",
-                "port": 80
-              }
-            }
-          }
-        },
-        "local": {
-          "direct": {
-            "database": {
-              "ngtest": {}
-            },
-            "service": {
-              "leo": {
-                "domain": "localhost",
-                "port": 8080
-              },
-              "npx": {
-                "domain": "localhost",
-                "port": 8090
-              }
-            }
-          }
-        },
-        "test": {
-          "direct": {
-            "database": {
-              "ngtest": {}
-            },
-            "service": {
-              "leo": {
-                "domain": "test.leo",
-                "port": 80
-              },
-              "npx": {
-                "domain": "test.npx",
-                "port": 80
-              }
-            }
-          }
-        }
+    "dev:environment": {
+      "ngtest:database": {},
+      "leo:service": {
+        "domain": "dev.leo",
+        "port": 80
+      },
+      "npx:service": {
+        "domain": "dev.npx",
+        "port": 80
+      },
+      "gitTag": "dev",
+      "__from": [
+        "reference/reference.json"
+      ]
+    },
+    "test:environment": {
+      "ngtest:database": {},
+      "leo:service": {
+        "domain": "test.leo",
+        "port": 80
+      },
+      "npx:service": {
+        "domain": "test.npx",
+        "port": 80
+      },
+      "gitTag": "test",
+      "__from": [
+        "reference/reference.json"
+      ]
+    },
+    "prod:environment": {
+      "ngprod:database": {},
+      "leo:service": {
+        "domain": "prod.leo",
+        "port": 80
+      },
+      "npx:service": {
+        "domain": "prod.npx",
+        "port": 80
+      },
+      "gitTag": "prod",
+      "__from": [
+        "reference/reference.json"
+      ]
+    },
+    "ngprod:database": {
+      "url": "ngprod.url",
+      "type": "oracle",
+      "__from": [
+        "reference/reference.json"
+      ]
+    },
+    "ngtest:database": {
+      "url": "ngtest.url",
+      "type": "oracle",
+      "__from": [
+        "reference/reference.json"
+      ]
+    },
+    "leo:service": {
+      "git": {
+        "url": "leo.git.url"
       },
       "__from": [
         "reference/reference.json"
       ]
     },
-    "direct": {
-      "environment": {
-        "dev": {
-          "git": {
-            "gittag": "dev"
-          }
-        },
-        "test": {
-          "git": {
-            "gittag": "test"
-          }
-        },
-        "prod": {
-          "git": {
-            "gittag": "prod"
-          }
-        }
-      },
-      "database": {
-        "ngprod": {
-          "url": "ngprod.url"
-        },
-        "ngtest": {
-          "url": "ngtest.url"
-        }
-      },
-      "service": {
-        "leo": {
-          "git": {
-            "url": "leo.git.url",
-            "directory": "c:/git/leo"
-          }
-        },
-        "npx": {
-          "git": {
-            "url": "npx.git.url",
-            "directory": "c:/git/npx"
-          }
-        }
+    "npx:service": {
+      "git": {
+        "url": "npx.git.url"
       },
       "__from": [
         "reference/reference.json"

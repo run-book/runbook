@@ -1,7 +1,8 @@
-import { flatMap, isPrimitive, NameAnd, Primitive, safeArray } from "@runbook/utils";
+import { flatMap, isPrimitive, NameAnd, NameSpaceAndValue, Primitive, safeArray } from "@runbook/utils";
 import { InheritsFromFn } from "./inheritance";
-import { FromReferenceDataFn, Mereology, NameSpaceAndValue } from "@runbook/mereology";
+import { Mereology } from "@runbook/mereology";
 import { deepSortCondition } from "./condition";
+import { FromReferenceDataFn } from "@runbook/referencedata";
 
 
 export type Binding = NameAnd<PathAndValue>

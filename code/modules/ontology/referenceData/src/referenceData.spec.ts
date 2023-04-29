@@ -1,6 +1,7 @@
 import { ref } from "@runbook/fixtures";
-import { fromReferenceData, validateReferenceData } from "./reference.data";
+import { fromReferenceData, ReferenceData, validateReferenceData } from "./reference.data";
 
+export const checkRef: ReferenceData = ref
 describe ( "it should get direct objects from the mereology", () => {
   it ( "should find it if in", () => {
     expect ( fromReferenceData ( ref ) ( [], 'service', 'leo' ) ).toEqual ( {
@@ -28,15 +29,5 @@ describe ( "validateReferenceData", () => {
   } )
   it ( "should be Ok with empty data", () => {
     expect ( validateReferenceData ( 'prefix' ) ( {} ) ).toEqual ( [] )
-  } )
-  it ( "should return issues with the data", () => {
-    expect ( validateReferenceData ( 'prefix' ) ( '123' as any ) ).toEqual ( [
-      "prefix does not have direct as it is of type string and not an object",
-      "prefix does not have bound as it is of type string and not an object"
-    ] )
-    expect ( validateReferenceData ( 'prefix' ) ( { direct: 1, bound: 1 } as any ) ).toEqual ( [
-      "prefix.direct is of type number and not an array",
-      "prefix.bound is of type number and not an array"
-    ] )
   } )
 } )

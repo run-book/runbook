@@ -1,7 +1,5 @@
 import { Mereology, MereologyDefn } from "./mereology";
-import { mereology, mereologyDefn, ref } from "@runbook/fixtures";
-import { ReferenceData } from "./reference.data";
+import { mereology, mereologyDefn } from "@runbook/fixtures";
 
 const checkMereologyDefn: MereologyDefn = mereologyDefn
 const checkMereology: Mereology = mereology
-export const checkRef: ReferenceData = ref

@@ -5,7 +5,6 @@ import { NameAnd, NameAndValidator, Primitive, validateArray, validateNameAnd, v
  * after that we get data for that thing. See mereology.spec.ts for example */
 export type MereologyDefn = NameAnd<NameAnd<any>>
 
-export type NameSpaceAndValue = { namespace?: string, value: Primitive } //the value is the name...
 
 /** for example
  * mereology = {"environment": ["service", "database"]}

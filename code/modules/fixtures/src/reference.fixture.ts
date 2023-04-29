@@ -1,63 +1,55 @@
 export const mereologyDefn =
-        {
-          "environments": {
-            "dev:environment": {
-              "services": {
-                "leo:service": { domain: 'dev.leo', port: 80 },
-                "npx:service": { domain: 'dev.npx', port: 80 }
-              },
-              database: { "ngtest": {} }
-            },
-            "test:environment": {
-              "services": {
-                "leo:service": { domain: 'test.leo', port: 80 },
-                "npx:service": { domain: 'test.npx', port: 80 }
-              },
-              database: { "ngtest": {} }
-            }
-          },
-          databases: {
-            "ngprod:database": { url: "ngprod.url" },
-            "ngtest:database": { url: "ngtest.url" },
-          },
-          services: {
-            "leo:service": { git: { url: 'leo.git.url' } },
-            "npx:service": { git: { url: 'npx.git.url' } }
-          }
-        }
+               {
+                 "environments": {
+                   "dev:environment": {
+                     "services": {
+                       "leo:service": { domain: 'dev.leo', port: 80 },
+                       "npx:service": { domain: 'dev.npx', port: 80 }
+                     },
+                     database: { "ngtest": {} }
+                   },
+                   "test:environment": {
+                     "services": {
+                       "leo:service": { domain: 'test.leo', port: 80 },
+                       "npx:service": { domain: 'test.npx', port: 80 }
+                     },
+                     database: { "ngtest": {} }
+                   }
+                 },
+                 databases: {
+                   "ngprod:database": { url: "ngprod.url" },
+                   "ngtest:database": { url: "ngtest.url" },
+                 },
+                 services: {
+                   "leo:service": { git: { url: 'leo.git.url' } },
+                   "npx:service": { git: { url: 'npx.git.url' } }
+                 }
+               }
 
 
 export const ref = {
-  'bound': {
-    "environment": {
-      "dev": {
-        "direct": {
-          database: { "ngtest": {} },
-          "service": {
-            "leo": { domain: 'dev.leo', port: 80 },
-            "npx": { domain: 'dev.npx', port: 80 }
-          }
-        }
-      },
-      "test": {
-        "direct": {
-          database: { "ngtest": {} },
-          "service": {
-            "leo": { domain: 'test.leo', port: 80 },
-            "npx": { domain: 'test.npx', port: 80 }
-          }
-        }
-      }
-    }
+  "dev:environment": {
+    "ngtest:database": {},
+    "leo:service": { "domain": "dev.leo", "port": 80 },
+    "npx:service": { "domain": "dev.npx", "port": 80 },
+    "gitTag": "dev"
   },
-  direct: {
-    database: {
-      "ngprod": { url: "ngprod.url" },
-      "ngtest": { url: "ngtest.url" },
-    },
-    service: {
-      "leo": { git: { url: 'leo.git.url' } },
-      "npx": { git: { url: 'npx.git.url' } }
-    }
-  }
+  "test:environment": {
+    "ngtest:database": {},
+    "leo:service": { "domain": "test.leo", "port": 80 },
+    "npx:service": { "domain": "test.npx", "port": 80 },
+    "gitTag": "test"
+  },
+  "prod:environment": {
+    "ngprod:database": {},
+    "leo:service": { "domain": "prod.leo", "port": 80 },
+    "npx:service": { "domain": "prod.npx", "port": 80 },
+    "gitTag": "prod"
+  },
+  "ngprod:database": { "url": "ngprod.url", "type": "oracle" },
+  "ngtest:database": { "url": "ngtest.url", "type": "oracle" },
+  "leo:service": { "git": { "url": "leo.git.url" } },
+  "npx:service": { "git": { "url": "npx.git.url" } }
 }
+
+
