@@ -2,10 +2,10 @@ import { CleanConfig, validateConfig } from "./config";
 import { config } from "@runbook/fixtures";
 
 
-export const checkConfig: CleanConfig = config
+export const castConfig: CleanConfig = config as any
 describe ( "validate config", () => {
   it ( "should return no issues with fixture config", () => {
-    expect ( validateConfig () ( 'prefix' ) ( config ) ).toEqual ( [] )
+    expect ( validateConfig () ( 'prefix' ) ( castConfig ) ).toEqual ( [] )
   } )
   it ( "should report issues with an empty object ", () => {
     expect ( validateConfig () ( 'prefix' ) ( {} as any ) ).toEqual ( [
@@ -21,6 +21,5 @@ describe ( "validate config", () => {
   } )
   it ( "should report issues with an empty object - allowing partial", () => {
     expect ( validateConfig ( true ) ( 'prefix' ) ( {} as any ) ).toEqual ( [] )
-
   } )
 } )

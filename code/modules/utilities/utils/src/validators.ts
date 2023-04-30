@@ -13,6 +13,13 @@ export function validateIsType ( expected: string, allowUndefined?: true ): Name
     return typeof value === expected ? [] : [ `${name} is [${JSON.stringify ( value )}] which is a ${typeof value} and not a ${expected}` ];
   }
 }
+
+export function validateNotArray ( allowUndefined?: true ): NameAndValidator<string> {
+  return name => value => Array.isArray ( value ) ? [ `${name} is an array` ] : []
+}
+export const validateObject = ( allowUndefined?: true ): NameAndValidator<any> =>
+  composeNameAndValidators ( validateNotArray ( allowUndefined ), validateIsType ( 'object' ) )
+
 export const validateString = ( allowUndefined?: true ): NameAndValidator<string> => validateIsType ( 'string', allowUndefined );
 export const validateNumber = ( allowUndefined?: true ): NameAndValidator<number> => validateIsType ( 'number', allowUndefined );
 export const validateBoolean = ( allowUndefined?: true ): NameAndValidator<boolean> => validateIsType ( 'boolean', allowUndefined );
@@ -83,8 +90,9 @@ export const validateHasAtLeastOneKey = ( hint: string ) => <Main, K extends key
   };
 export function validateNameAnd<T> ( validator: NameAndValidator<T>, allowUndefined?: true ): NameAndValidator<NameAnd<T> | undefined> {
   return name => ( value: NameAnd<T | undefined> | undefined ) => {
+    if ( Array.isArray ( value ) ) return [ `${name} is an array and not an object` ]
     if ( value === undefined ) return allowUndefined ? [] : [ `${name} is undefined` ];
-    if ( isPrimitive ( value ) ) return [ `${name} is of type ${typeof value} and not an array` ]
+    if ( isPrimitive ( value ) ) return [ `${name} is of type ${typeof value} and not an object` ]
     return flatMapEntries ( value, ( t, n ) => t ? validator ( name + '.' + n ) ( t ) : [] );
   };
 }

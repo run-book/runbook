@@ -1,11 +1,11 @@
 import { makeBindingsForRefData } from "./ref.react";
-import { ref } from "@runbook/fixtures";
+import { mereology, ref } from "@runbook/fixtures";
 import { bc } from "./ref.react.fixture";
 
 
 describe ( "makeBindingsForRefData", () => {
   it ( "should extract env/services from a reference data", () => {
-    expect ( makeBindingsForRefData ( bc, 'environment', 'service', ref ) ).toEqual ( [
+    expect ( makeBindingsForRefData ( bc, 'environment', 'service', mereology as any, ref ) ).toEqual ( [
       {
         "environment": { "namespace": "environment", "path": [ "dev:environment" ], "value": "dev" },
         "service": { "namespace": "service", "path": [ "dev:environment", "leo:service" ], "value": "leo" }

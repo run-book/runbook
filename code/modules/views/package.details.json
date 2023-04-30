@@ -1,15 +1,15 @@
 {
-  "template": "typescript",
-  "name": "@runbook/views",
+  "template":    "typescript",
+  "name":        "@runbook/views",
   "description": "",
   "packageJson": {
-    "dependencies": {},
+    "dependencies":    {},
     "devDependencies": {}
   },
-  "links": ["@runbook/utils", "@runbook/fixtures", "@runbook/bindings", "@runbook/variables"],
-  "guards": {
+  "links":       ["@runbook/utils", "@runbook/fixtures", "@runbook/bindings", "@runbook/mereology", "@runbook/variables"],
+  "guards":      {
     "compile": true,
     "publish": true,
-    "test": true
+    "test":    true
   }
 }

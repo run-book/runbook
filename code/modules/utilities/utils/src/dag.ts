@@ -16,15 +16,21 @@ export function makeStringDag ( children: NameAnd<string[]> ): StringDag {
   return { parents, children }
 }
 
+function getNameSpace ( nameAndNameSpaceOrJustName: string ) {
+  const index = nameAndNameSpaceOrJustName.indexOf ( ':' )
+  const nameSpace = index === -1 ? nameAndNameSpaceOrJustName : nameAndNameSpaceOrJustName.substring ( index + 1 )
+  return nameSpace;
+}
 export const isDescendantOfInNameAnd = ( na: NameAnd<string[]>, strict?: boolean ) => ( parent: string, child: string ): boolean => {
   if ( child === undefined ) return false
-  const index = parent.indexOf ( ':' )
-  const nameSpace = index === -1 ? parent : parent.substring ( index + 1 )
-  if ( !strict && nameSpace === child ) return true
-  let children = na[ nameSpace ];
+  const parentNameSpace = getNameSpace ( parent );
+  const childNameSpace = getNameSpace ( child )
+  if ( !strict && parentNameSpace === childNameSpace ) return true
+  let children = na[ parentNameSpace ];
   if ( children === undefined ) return false
-  if ( children.includes ( nameSpace ) ) return true
-  let result = children.some ( ( c ) => isDescendantOfInNameAnd ( na ) ( c, child ) );
+  if ( children.includes ( parentNameSpace ) ) return true
+  let result = children.some ( ( c ) =>
+    isDescendantOfInNameAnd ( na ) ( c, childNameSpace ) );
   return result
 };
 

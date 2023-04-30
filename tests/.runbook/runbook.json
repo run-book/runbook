@@ -119,32 +119,50 @@
     }
   },
   "mereology": {
-    "environment": [
-      "service",
-      "database"
-    ],
-    "__from": [
-      "mereology\\main.mereology.json"
-    ]
-  },
-  "setup": {
     "environment": {
-      "gittag": {
-        "description": "The tag that will be in each service's git repo for the code that is in this environment",
-        "default": "${this.name}"
+      "children": {
+        "service": {
+          "fields": {
+            "protocol": {
+              "description": "The protocol that this service will use in this environment"
+            },
+            "domain": {
+              "description": "The domain name for this service in this environment"
+            },
+            "port": {
+              "description": "The port that this service will listen on in this environment"
+            }
+          }
+        },
+        "database": {
+          "name": {
+            "description": "The name of the database in this environment"
+          }
+        }
       },
       "__from": [
         "mereology\\main.mereology.json"
       ]
     },
-    "service": {
-      "gitrepo": {
-        "description": ""
+    "fields": {
+      "gittag": {
+        "description": "The tag that will be in each service's git repo for the code that is in this environment"
       },
-      "_per environment": {
-        "protocol": "The protocol that this service will use in this environment",
-        "domain": "The domain name for this service in this environment",
-        "port": "The port that this service will listen on in this environment"
+      "__from": [
+        "mereology\\main.mereology.json"
+      ]
+    },
+    "__from": [
+      "mereology\\main.mereology.json"
+    ]
+  },
+  "service": {
+    "fields": {
+      "summary": {
+        "description": "A one line summary of what this service does"
+      },
+      "gitrepo": {
+        "description": "The git repo for this service"
       },
       "__from": [
         "mereology\\main.mereology.json"

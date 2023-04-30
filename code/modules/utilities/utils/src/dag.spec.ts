@@ -55,16 +55,16 @@ describe ( "dag", () => {
       expect ( isDescendantOfInNameAnd ( children ) ( "fish", "dog:otherthing" ) ).toBe ( false )
     } )
     it ( "isDecendantOfInStringDag should allow us to say if a child is a descendant of a parent", () => {
-      // expect ( inheritsFrom ( inheritance ) ( "dog:animal", "animal", ) ).toBe ( true )
+      expect ( inheritsFrom ( inheritance ) ( "dog:animal", "animal", ) ).toBe ( true )
       expect ( inheritsFrom ( inheritance ) ( "dog:dog", "animal", ) ).toBe ( true )
-      // expect ( inheritsFrom ( inheritance ) ( "fido:dog", "animal", ) ).toBe ( true )
-      // expect ( inheritsFrom ( inheritance ) ( "cat:cat", "animal", ) ).toBe ( true )
-      // expect ( inheritsFrom ( inheritance ) ( "something:animal", "animal" ) ).toBe ( true )
-      // expect ( inheritsFrom ( inheritance ) ( "anything:anything", "anything" ) ).toBe ( true )
-      //
-      // expect ( inheritsFrom ( inheritance ) ( "animal:animal", "fish", ) ).toBe ( false )
-      // expect ( inheritsFrom ( inheritance ) ( "fido:dog", "fish" ) ).toBe ( false )
-      // expect ( inheritsFrom ( inheritance ) ( "dog:dog", "fish" ) ).toBe ( false )
+      expect ( inheritsFrom ( inheritance ) ( "fido:dog", "animal", ) ).toBe ( true )
+      expect ( inheritsFrom ( inheritance ) ( "cat:cat", "animal", ) ).toBe ( true )
+      expect ( inheritsFrom ( inheritance ) ( "something:animal", "animal" ) ).toBe ( true )
+      expect ( inheritsFrom ( inheritance ) ( "anything:anything", "anything" ) ).toBe ( true )
+
+      expect ( inheritsFrom ( inheritance ) ( "animal:animal", "fish", ) ).toBe ( false )
+      expect ( inheritsFrom ( inheritance ) ( "fido:dog", "fish" ) ).toBe ( false )
+      expect ( inheritsFrom ( inheritance ) ( "dog:dog", "fish" ) ).toBe ( false )
     } )
     it ( "should respect strict", () => {
       expect ( inheritsFrom ( inheritance, true ) ( "anything", "anything" ) ).toBe ( false )

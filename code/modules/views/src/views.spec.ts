@@ -2,14 +2,15 @@ import { fixtureView, inheritance, mereology, ref } from "@runbook/fixtures";
 import { inheritsFrom, mapObjValues } from "@runbook/utils";
 import { BindingContext } from "@runbook/bindings";
 import { applyTrueConditions, bindingsToDictionary, evaluateViewConditions } from "./evaluateViews";
-import { bindings2, bindings1, situation1, situation2 } from "./views.fixture";
+import { bindings1, bindings2, situation1, situation2 } from "./views.fixture";
 import { validateView } from "./views";
 import { fromReferenceData } from "@runbook/referencedata";
+import { mereologyToSummary } from "@runbook/mereology";
 
 
 export const bc: BindingContext = {
   debug: false,
-  mereology,
+  mereology: mereologyToSummary(mereology as any),
   refDataFn: fromReferenceData ( ref ),
   inheritsFrom: inheritsFrom ( inheritance )
 }

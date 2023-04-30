@@ -1,6 +1,5 @@
 import { flatMap, isPrimitive, NameAnd, NameSpaceAndValue, Primitive, safeArray } from "@runbook/utils";
 import { InheritsFromFn } from "./inheritance";
-import { Mereology } from "@runbook/mereology";
 import { deepSortCondition } from "./condition";
 import { FromReferenceDataFn } from "@runbook/referencedata";
 
@@ -25,7 +24,7 @@ export interface PathAndValue extends NameSpaceAndValue {
 }
 export interface BindingContext {
   inheritsFrom: InheritsFromFn
-  mereology: Mereology
+  mereology: NameAnd<string[]>
   refDataFn: FromReferenceDataFn
   debug?: boolean
   debugIndent?: number

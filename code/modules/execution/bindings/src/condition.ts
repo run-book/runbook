@@ -1,5 +1,4 @@
-import { fromEntries, isDescendantOfInNameAnd, mapObjToArray, NameAnd } from "@runbook/utils";
-import { Mereology } from "@runbook/mereology";
+import { fromEntries, isDescendantOfInNameAnd, NameAnd } from "@runbook/utils";
 
 
 /** This is a place for firstly optimisation (it's better to match on things that don't bind first)
@@ -9,7 +8,7 @@ import { Mereology } from "@runbook/mereology";
  *  with it first to see if the approach will work
  */
 type VKVD = { kv: [ string, any ], vd: ValueData }
-export function deepSortCondition ( mereology: Mereology, context: string, t: any ): any {
+export function deepSortCondition ( mereology: NameAnd<string[]>, context: string, t: any ): any {
   if ( Array.isArray ( t ) ) return t.map ( a => deepSortCondition ( mereology, context, a ) ).sort ()
   if ( typeof t === 'object' ) {
     const vds: VKVD[] = Object.entries ( t ).map ( ( kv ) => ({ kv, vd: getValueDataForSort ( kv ) }) )
@@ -50,7 +49,7 @@ export interface ValueData {
   variables: number
   namespaces: string[]
 }
-export const compareValueForSort = ( mereology: Mereology, context: string ) => ( one: ValueData, two: ValueData ): number => {
+export const compareValueForSort = ( mereology: NameAnd<string[]>, context: string ) => ( one: ValueData, two: ValueData ): number => {
   const nsCompareOne = one.namespaces.some ( ns1 => two.namespaces.some ( ns2 => isDescendantOfInNameAnd ( mereology, true ) ( ns1, ns2 ) ) )
   const nsCompareTwo = two.namespaces.some ( ns2 => one.namespaces.some ( ns1 => isDescendantOfInNameAnd ( mereology, true ) ( ns2, ns1 ) ) )
   if ( nsCompareOne && nsCompareTwo )

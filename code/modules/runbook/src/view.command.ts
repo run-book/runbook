@@ -9,6 +9,7 @@ import { jsonToDisplay } from "@runbook/displayformat";
 import { addDisplayOptions, optionToDisplayFormat } from "./display";
 import { addEditViewOptions, executeAndEditViewAndExit } from "./editView";
 import { fromReferenceData } from "@runbook/referencedata";
+import { mereologyToSummary } from "@runbook/mereology";
 
 export function addViewCommand ( command: Command, cwd: string, name: string, configWithFroms: CleanConfig, config: CleanConfig, view: View ) {
   addEditViewOptions ( 'view', addDisplayOptions ( command ) )
@@ -31,7 +32,7 @@ export function addViewCommand ( command: Command, cwd: string, name: string, co
     }
     const bc: BindingContext = {
       debug: false,
-      mereology: config.mereology,
+      mereology: mereologyToSummary ( config.mereology ),
       refDataFn: fromReferenceData ( config.reference ),
       inheritsFrom: inheritsFrom ( makeStringDag ( config.inheritance ) )
     }

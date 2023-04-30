@@ -9,7 +9,7 @@ describe ( 'validateInheritance', () => {
   } )
   it ( 'should  issues with malformed inheritance', () => {
     expect ( validateInheritanceDefn ( 'prefix' ) ( '123' as any ) ).toEqual ( [
-      "prefix is of type string and not an array"
+      "prefix is of type string and not an object"
     ] )
     expect ( validateInheritanceDefn ( 'prefix' ) ( { a: 1 } as any ) ).toEqual ( [
       "prefix.a is of type number and not an array"

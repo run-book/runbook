@@ -47,7 +47,7 @@ export const displayRsForMenuDefn: DisplayRsInState<FullState, CleanConfig> =
                }
 
 
-let initial: FullState = { config: config as CleanConfig, selectionState: { menuPath: [ 'situation' ] } };
+let initial: FullState = { config: config as any, selectionState: { menuPath: [ 'situation' ] } };
 let rootElement = getElement ( "root" );
 const root = createRoot ( rootElement )
 

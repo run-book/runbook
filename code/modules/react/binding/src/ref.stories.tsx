@@ -34,7 +34,7 @@ export const EnvAndService: Story = {
   render: renderOne,
   args: {
     ref,
-    mereology,
+    mereology: mereology as any,
     order: [],
     parent: "environment",
     child: "service"

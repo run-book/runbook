@@ -1,5 +1,6 @@
 import { compareValueForSort, deepSortCondition, getValueDataForSort, zeroValueDepth } from "./condition";
 import { mereology } from "@runbook/fixtures";
+import { mereologyToSummary } from "@runbook/mereology";
 
 describe ( "getValueDataForSort", () => {
   it ( "should return the value data for a sort - primitives", () => {
@@ -35,35 +36,36 @@ describe ( "getValueDataForSort", () => {
 } )
 
 
+const mereologySummary = mereologyToSummary ( mereology as any )
 describe ( "compareValueForSort", () => {
   const oneNs = [ '1' ]
   const twoNs = [ '1', '2' ]
   it ( "should prefer a values with fewer variables", () => {
-    expect ( compareValueForSort ( mereology, 'context' ) ( { ...zeroValueDepth, variables: 1 }, { ...zeroValueDepth, variables: 2 } ) ).toBeLessThan ( 0 )
-    expect ( compareValueForSort ( mereology, 'context' ) ( { ...zeroValueDepth, variables: 1, namespaces: oneNs }, { ...zeroValueDepth, variables: 2, namespaces: twoNs } ) ).toBeLessThan ( 0 )
-    expect ( compareValueForSort ( mereology, 'context' ) ( { ...zeroValueDepth, variables: 1, namespaces: twoNs }, { ...zeroValueDepth, variables: 2, namespaces: oneNs } ) ).toBeLessThan ( 0 )
+    expect ( compareValueForSort ( mereologySummary, 'context' ) ( { ...zeroValueDepth, variables: 1 }, { ...zeroValueDepth, variables: 2 } ) ).toBeLessThan ( 0 )
+    expect ( compareValueForSort ( mereologySummary, 'context' ) ( { ...zeroValueDepth, variables: 1, namespaces: oneNs }, { ...zeroValueDepth, variables: 2, namespaces: twoNs } ) ).toBeLessThan ( 0 )
+    expect ( compareValueForSort ( mereologySummary, 'context' ) ( { ...zeroValueDepth, variables: 1, namespaces: twoNs }, { ...zeroValueDepth, variables: 2, namespaces: oneNs } ) ).toBeLessThan ( 0 )
 
-    expect ( compareValueForSort ( mereology, 'context' ) ( { ...zeroValueDepth, variables: 3 }, { ...zeroValueDepth, variables: 1 } ) ).toBeGreaterThan ( 0 )
-    expect ( compareValueForSort ( mereology, 'context' ) ( { ...zeroValueDepth, variables: 3 }, { ...zeroValueDepth, variables: 3 } ) ).toEqual ( 0 )
+    expect ( compareValueForSort ( mereologySummary, 'context' ) ( { ...zeroValueDepth, variables: 3 }, { ...zeroValueDepth, variables: 1 } ) ).toBeGreaterThan ( 0 )
+    expect ( compareValueForSort ( mereologySummary, 'context' ) ( { ...zeroValueDepth, variables: 3 }, { ...zeroValueDepth, variables: 3 } ) ).toEqual ( 0 )
   } )
   it ( "if the same number of variables it should prefer fewer namespaces", () => {
-    expect ( compareValueForSort ( mereology, 'context' ) (
+    expect ( compareValueForSort ( mereologySummary, 'context' ) (
       { ...zeroValueDepth, variables: 1, namespaces: oneNs },
       { ...zeroValueDepth, variables: 1, namespaces: twoNs } ) ).toBeLessThan ( 0 )
-    expect ( compareValueForSort ( mereology, 'context' ) (
+    expect ( compareValueForSort ( mereologySummary, 'context' ) (
       { ...zeroValueDepth, variables: 1, namespaces: twoNs },
       { ...zeroValueDepth, variables: 1, namespaces: oneNs } ) ).toBeGreaterThan ( 0 )
-    expect ( compareValueForSort ( mereology, 'context' ) (
+    expect ( compareValueForSort ( mereologySummary, 'context' ) (
       { ...zeroValueDepth, variables: 1, namespaces: twoNs },
       { ...zeroValueDepth, variables: 1, namespaces: twoNs } ) ).toEqual ( 0 )
   } )
   it ( "if the namespaces are in the mereology, it will prefer the one that is a descendant of the other", () => {
     const serviceNs = [ 'service', 'some', 'other' ]
     const environmentNs = [ 'environment', 'some', 'other' ]
-    expect ( compareValueForSort ( mereology, 'context' ) (
+    expect ( compareValueForSort ( mereologySummary, 'context' ) (
       { ...zeroValueDepth, variables: 10, namespaces: serviceNs },
       { ...zeroValueDepth, variables: 1, namespaces: environmentNs } ) ).toBeLessThan ( 0 )
-    expect ( compareValueForSort ( mereology, 'context' ) (
+    expect ( compareValueForSort ( mereologySummary, 'context' ) (
       { ...zeroValueDepth, variables: 1, namespaces: environmentNs },
       { ...zeroValueDepth, variables: 10, namespaces: serviceNs } ) ).toBeGreaterThan ( 0 )
   } )
@@ -71,14 +73,14 @@ describe ( "compareValueForSort", () => {
   it ( "if the namespaces are in the mereology it's oK if a parent and child are in the same valuedata", () => {
     const ns1 = [ 'service', 'environment', 'other' ]
     const ns2 = [ 'environment', 'some', 'other' ]
-    expect ( compareValueForSort ( mereology, 'context' ) (
+    expect ( compareValueForSort ( mereologySummary, 'context' ) (
       { ...zeroValueDepth, variables: 10, namespaces: ns1 },
       { ...zeroValueDepth, variables: 1, namespaces: ns2 } ) ).toBeLessThan ( 0 )
   } )
   it ( "if the namespaces are in the mereology it will throw an exception if a<b and b<a", () => {
     const ns1 = [ 'service', 'environment', 'other' ]
     const ns2 = [ 'environment', 'service', 'other' ]
-    expect ( () => compareValueForSort ( mereology, 'context' ) (
+    expect ( () => compareValueForSort ( mereologySummary, 'context' ) (
       { ...zeroValueDepth, variables: 10, namespaces: ns1 },
       { ...zeroValueDepth, variables: 1, namespaces: ns2 } ) ).toThrow ( 'context\nHave issue in the mereology. Some of the namespaces are both descendants of each other' )
   } )
@@ -90,7 +92,7 @@ describe ( "deepSortCondition", () => {
     "{p}": {}
   };
   it ( "should sort", () => {
-    let entries = Object.entries ( deepSortCondition ( mereology, 'context', cond ) );
+    let entries = Object.entries ( deepSortCondition ( mereologySummary, 'context', cond ) );
     expect ( entries ).toEqual (
       [
         [ "a", { "b": { "c": 3 } } ],
@@ -99,7 +101,7 @@ describe ( "deepSortCondition", () => {
   } )
 
   it ( "should sort the other way", () => {
-    expect ( Object.entries ( deepSortCondition ( mereology, 'context', {
+    expect ( Object.entries ( deepSortCondition ( mereologySummary, 'context', {
       "{p}": {},
       "a": { "b": { "c": 3 } },
     } ) ) ).toEqual ( [
@@ -108,14 +110,14 @@ describe ( "deepSortCondition", () => {
     ] );
   } )
   it ( "should sort service/env situation", () => {
-    expect ( Object.entries ( deepSortCondition ( mereology, 'context',
+    expect ( Object.entries ( deepSortCondition ( mereologySummary, 'context',
       { "{ser:service}": {}, "env:environment": {} } ) ) ).toEqual ( [
       [ "env:environment", {} ],
       [ "{ser:service}", {} ],
     ] )
   } )
   it ( "should sort service/env situation - other way round", () => {
-    expect ( Object.entries ( deepSortCondition ( mereology, 'context',
+    expect ( Object.entries ( deepSortCondition ( mereologySummary, 'context',
       { "env:environment": {}, "{ser:service}": {} } ) ) ).toEqual ( [
       [ "env:environment", {} ],
       [ "{ser:service}", {} ],
