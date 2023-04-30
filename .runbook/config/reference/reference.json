@@ -20,7 +20,7 @@
     },
     "ngprod:database":  {"url": "ngprod.url", "type": "oracle"},
     "ngtest:database":  {"url": "ngtest.url", "type": "oracle"},
-    "leo:service":      {"git": {"url": "leo.git.url"}},
-    "npx:service":      {"git": {"url": "npx.git.url"}}
+    "leo:service":      {"git": {"url": "leo.git.url"}, "summary": "CRUD for vehicle orders"},
+    "npx:service":      {"git": {"url": "npx.git.url"}, "summary": "Invoice generation"}
   }
 }

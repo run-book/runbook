@@ -24,9 +24,10 @@ describe ( "validateMereology", () => {
 describe ( "mereologyToSummary", () => {
   it ( "should be makable from ref", () => {
     expect ( mereologyToSummary ( castMerology ) ).toEqual ( {
-      "environment": [ "service", "database" ],
-      "service": [],
       "database": [],
+      "environment": [ "service", "database" ],
+      "git": [],
+      "service": [ "git" ]
     } )
   } )
 } )

@@ -1,4 +1,4 @@
-import { composeNameAndValidators, NameAnd, NameAndValidator, safeObject, validateAny, validateChild, validateChildString, validateNameAnd, validateObject } from "@runbook/utils";
+import { composeNameAndValidators, NameAnd, NameAndValidator, safeObject, validateAny, validateArray, validateChild, validateChildItemOrArray, validateChildString, validateNameAnd, validateObject, validateString } from "@runbook/utils";
 
 
 export interface MereologyField {
@@ -29,6 +29,7 @@ export const validateMerologyField: NameAndValidator<MereologyField> = validateC
 export function validateMerologyItem (): NameAndValidator<MerologyItem> {
   return composeNameAndValidators (
     validateObject (),
+    // validateChild ( 'displayOrder', validateArray ( validateString () ), true ),
     validateChild ( 'children', validateNameAnd ( validateAny () ), true ), // need to handle this recursion
     validateChild ( 'fields', validateNameAnd ( validateMerologyField ), true ) )
 }

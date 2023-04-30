@@ -17,9 +17,13 @@
     "fields":      {"gittag": {"description": "The tag that will be in each service's git repo for the code that is in this environment"}}
   },
   "service":   {
-    "fields": {
+    "fields":   {
       "summary": {"description": "A one line summary of what this service does"},
-      "gitrepo": {"description": "The git repo for this service"}
+    },
+    "children": {
+      "git": {
+        "url": {"description": "The git repo for this service"}
+      }
     }
   }
 }

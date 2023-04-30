@@ -7,12 +7,12 @@ import { mereology, ref } from "@runbook/fixtures";
 import { displayOneReferenceDataTable } from "./ref.react";
 import { bc, displayBindingProps } from "./ref.react.fixture";
 
-const RefData = <S extends any> (): JSX.Element => <div></div>;
+const RefItem = <S extends any> (): JSX.Element => <div></div>;
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-const meta: Meta<typeof RefData> = {
-  title: 'RefData',
-  component: RefData,
+const meta: Meta<typeof RefItem> = {
+  title: 'RefItem',
+  component: RefItem,
 };
 
 export default meta;
@@ -23,20 +23,29 @@ interface TestArgsForRefData {
   ref: ReferenceData,
   mereology: Mereology
   order: string[]
-  parent: string
-  child: string
+  item: string
 }
 
 
-const renderOne = ( args: TestArgsForRefData ) =>
-  displayOneReferenceDataTable ( args.mereology, args.ref, bc, displayBindingProps ) ( args.order ) ( args.parent, args.child )
-export const EnvAndService: Story = {
-  render: renderOne,
+const render = ( args: TestArgsForRefData ) =>
+  displayOneReferenceDataTable ( args.mereology, args.ref, bc, displayBindingProps ) ( args.order ) ( args.item )
+export const Environment: Story = {
+  render,
   args: {
     ref,
     mereology: mereology as any,
     order: [],
-    parent: "environment",
-    child: "service"
+    item: "environment",
   }
 }
+
+export const Service: Story = {
+  render: render,
+  args: {
+    ref,
+    mereology: mereology as any,
+    order: [],
+    item: "service",
+  }
+}
+

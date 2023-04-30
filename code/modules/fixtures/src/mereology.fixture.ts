@@ -16,8 +16,14 @@ export const mereology = {
   },
   "service": {
     "fields": {
-      "summary": { "description": "A one line summary of what this service does" },
-      "gitrepo": { "description": "The git repo for this service" }
+      "summary": { "description": "A one line summary of what this service does" }
+    },
+    "children": {
+      "git": {
+        fields: {
+          "url": { "description": "The git repo for this service" }
+        }
+      }
     }
   }
 }

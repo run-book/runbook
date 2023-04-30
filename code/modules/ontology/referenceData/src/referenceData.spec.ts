@@ -5,7 +5,8 @@ export const checkRef: ReferenceData = ref
 describe ( "it should get direct objects from the mereology", () => {
   it ( "should find it if in", () => {
     expect ( fromReferenceData ( ref ) ( [], 'service', 'leo' ) ).toEqual ( {
-      "git": { "url": "leo.git.url" }
+      "git": { "url": "leo.git.url" },
+      "summary": "CRUD for vehicle orders"
     } )
   } )
   it ( "shouldn't find it if not in", () => {
@@ -18,7 +19,8 @@ describe ( "it should merge the data knowledge of the bound things", () => {
     expect ( fromReferenceData ( ref ) ( [ { namespace: 'environment', value: 'test' } ], 'service', 'leo' ) ).toEqual ( {
       "domain": "test.leo",
       "git": { "url": "leo.git.url" },
-      "port": 80
+      "port": 80,
+      "summary": "CRUD for vehicle orders"
     } )
   } )
 } )
@@ -36,7 +38,10 @@ describe ( "allDataFor", () => {
   it ( 'should retrieve all the data about an environment', () => {
     expect ( allDataFor ( ref ) ( 'leo:service' ) ).toEqual ( {
       "dev:environment": { "leo:service": { "domain": "dev.leo", "port": 80 } },
-      "leo:service": { "git": { "url": "leo.git.url" } },
+      "leo:service": {
+        "summary": "CRUD for vehicle orders",
+        "git": { "url": "leo.git.url" }
+      },
       "prod:environment": { "leo:service": { "domain": "prod.leo", "port": 80 } },
       "test:environment": { "leo:service": { "domain": "test.leo", "port": 80 } }
     } )
