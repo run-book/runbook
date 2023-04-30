@@ -1,10 +1,11 @@
 import { Meta, StoryObj } from "@storybook/react";
 import React from "react";
-import { Binding } from "@runbook/bindings";
-import { displayBindings, tableProps } from "./binding.react";
+
 import { ReferenceData } from "@runbook/referencedata";
 import { Mereology } from "@runbook/mereology";
 import { mereology, ref } from "@runbook/fixtures";
+import { displayOneReferenceDataTable } from "./ref.react";
+import { bc, displayBindingProps } from "./ref.react.fixture";
 
 const RefData = <S extends any> (): JSX.Element => <div></div>;
 
@@ -21,14 +22,21 @@ type Story = StoryObj<TestArgsForRefData>;
 interface TestArgsForRefData {
   ref: ReferenceData,
   mereology: Mereology
+  order: string[]
+  parent: string
+  child: string
 }
 
 
-const render = ( args: TestArgsForRefData ) => displayBindings ( tableProps ) ( args.order ) ( args.bindings )
-export const Reference: Story = {
-  render,
+const renderOne = ( args: TestArgsForRefData ) =>
+  displayOneReferenceDataTable ( args.mereology, args.ref, bc, displayBindingProps ) ( args.order ) ( args.parent, args.child )
+export const EnvAndService: Story = {
+  render: renderOne,
   args: {
     ref,
-    mereology
+    mereology,
+    order: [],
+    parent: "environment",
+    child: "service"
   }
 }

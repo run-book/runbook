@@ -1,6 +1,6 @@
-import { inheritance, inheritanceDefn } from "@runbook/fixtures";
+import { inheritanceDefn } from "@runbook/fixtures";
 import { validateInheritanceDefn } from "./inheritance";
-import { validateMereology } from "@runbook/mereology";
+
 
 
 describe ( 'validateInheritance', () => {

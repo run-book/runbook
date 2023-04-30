@@ -29,7 +29,7 @@ export const tableProps: DisplayBindingProps = {
     <tbody>{elements}</tbody>
   </table>,
   rows: ( elements, row ) => <tr key={row}>{elements}</tr>,
-  displayBinding: ( name, value ) => <td key={name}>{name}: {value.value}</td>
+  displayBinding: ( name, value ) => <td key={name}>{value.value}</td>
 }
 
 export const BindingTable = displayBindings ( tableProps ) ( [] )

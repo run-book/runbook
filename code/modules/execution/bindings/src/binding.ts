@@ -40,6 +40,13 @@ function parseBracketedString ( path: string[], s: string ): VarNameAndInheritsF
   return { varName, inheritsFrom }
 }
 
+function valueFrom ( s: Primitive ): Primitive {
+  if ( typeof s !== 'string' ) return s
+  const index = s.indexOf ( ':' )
+  if ( index === -1 ) return s
+  return s.substring ( 0, index )
+}
+
 interface VarNameAndInheritsFrom {
   varName: string
   inheritsFrom: string
@@ -61,7 +68,7 @@ const matchVariable = ( bc: BindingContext, condition: string, condPath: string[
       if ( !inherits ) return undefined;
     }
     const newBinding: Binding = { ...binding }
-    newBinding[ varName ] = { path, value: situation, namespace: (inheritsFrom?.length > 0 ? inheritsFrom : undefined) }
+    newBinding[ varName ] = { path, value: valueFrom ( situation ), namespace: (inheritsFrom?.length > 0 ? inheritsFrom : undefined) }
     return { binding: newBinding, varNameAndInheritsFrom }
   };
 };
