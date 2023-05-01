@@ -16,7 +16,7 @@ export async function contextAndStats ( context: Context, root: string ): Promis
   let reqPath = path.join ( root, context.request.path );
   let reqPathNoTrailing = reqPath.replace ( /^\//, '' );
   const stats = await fs.stat ( reqPathNoTrailing ).catch ( () => null );
-  console.log ( 'reqPathNoTrailing', reqPathNoTrailing, 'stats', stats, 'isFile:', stats?.isFile (), 'isDirectory:', stats?.isDirectory () );
+  // console.log ( 'reqPathNoTrailing', reqPathNoTrailing, 'stats', stats, 'isFile:', stats?.isFile (), 'isDirectory:', stats?.isDirectory () );
   return { reqPath, context, stats, reqPathNoTrailing }
 }
 

@@ -2,7 +2,7 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import * as React from 'react'
 import { CleanConfig } from "@runbook/config";
-import { config } from "@runbook/fixtures";
+
 import { createRoot } from "react-dom/client";
 import { startProcessing } from "@runbook/store";
 import { getElement } from "./react.helpers";
@@ -17,9 +17,9 @@ import { DisplayMereologyContext } from "@runbook/referencedata_react";
 import { BindingContext } from "@runbook/bindings";
 import { mereologyToSummary } from "@runbook/mereology";
 import { fromReferenceData } from "@runbook/referencedata";
-import { inheritsFrom, makeStringDag } from "@runbook/utils";
+import { inheritsFrom, makeStringDag, prune } from "@runbook/utils";
 import { tableProps } from "@runbook/bindings_react";
-import { runbookCompAllDataFor } from "@runbook/referencedata_react/dist/src/ref.react.allDataFor";
+import { runbookCompAllDataFor } from "@runbook/referencedata_react";
 
 
 export function menuDefn<S> ( display: ( name: string ) => ( path: string[] ) => RunbookComponent<S, any>, dispRefData: ( path: string[] ) => RunbookComponent<S, any> ): MenuDefn<RunbookComponent<S, any>> {
@@ -72,14 +72,21 @@ export const displayRsForMenuDefn: DisplayRsInState<FullState, CleanConfig> =
                  return <div>{display ( rs, { mode: 'view' }, findMenuAndDisplay<FullState, CleanConfig> ( 'nav', menuFns, md, bootStrapCombine ) )}</div>;
                }
 
-let initial: FullState = { config: config as any, selectionState: { menuPath: [ 'situation' ] } };
-let rootElement = getElement ( "root" );
-const root = createRoot ( rootElement )
 
-const { store, rs } = makeStore<FullState, CleanConfig> ( root, initial, refAndDataOpt, displayRsForMenuDefn );
+const loc = window.location.href
+const filename = loc + '/config'
+console.log ( 'loc: ', loc, 'filename: ', filename );
+const rootElement = getElement ( "root" );
+fetch ( filename ).then ( response => response.json () ).then ( config => {
+  const realConfig = prune ( config, '__from' )
+  let initial: FullState = { config: realConfig as any, selectionState: { menuPath: [ 'situation' ] } };
+  const root = createRoot ( rootElement )
+  const { store, rs } = makeStore<FullState, CleanConfig> ( root, initial, refAndDataOpt, displayRsForMenuDefn );
 
-startProcessing ( store )
-rs.setS ( initial )
+  startProcessing ( store )
+  rs.setS ( initial )
+} )
+
 
 
 
