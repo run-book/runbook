@@ -74,7 +74,7 @@ export const displayRsForMenuDefn: DisplayRsInState<FullState, CleanConfig> =
 
 
 const loc = window.location.href
-const filename = loc + '/config'
+const filename = loc + 'config'
 console.log ( 'loc: ', loc, 'filename: ', filename );
 const rootElement = getElement ( "root" );
 fetch ( filename ).then ( response => response.json () ).then ( config => {

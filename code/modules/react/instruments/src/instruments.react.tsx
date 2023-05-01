@@ -48,10 +48,14 @@ export function displayParamsFromReference<S> (): RunbookComponent<S, RefAndData
   }
 }
 
+function paramDataOptional<S> ( st: RunbookState<S, ScriptInstrument> ) {
+  const dataOpt = focusQuery ( st.opt, 'paramData' as any )// this is the cheat. We create this space for the data to live
+  return dataOpt;
+}
 /** OK A bit of a cheat going on here. We add a 'paramData' field to the instrument which isn't there to store the data */
 export function displayParamsFromInstrument<S> (): RunbookComponent<S, ScriptInstrument> {//TODO Merge with displayParamsFromReference
   return st => ( props ) => {
-    const dataOpt = focusQuery ( st.opt, 'paramData' as any )// this is the cheat. We create this space for the data to live
+    const dataOpt = paramDataOptional ( st );
     const refOpt: Optional<S, NameAnd<CleanInstrumentParam>> = focusQuery ( st.opt, 'params' ) as Optional<S, NameAnd<CleanInstrumentParam>>
     const instrAndDataOpt = optionalForRefAndData ( refOpt, dataOpt )
     console.log ( 'displayParamsFromInstrument', instrAndDataOpt )
@@ -60,13 +64,25 @@ export function displayParamsFromInstrument<S> (): RunbookComponent<S, ScriptIns
   }
 }
 
+function runButtonOnClick<S> ( st: RunbookState<S, ScriptInstrument> ) {
+  const dataOpt = paramDataOptional ( st );
+  const params = getOptional ( dataOpt, st.state )
+  const instrument = st.optGet ()
+  return async () => {
+    let url = window.location.href + 'instrument';
+    console.log ( 'runButtonOnClick', url, { params, instrument } )
+    const json = await (await fetch ( url, { body: JSON.stringify ( { params, instrument } ), method: 'POST' } )).json ()
+    console.log ( 'result', json )
+    return json;
+  }
+}
 export function displayRunForInstrument<S> (): RunbookComponent<S, ScriptInstrument> {
   return st => ( props ) => {
     return <div>
       <h1>Run</h1>
       <h2>Params</h2>
       {display ( st, props, displayParamsFromInstrument<S> () )}
-      <button>Run!</button>
+      <button onClick={runButtonOnClick ( st )}>Run!!</button>
       <h2>Results</h2>
       {displayLabeledChild ( st, { ...props, mode: 'view' }, textArea ( { rows: 5 } ), 'result' as any )}
     </div>
@@ -100,7 +116,7 @@ export function displayScriptInstrument<S> (): RunbookComponent<S, ScriptInstrum
       <Layout layout={[ 1, 1, 1 ]} component='displayScriptInstrument'>
         {isRunbookStateFor ( st, isSharedScriptInstrument ) && display<S, SharedScriptInstrument> ( st, props, displaySharedInstrument<S> () )}
         {isRunbookStateFor ( st, isVaryingScriptInstument ) && display<S, VaryingScriptInstrument> ( st, props, displayVaryingInstrument<S> () )}
-        {display<S, ScriptInstrument> ( st, {...props, mode: 'run'}, displayRunForInstrument<S> () )}
+        {display<S, ScriptInstrument> ( st, { ...props, mode: 'run' }, displayRunForInstrument<S> () )}
       </Layout>
     </div>
   }

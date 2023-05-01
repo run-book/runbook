@@ -42,9 +42,30 @@ export const getHandler = ( path: string, content: string, contentType: string )
       context.status = 200;
     }
   }
-
-
 }
+
+export interface BodyHandlerResult {
+  body: string
+  contentType: string
+  status: number
+}
+export const postHandler = ( path: string, bodyHandler: ( s: string ) => Promise<BodyHandlerResult> ): KoaPartialFunction => ({
+  isDefinedAt: ( { context }: ContextAndStats ) => {
+    let b = context.request.path === path && context.request.method === 'POST';
+    console.log ( 'postHandler.isDefinedAt', b, context.request.path, path, context.request.method )
+    return b;
+  },
+  apply: async ( { context }: ContextAndStats ) => {
+    let s: any = context.request.body;
+    console.log ( 'context:', context )
+    console.log ( 'initial body: ', s )
+    console.log ( 'initial rawBody: ', context.request.rawBody )
+    const body = await bodyHandler ( s )
+    context.type = body.contentType;
+    context.body = body.body;
+    context.status = body.status;
+  }
+});
 export const directoryServesDefaultsIfExists: KoaPartialFunction = {
   isDefinedAt: ( { stats }: ContextAndStats ) => stats?.isDirectory (),
   apply: async ( { context, reqPathNoTrailing }: ContextAndStats ) => {

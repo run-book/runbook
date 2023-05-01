@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "koa": "^2.14.2",
+    "koa-bodyparser": "^4.4.0",
     "react": "16.14.0",
     "react-dom": "16.14.0"
   },
