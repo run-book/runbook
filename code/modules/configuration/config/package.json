@@ -1,7 +1,7 @@
 {
   "name": "@runbook/config",
   "description": "",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,8 +17,8 @@
     ]
   },
   "dependencies": {
-    "@runbook/scriptinstruments": "0.1.2",
-    "@runbook/views": "0.1.2",
+    "@runbook/scriptinstruments": "0.1.3",
+    "@runbook/views": "0.1.3",
     "react": "16.14.0",
     "react-dom": "16.14.0"
   },

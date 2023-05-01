@@ -1,7 +1,7 @@
 {
   "name": "@runbook/views_react",
   "description": "",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,8 +17,8 @@
     ]
   },
   "dependencies": {
-    "@runbook/views": "0.1.2",
-    "@runbook/fixtures": "0.1.2",
+    "@runbook/views": "0.1.3",
+    "@runbook/fixtures": "0.1.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "storybook": "^7.0.6",
