@@ -15,6 +15,7 @@ export function parseBracketedString ( path: string[], s: string ): VarNameAndIn
 const isVariable = ( condK: string ) => typeof condK === 'string' && condK.startsWith ( '{' ) && condK.endsWith ( '}' );
 
 
+
 export type Binding = NameAnd<PathAndValue>
 
 export interface PathAndValue extends NameSpaceAndValue {

@@ -1,6 +1,7 @@
 import { findFromPath, mapObjToArray, NameAnd, RefAndData, safeObject } from "@runbook/utils";
 import { display, RunbookComponent, RunbookState } from "@runbook/runbook_state";
 import { focusOnJustData, focusOnJustRef, parsePath } from "@runbook/optics";
+import { CleanConfig } from "@runbook/config";
 
 
 export type RememberedMode = NameAnd<string>
@@ -98,23 +99,26 @@ function findInMd<R> ( m: MenuDefn<R>, path: string[] ): MenuDefnItem<R> | undef
   return undefined
 }
 
-export const applyMenuDefn = <R> ( prefix: string, fns: MenuDefnFns<R>, md: MenuDefn<R>, config: any ): R =>
-  applyMenuItem ( [], fns, config ) ( { type: 'navBar', children: md }, prefix )
+export const applyMenuDefn = <R, Config> ( prefix: string, fns: MenuDefnFns<R>, mdFn: ( cleanConfig: Config ) => MenuDefn<R>, config: Config ): R =>
+  applyMenuItem ( [], fns, config ) ( { type: 'navBar', children: mdFn ( config ) }, prefix )
 
-export const findDisplay = <S, Config> ( fns: MenuAndDisplayFnsForRunbook<S, Config>, md: MenuDefnForRunbook<S> ): RunbookComponent<S, RefAndData<SelectionState, Config>> => {
+export const findDisplay = <S, Config> ( fns: MenuAndDisplayFnsForRunbook<S, Config>, mdFn: ( cleanConfig: Config ) => MenuDefnForRunbook<S> ): RunbookComponent<S, RefAndData<SelectionState, Config>> => {
   return rs => ( props ) => {
     const rsForConfig: RunbookState<S, any> = rs.withOpt ( focusOnJustData ( rs.opt ) )
     const { focusedOn } = props
     let selectionState = focusedOn?.ref;
+    const config: Config | undefined = focusedOn?.data
+    if ( config === undefined ) throw Error ( `No config in ${JSON.stringify ( focusedOn )}` )
 
     if ( !focusedOn ) return display ( rsForConfig, props, fns.displayNothing )
     const displayPath = selectionState?.displayPath
     const path = selectionState?.selection
     if ( displayPath && path ) {
-      const found: MenuDefnItem<RunbookComponent<S, any>> | undefined = findInMd ( md, displayPath )
+      let menuDefn = mdFn ( config );
+      const found: MenuDefnItem<RunbookComponent<S, any>> | undefined = findInMd ( menuDefn, displayPath )
       if ( !found ) {
         let parentPath = displayPath.slice ( 0, -1 );
-        const parentFound: MenuDefnItem<RunbookComponent<S, any>> | undefined = findInMd ( md, parentPath )
+        const parentFound: MenuDefnItem<RunbookComponent<S, any>> | undefined = findInMd ( menuDefn, parentPath )
         console.log ( 'parentPath/found', parentPath, parentFound, isFromNameAndDataMenuDefn ( parentFound ) )
         if ( parentFound && isFromNameAndDataMenuDefn ( parentFound ) ) {
           let lastPath: string = displayPath?.[ displayPath?.length - 1 ];
@@ -140,13 +144,16 @@ export const findDisplay = <S, Config> ( fns: MenuAndDisplayFnsForRunbook<S, Con
   };
 }
 
-export function findMenuAndDisplay<S, Config> ( prefix: string, fns: MenuAndDisplayFnsForRunbook<S, Config>, md: MenuDefnForRunbook<S>, combine: CombinedMenuAndDisplayFn ): RunbookComponent<S, RefAndData<SelectionState, Config>> {
+export function findMenuAndDisplay<S, Config> ( prefix: string, fns: MenuAndDisplayFnsForRunbook<S, Config>,
+                                                mdFn: ( cleanConfig: Config ) => MenuDefnForRunbook<S>, combine: CombinedMenuAndDisplayFn ):
+  RunbookComponent<S, RefAndData<SelectionState, Config>> {
   return rs => ( props ) => {
     const rsForSelection: RunbookState<S, SelectionState> = rs.withOpt ( focusOnJustRef ( rs.opt ) )
     let config = props.focusedOn?.data;
+    if ( config === undefined ) throw Error ( `No config in ${JSON.stringify ( props.focusedOn )}` )
     console.log ( 'config', config )
-    const menu: RunbookComponent<S, SelectionState> = applyMenuDefn ( prefix, fns, md, config )
-    const selectedDisplay = findDisplay ( fns, md )
+    const menu: RunbookComponent<S, SelectionState> = applyMenuDefn ( prefix, fns, mdFn, config )
+    const selectedDisplay = findDisplay ( fns, mdFn )
     return combine ( display ( rsForSelection, props, menu ), display ( rs, props, selectedDisplay ) )
   }
 }

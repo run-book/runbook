@@ -8,7 +8,14 @@
     "devDependencies": {"react-scripts": "^5.0.1"},
     "scripts":         {"start": "react-scripts start"}
   },
-  "links":       ["@runbook/instruments_react", "@runbook/fixtures", "@runbook/store", "@runbook/views_react", "@runbook/menu_react"],
+  "links":       [
+    "@runbook/instruments_react",
+    "@runbook/fixtures",
+    "@runbook/store",
+    "@runbook/views_react",
+    "@runbook/menu_react",
+    "@runbook/referencedata_react"
+  ],
   "guards":      {
     "compile":   true,
     "publish":   false,

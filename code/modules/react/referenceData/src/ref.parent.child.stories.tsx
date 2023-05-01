@@ -1,11 +1,7 @@
 import { Meta, StoryObj } from "@storybook/react";
 import React from "react";
-
-import { ReferenceData } from "@runbook/referencedata";
-import { Mereology } from "@runbook/mereology";
-import { mereology, ref } from "@runbook/fixtures";
-import { displayParentChildReferenceDataTable } from "./ref.react";
-import { bc, displayBindingProps } from "./ref.react.fixture";
+import { displayMereology, makeConditionToDisplayParentChildRefData } from "./ref.react";
+import { displayMereologyContext } from "./ref.react.fixture";
 
 const RefParentChild = <S extends any> (): JSX.Element => <div></div>;
 
@@ -20,24 +16,32 @@ type Story = StoryObj<TestArgsForRefData>;
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
 
 interface TestArgsForRefData {
-  ref: ReferenceData,
-  mereology: Mereology
   order: string[]
   parent: string
   child: string
 }
 
 
-const renderParentChild = ( args: TestArgsForRefData ) =>
-  displayParentChildReferenceDataTable ( args.mereology, args.ref, bc, displayBindingProps ) ( args.order ) ( args.parent, args.child )
+const renderParentChild = ( args: TestArgsForRefData ) => {
+  const { parent, child } = args
+  return displayMereology ( displayMereologyContext ) ( makeConditionToDisplayParentChildRefData, args.order ) ( { q: { parent, child } } );
+}
+
 export const EnvAndService: Story = {
   render: renderParentChild,
   args: {
-    ref,
-    mereology: mereology as any,
     order: [],
     parent: "environment",
     child: "service"
+  }
+}
+
+export const ServiceAndGit: Story = {
+  render: renderParentChild,
+  args: {
+    order: [],
+    parent: "service",
+    child: "git"
   }
 }
 

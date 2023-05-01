@@ -11,6 +11,12 @@ export interface MerologyItem {
 
 export type Mereology = NameAnd<MerologyItem>
 
+export function nameSpaceFrom ( s: string ) {
+  const index = s.indexOf ( ':' )
+  if ( index === -1 ) return undefined
+  return s.substring ( index + 1 )
+}
+
 
 export function mereologyToSummary ( m: Mereology ): NameAnd<string[]> {
   const result: NameAnd<string[]> = {}

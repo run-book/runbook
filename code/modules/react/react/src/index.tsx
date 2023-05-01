@@ -13,18 +13,26 @@ import { Optional } from "@runbook/optics";
 import { display, displayWithNewOpt, jsonMe, modeFromProps, RunbookComponent } from "@runbook/runbook_state";
 import { displayScriptInstrument } from "@runbook/instruments_react";
 import { displayView } from "@runbook/views_react";
+import { DisplayMereologyContext } from "@runbook/referencedata_react";
+import { BindingContext } from "@runbook/bindings";
+import { mereologyToSummary } from "@runbook/mereology";
+import { fromReferenceData } from "@runbook/referencedata";
+import { inheritsFrom, makeStringDag } from "@runbook/utils";
+import { tableProps } from "@runbook/bindings_react";
+import { runbookCompAllDataFor } from "@runbook/referencedata_react/dist/src/ref.react.allDataFor";
 
 
-export function menuDefn<S> ( display: ( name: string ) => ( path: string[] ) => RunbookComponent<S, any> ): MenuDefn<RunbookComponent<S, any>> {
+export function menuDefn<S> ( display: ( name: string ) => ( path: string[] ) => RunbookComponent<S, any>, dispRefData: ( path: string[] ) => RunbookComponent<S, any> ): MenuDefn<RunbookComponent<S, any>> {
   return {
     Ontology: {
       type: 'navBarItem', path: [], display: display ( 'ontology' ),
       children: {
         Mereologies: { type: 'dropdownItem', path: [ 'mereology' ], display: display ( 'mereology item' ), },
-        "Reference Data": { type: 'dropdownItem', path: [ 'reference' ], display: display ( 'reference item' ), },
+        "Reference Data (Raw)": { type: 'dropdownItem', path: [ 'reference' ], display: display ( 'reference item' ), },
         "Inheritances": { type: 'dropdownItem', path: [ 'inheritance' ], display: display ( 'inheritance item' ), }
       }
     },
+    ReferenceData: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'reference' ], display: dispRefData } },
     Instruments: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'instrument' ], display: path => displayScriptInstrument<S> () } },
     Views: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'view' ], display: path => displayView<S> ( path[ path.length - 1 ] ) } },
   }
@@ -38,14 +46,31 @@ export const fixtureDisplayWithMode = <S extends any> ( opt: Optional<S, Selecti
 
 
 const menuFns: MenuAndDisplayFnsForRunbook<FullState, any> = bootstrapMenu<FullState, any> ()
-const md: MenuDefnForRunbook<FullState> = menuDefn ( fixtureDisplayWithMode<FullState> ( selectionStateOpt ) )
+function dispMContext ( config: CleanConfig ): DisplayMereologyContext {
+  const bc: BindingContext = {
+    debug: false,
+    mereology: mereologyToSummary ( config.mereology ),
+    refDataFn: fromReferenceData ( config.reference ),
+    inheritsFrom: inheritsFrom ( makeStringDag ( config.inheritance ) )
+  }
+
+  return {
+    bc,
+    displayBindingProps: tableProps,
+    m: config.mereology,
+    r: config.reference
+  }
+}
+
+
+const md = ( config: CleanConfig ): MenuDefnForRunbook<FullState> =>
+  menuDefn ( fixtureDisplayWithMode<FullState> ( selectionStateOpt ), runbookCompAllDataFor ( dispMContext ( config ) ) )
 
 
 export const displayRsForMenuDefn: DisplayRsInState<FullState, CleanConfig> =
                rs => {
                  return <div>{display ( rs, { mode: 'view' }, findMenuAndDisplay<FullState, CleanConfig> ( 'nav', menuFns, md, bootStrapCombine ) )}</div>;
                }
-
 
 let initial: FullState = { config: config as any, selectionState: { menuPath: [ 'situation' ] } };
 let rootElement = getElement ( "root" );

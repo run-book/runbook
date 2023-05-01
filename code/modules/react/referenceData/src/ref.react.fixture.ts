@@ -5,6 +5,7 @@ import { inheritsFrom } from "@runbook/utils";
 
 import { mereologyToSummary } from "@runbook/mereology";
 import { DisplayBindingProps, tableProps } from "@runbook/bindings_react";
+import { DisplayMereologyContext, DisplayMereologyProps } from "./ref.react";
 
 export const bc: BindingContext = {
   debug: false,
@@ -14,3 +15,10 @@ export const bc: BindingContext = {
 }
 
 export const displayBindingProps: DisplayBindingProps = tableProps
+
+export const displayMereologyContext: DisplayMereologyContext = {
+  bc,
+  displayBindingProps,
+  r: ref,
+  m: mereology as any
+}
