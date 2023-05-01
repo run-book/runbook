@@ -6,12 +6,7 @@ import { addAllReferenceCommands, addOntologyCommand } from "./reference.command
 import { addViewCommand } from "./view.command";
 import { addInstrumentCommand } from "./instrument.command";
 import { addConfigCommand } from "./config.command";
-import koa from "@runbook/koa";
-
-
-
-function argumentsForInstrument ( command: Command, instrument: ScriptInstrument ) {
-}
+import { addGuiCommand } from "./gui.command";
 
 
 function addSituationCommand ( command: Command, config: CleanConfig ) {
@@ -41,11 +36,11 @@ export function makeProgram ( cwd: string, withFromsConfig: CleanConfig, cleanCo
   addSituationCommand ( program.command ( 'situation' ).description ( 'Commands about the current situation: the ticket you are working on, or a playground' ), cleanConfig )
 
   addConfigCommand ( program.command ( 'config' ).description ( 'Views the cleanConfig and any issues with it' ), cleanConfig, cwd );
-
-  const gui: Command = program.command ( 'gui' ).description ( 'Starts the gui' ).action ( () => {
-    process.env.ROOT_DIR = './';
-    koa.start();	
-  } )
+  addGuiCommand ( program, cleanConfig, cwd );
+  // const gui: Command = program.command ( 'gui' ).description ( 'Starts the gui' ).action ( () => {
+  //   process.env.ROOT_DIR = './';
+  //   koa.start();
+  // } )
 
   return program
 }

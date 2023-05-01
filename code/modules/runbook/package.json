@@ -26,7 +26,7 @@
     "@runbook/files": "0.1.2",
     "@runbook/variables": "0.1.2",
     "@runbook/scripts": "0.1.2",
-    "@runbook/koa": "0.1.2",
+    "@runbook/api_koa": "0.1.2",
     "react": "16.14.0",
     "react-dom": "16.14.0"
   },
