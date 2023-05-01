@@ -1,5 +1,5 @@
 {
-  "name": "@runbook/koa",
+  "name": "@runbook/api_koa",
   "description": "",
   "version": "0.1.2",
   "main": "dist/index",
@@ -18,15 +18,14 @@
   },
   "dependencies": {
     "koa": "^2.14.2",
-    "@runbook/utils": "0.1.2",
     "react": "16.14.0",
     "react-dom": "16.14.0"
   },
   "devDependencies": {
     "jest": "29.5.0",
     "ts-jest": "29.1.0",
-    "ts-node": "^10.9.1",
     "supertest": "^6.3.3",
+    "ts-node": "^10.9.1",
     "typescript": "^4.1.5",
     "@testing-library/jest-dom": "^5.11.6",
     "@types/jest": "^26.0.15",

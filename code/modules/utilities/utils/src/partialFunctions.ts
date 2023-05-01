@@ -4,6 +4,7 @@ export interface PartialFunction<From, To> {
   isDefinedAt: ( from: From ) => boolean
   apply: ( from: From ) => To
 }
+
 export interface PartialFunction2<Opt, From, To> {
   isDefinedAt: ( from: Opt ) => boolean
   apply: ( from: From, opt: Opt ) => To

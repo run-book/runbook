@@ -62,7 +62,6 @@ export function validateArray<T> ( validate: NameAndValidator<T>, allowUndefined
     let i = 0;
     if ( Array.isArray ( value ) ) return flatMap ( value, validate ( `${name}[${i++}]` ) );
     return [ `${name} is not an array` ];
-
   }
 }
 
