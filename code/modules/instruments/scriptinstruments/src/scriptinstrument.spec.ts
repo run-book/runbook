@@ -14,7 +14,6 @@ const sharedI = ( script: string ): SharedScriptInstrument => ({
 export const varying = ( sW: string, sL: string ): VaryingScriptInstrument => ({
   linux: sharedI ( sL ),
   windows: sharedI ( sW ),
-  format: { type: "table" },
   description: "",
   params: '*',
   type: "script",

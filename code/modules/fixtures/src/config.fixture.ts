@@ -3,7 +3,7 @@ import { inheritanceDefn } from "./inheritance.fixture";
 import { ref } from "./reference.fixture";
 import { echoScriptInstrument, gitScriptInstrument, lsScriptInstrument } from "./instrument.fixture";
 import { fixtureView } from "./view.fixture";
-import { ScriptInstrument } from "@runbook/scriptinstruments";
+import { ScriptInstrument, VaryingScriptInstrument } from "@runbook/scriptinstruments";
 
 export const config = ({
   mereology,
@@ -17,7 +17,7 @@ export const config = ({
   },
   instrument: {
     git: gitScriptInstrument as ScriptInstrument,
-    ls: lsScriptInstrument as ScriptInstrument,
+    ls: lsScriptInstrument as VaryingScriptInstrument,
     echo: echoScriptInstrument as ScriptInstrument
   },
   view: {aView: fixtureView}

@@ -89,12 +89,6 @@
       },
       "staleness": 5000,
       "cost": "low",
-      "format": {
-        "type": "table",
-        "headers": [
-          "file"
-        ]
-      },
       "windows": {
         "script": "dir /b {dir}",
         "format": {

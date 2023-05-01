@@ -1,0 +1,13 @@
+{
+  "instrument": {
+    "echo": {
+      "type":        "script",
+      "description": "An instrument that sends its arguments to standard output",
+      "params":      "*",
+      "staleness":   5000,
+      "cost":        "low",
+      "script":      ["echo {argsNames}", "echo {allArgs}"],
+      "format":      {"type": "table", "hideHeader": 1}
+    }
+  }
+}

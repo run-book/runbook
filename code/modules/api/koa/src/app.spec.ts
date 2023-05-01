@@ -7,7 +7,7 @@ import Koa from 'koa';
 
 const root = path.join ( process.cwd (), 'public' );
 async function testRaw<T> ( fn: ( app: Koa ) => T ): Promise<any> {
-  const koaAndServer = await startKoa ( root, 3000 );
+  const koaAndServer = await startKoa ( root, 3011 );
   try {
     return fn ( koaAndServer.app )
   } finally {

@@ -6,7 +6,6 @@
       "params":      {"file": {"description": "The file to display"}},
       "staleness":   5000,
       "cost":        "low",
-      "format":      {"type": "table", "hideHeader": 1},
       "windows":     {
         "script": "type {file}",
         "format": {"type": "table", "hideHeader": 1}

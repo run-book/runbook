@@ -7,7 +7,6 @@ export interface CommonInstrument {
   params: string | NameAnd<CleanInstrumentParam>,
   staleness?: number,
   cost?: InstrumentCost,
-  format: DisplayFormat,
 }
 export interface CleanInstrumentParam {
   description?: string,

@@ -25,7 +25,7 @@ export function displayCommonScriptInstrument<S, C extends CommonInstrument> ():
       {displayLabeledQueryChild ( st, props, integerInput (), 'staleness' )}
       {displayLabeledQueryChild ( st, props, optionsInput (), 'cost' )}
       {displayLabeledChild ( st, props, textAreaForObj ( { rows: 3 } ), 'params' )}
-      {displayLabeledChild ( st, props, textAreaForObj ( { rows: 5 } ), 'format' )}
+      {/*{displayLabeledChild ( st, props, textAreaForObj ( { rows: 5 } ), 'format' )}*/}
     </>
   }
 }

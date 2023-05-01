@@ -4,7 +4,6 @@ export const lsScriptInstrument = {
   "params": { "dir": { "default": ".", "description": "The directory to display" } },
   "staleness": 5000,
   "cost": "low",
-  "format": { "type": "table", "headers": [ "file" ] },
   "windows": {
     "script": "dir /b {dir}",
     "format": { "type": "table", "headers": [ "file" ] }

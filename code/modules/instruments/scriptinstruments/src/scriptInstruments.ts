@@ -29,7 +29,6 @@ export function isScript ( instrument: CommonInstrument ): instrument is ScriptI
 }
 export interface CommonScript extends CommonInstrument {
   type: 'script'
-  format: DisplayFormat
 }
 
 export interface ExecuteOptions {
