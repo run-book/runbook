@@ -3,7 +3,8 @@ import { GitOps, makeGitOps } from "@runbook/git/dist/src/git";
 import * as os from "os";
 
 const gitI = (): GitInstrument => ({
-  type: "gitclone",
+  type: "git",
+  command: 'cloneOrPull',
   description: "",
   params: { repo: { description: 'The repo to clone or pull' } },
   staleness: 60000,

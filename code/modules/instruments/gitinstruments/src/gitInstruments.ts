@@ -4,7 +4,8 @@ import { GitOps } from "@runbook/git";
 
 /** This is when the script is shared on both linux and windows */
 export interface GitInstrument extends CommonInstrument {
-  type: 'gitclone',
+  type: 'git',
+  command: 'cloneOrPull',
   params: {
     repo: {
       description?: string,
@@ -13,7 +14,7 @@ export interface GitInstrument extends CommonInstrument {
   }
 }
 
-export const isGitInstrument = ( instrument: CommonInstrument ): instrument is GitInstrument => (instrument as any).type === 'gitclone'
+export const isGitInstrument = ( instrument: CommonInstrument ): instrument is GitInstrument => (instrument as any).type === 'git'
 export const executeGitInstrument = ( gitOps: GitOps ): ExecuteCommonIntrumentK<GitInstrument> =>
   ( context, i ) => {
     if ( i === undefined ) throw new Error ( `Instrument is undefined. Raw was ${JSON.stringify ( i, null, 2 )}` )
