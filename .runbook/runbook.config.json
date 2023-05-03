@@ -1,0 +1,7 @@
+{
+  "parents": [
+    {"url": "git:git@github.com:run-book/runbook.git", "ref": "dfsdf"},
+    "https://github.com/run-boodddk/runbook2.git",
+    "file://~/runbook.git"
+  ]
+}

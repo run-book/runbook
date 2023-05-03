@@ -1,0 +1,15 @@
+{
+  "template":    "typescript",
+  "name":        "@runbook/gitinstruments",
+  "description": "",
+  "packageJson": {
+    "dependencies":    {},
+    "devDependencies": {}
+  },
+  "links":       ["@runbook/instruments", "@runbook/displayformat", "@runbook/fixtures", "@runbook/git"],
+  "guards":      {
+    "compile": true,
+    "publish": true,
+    "test":    true
+  }
+}

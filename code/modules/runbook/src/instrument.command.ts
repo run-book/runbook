@@ -1,12 +1,14 @@
 import { Command } from "commander";
-import { executeScriptInstrument, findScriptAndDisplay, ScriptInstrument } from "@runbook/scriptinstruments";
+import { executeScriptInstrument, findScriptAndDisplay, isScript, ScriptInstrument } from "@runbook/scriptinstruments";
 import { mapObjValues, nameValueToNameAndString, safeArray } from "@runbook/utils";
 import { executeScriptInShell, executeScriptLinesInShell, osType } from "@runbook/scripts";
 import { addDisplayOptions, optionToDisplayFormat } from "./display";
 import { jsonToDisplay } from "@runbook/displayformat";
 import { addEditViewOptions, executeAndEditViewAndExit } from "./editView";
 import { CleanConfig } from "@runbook/config";
-import { Script } from "vm";
+import { executeGitInstrument, isGitInstrument } from "@runbook/gitinstruments";
+import { makeGitOps } from "@runbook/git";
+import * as os from "os";
 
 export function makeExecuteOptions ( args: any, cwd: string, instrument: ScriptInstrument ) {
   return {
@@ -14,12 +16,17 @@ export function makeExecuteOptions ( args: any, cwd: string, instrument: ScriptI
     executeScripts: executeScriptLinesInShell
   };
 }
-export async function executeScriptForCmd ( instrument: ScriptInstrument, args: any, cwd: string ){
+export async function executeScriptForCmd ( instrument: ScriptInstrument, args: any, cwd: string ) {
   const params = instrument.params === '*' ? nameValueToNameAndString ( safeArray ( args.params ) ) : args
   let executeOptions = makeExecuteOptions ( args, cwd, instrument );
   const sdFn = findScriptAndDisplay ( osType () )
-  let json = await (executeScriptInstrument ( executeOptions ) ( 'runbook', instrument, sdFn ) ( params ));
+  let json = await (executeScriptInstrument ( executeOptions ) ( sdFn ) ( 'runbook', instrument, ) ( params ));
   return json
+}
+async function executeScript ( instrument: ScriptInstrument, args: any, cwd: string ) {
+  let json = await executeScriptForCmd ( instrument, args, cwd );
+  const displayFormat = optionToDisplayFormat ( args )
+  console.log ( args.raw ? json : jsonToDisplay ( json, displayFormat ) )
 }
 export function addInstrumentCommand ( cwd: string, command: Command, name: string, instrument: ScriptInstrument, withFromsConfig: CleanConfig ) {
   command.description ( instrument.description )
@@ -34,12 +41,12 @@ export function addInstrumentCommand ( cwd: string, command: Command, name: stri
     .option ( "--debug", "include debug info" )
     .option ( '--config', "Show the json representing the command in the config" );
 
-  command.action ( async () => {
+  command.action ( async (): Promise<void> => {
     const args: any = command.optsWithGlobals ()
     await executeAndEditViewAndExit ( cwd, args, withFromsConfig.instrument?. [ name ], instrument )
     if ( args.config ) return console.log ( JSON.stringify ( instrument, null, 2 ) )
-    let json = await executeScriptForCmd ( instrument, args, cwd );
-    const displayFormat = optionToDisplayFormat ( args )
-    console.log ( args.raw ? json : jsonToDisplay ( json, displayFormat ) )
+    if ( isScript ( instrument ) ) return await executeScript ( instrument, args, cwd );
+    if ( isGitInstrument ( instrument ) ) return await executeGitInstrument ( makeGitOps ( os.homedir () ) ) ( 'execute', instrument ) ( args );
+    throw new Error ( `Unknown instrument ${instrument}` )
   } )
 }

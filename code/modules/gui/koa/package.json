@@ -18,9 +18,7 @@
   },
   "dependencies": {
     "koa": "^2.14.2",
-    "@runbook/utils": "0.1.4",
-    "react": "16.14.0",
-    "react-dom": "16.14.0"
+    "@runbook/utils": "0.1.4"
   },
   "devDependencies": {
     "jest": "29.5.0",

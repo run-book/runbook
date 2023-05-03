@@ -70,7 +70,7 @@ export function addViewCommand ( command: Command, cwd: string, name: string, co
             debug: opts.debug,
             executeScript: executeScriptInShell,
             executeScripts: executeScriptLinesInShell
-          } ) ( 'runbook', instrument, findScriptAndDisplay ( osType () ) ) ( paramsForExecution ));
+          } ) ( findScriptAndDisplay ( osType () ) ) ( 'runbook', instrument, ) ( paramsForExecution ));
           const displayFormat = optionToDisplayFormat ( opts )
           console.log ( opts.raw ? json : jsonToDisplay ( json, displayFormat ) )
         }

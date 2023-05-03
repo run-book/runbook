@@ -18,9 +18,7 @@
   },
   "dependencies": {
     "@runbook/mereology": "0.1.4",
-    "@runbook/referencedata": "0.1.4",
-    "react": "16.14.0",
-    "react-dom": "16.14.0"
+    "@runbook/referencedata": "0.1.4"
   },
   "devDependencies": {
     "typescript": "^4.1.5",

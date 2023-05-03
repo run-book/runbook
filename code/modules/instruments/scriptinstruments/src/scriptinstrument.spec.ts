@@ -1,7 +1,4 @@
-import {
-  ExecuteOptions, executeSharedScriptInstrument, findScriptAndDisplay,
-  SharedScriptInstrument, validateScriptInstrument, VaryingScriptInstrument
-} from "./scriptInstruments";
+import { ExecuteOptions, executeSharedScriptInstrument, findScriptAndDisplay, SharedScriptInstrument, validateScriptInstrument, VaryingScriptInstrument } from "./scriptInstruments";
 
 const sharedI = ( script: string ): SharedScriptInstrument => ({
   type: "script",
@@ -43,12 +40,12 @@ describe ( 'executeSharedScriptInstrument', function () {
     raw: false
   }
   it ( 'should execute a shared script when format table', async () => {
-    let actual = await executeSharedScriptInstrument ( opt ) ( 'context', { ...si, format: { type: 'table', hideHeader: true } }, sdFn ) ( {} );
+    let actual = await executeSharedScriptInstrument ( opt ) ( sdFn ) ( 'context', { ...si, format: { type: 'table', hideHeader: true } } ) ( {} );
     console.log ( 'actual', typeof actual, actual )
     expect ( actual ).toEqual ( [ { theCwd: '1', A: '2', B: '3' }, { theCwd: '4', A: '5', B: '6' } ] )
   } )
   it ( 'should execute a shared script when format undefined', async () => {
-    let actual = await executeSharedScriptInstrument ( opt ) ( 'context', si, sdFn ) ( {} );
+    let actual = await executeSharedScriptInstrument ( opt ) ( sdFn ) ( 'context', si ) ( {} );
     console.log ( 'actual', typeof actual, actual )
     expect ( actual ).toEqual ( [
       { '1': 'theCwd', '2': 'A', '3': 'B' },
@@ -57,7 +54,7 @@ describe ( 'executeSharedScriptInstrument', function () {
     ] )
   } )
   it ( 'should execute a shared script, raw is true', async () => {
-    let actual = await executeSharedScriptInstrument ( { ...opt, raw: true } ) ( 'context', si, sdFn ) ( {} );
+    let actual = await executeSharedScriptInstrument ( { ...opt, raw: true } ) ( sdFn ) ( 'context', si ) ( {} );
     console.log ( 'actual', typeof actual, actual )
     expect ( actual ).toEqual ( `theCwd A B
 1 2 3
@@ -67,14 +64,11 @@ describe ( 'executeSharedScriptInstrument', function () {
 
 describe ( 'validateScriptInstrument', () => {
   it ( 'should validate the fixture script instruments', () => {
-    expect ( validateScriptInstrument ( 'prefix' ) ( sharedI ( 'someScript' ) ) ).toEqual ( [
-
-    ] )
-    expect ( validateScriptInstrument ( 'prefix' ) ( varying ( 'win', 'linux' ) ) ).toEqual ( [
-    ] )
+    expect ( validateScriptInstrument ( 'prefix' ) ( sharedI ( 'someScript' ) ) ).toEqual ( [] )
+    expect ( validateScriptInstrument ( 'prefix' ) ( varying ( 'win', 'linux' ) ) ).toEqual ( [] )
   } )
   it ( "should report errors", () => {
-    expect ( validateScriptInstrument ( 'prefix' ) ( {} as any ) ).toEqual ([
+    expect ( validateScriptInstrument ( 'prefix' ) ( {} as any ) ).toEqual ( [
       "prefix Ìsn't a valid script. Either",
       "  prefix.description is undefined",
       "  prefix.params is undefined",
@@ -85,7 +79,7 @@ describe ( 'validateScriptInstrument', () => {
       "  prefix.params is undefined",
       "  prefix.script is undefined"
     ] )
-    expect ( validateScriptInstrument ( 'prefix' ) ( { windows: 1, linux1: 1 } as any ) ).toEqual ([
+    expect ( validateScriptInstrument ( 'prefix' ) ( { windows: 1, linux1: 1 } as any ) ).toEqual ( [
       "prefix Ìsn't a valid script. Either",
       "  prefix.description is undefined",
       "  prefix.params is undefined",

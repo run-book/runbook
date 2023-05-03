@@ -26,9 +26,7 @@
     "@runbook/files": "0.1.4",
     "@runbook/variables": "0.1.4",
     "@runbook/scripts": "0.1.4",
-    "@runbook/api_koa": "0.1.4",
-    "react": "16.14.0",
-    "react-dom": "16.14.0"
+    "@runbook/api_koa": "0.1.4"
   },
   "devDependencies": {
     "typescript": "^4.1.5",

@@ -1,9 +1,9 @@
-import { CleanInstrumentParam, CommonInstrument, ExecuteInstrumentK, ScriptAndDisplay } from "@runbook/instruments";
+import { CommonInstrument, ExecuteStriptInstrumentK, ScriptAndDisplay, validateCommonInstrument } from "@runbook/instruments";
 import { bracesVarDefn, derefence } from "@runbook/variables";
 import { ExecuteScriptFn, ExecuteScriptLinesFn } from "@runbook/scripts";
-import { DisplayFormat, stringToJson } from "@runbook/displayformat";
-import { composeNameAndValidators, mapObjToArray, NameAnd, NameAndValidator, orValidators, OS, toArray, validateArray, validateBoolean, validateChild, validateChildItemOrArray, validateChildNumber, validateChildString, validateChildValue, validateItemOrArray, validateNameAnd, validateNumber, validateString, validateValue } from "@runbook/utils";
-import { TableFormat } from "@runbook/displayformat";
+import { DisplayFormat, stringToJson, TableFormat } from "@runbook/displayformat";
+import { composeNameAndValidators, mapObjToArray, NameAndValidator, orValidators, OS, toArray, validateArray, validateBoolean, validateChild, validateChildString, validateItemOrArray, validateNumber, validateString, validateValue } from "@runbook/utils";
+import {} from "@runbook/gitinstruments";
 
 /** This is when the script is shared on both linux and windows */
 export interface SharedScriptInstrument extends CommonScript, ScriptAndDisplay {
@@ -41,8 +41,8 @@ export interface ExecuteOptions {
   raw?: boolean
 }
 
-export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumentK<ScriptInstrument> =>
-  ( context: string, i: ScriptInstrument, sdFn ) => async ( params ) => {
+export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteStriptInstrumentK<ScriptInstrument> =>
+  ( sdFn ) => ( context: string, i: ScriptInstrument, ) => async ( params ) => {
     if ( opt.debug ) console.log ( 'executeSharedScriptInstrument', JSON.stringify ( i ) )
     if ( opt.debug ) console.log ( '  opt', JSON.stringify ( opt ) )
     if ( i === undefined ) throw new Error ( `Instrument is undefined` )
@@ -81,28 +81,18 @@ export const findScriptAndDisplay = ( os: OS ) => ( s: ScriptInstrument ): Scrip
   throw new Error ( `OS is ${os}. Cannot execute instrument type${s}` )
 };
 
-export const executeScriptInstrument = ( opt: ExecuteOptions ): ExecuteInstrumentK<ScriptInstrument> =>
-  ( context, i, sdFn ) => {
+export const executeScriptInstrument = ( opt: ExecuteOptions ): ExecuteStriptInstrumentK<ScriptInstrument> =>
+  sdFn => ( context, i, ) => {
     if ( i === undefined ) throw new Error ( `Instrument is undefined. Raw was ${JSON.stringify ( i, null, 2 )}` )
     return async ( params ) =>
-      executeSharedScriptInstrument ( opt ) ( context, i, sdFn ) ( params );
+      executeSharedScriptInstrument ( opt ) ( sdFn ) ( context, i, ) ( params );
   }
 
 //  description: string,
 //   params: string | NameAnd<CleanInstrumentParam>,
 //   staleness: number,
 //   cost: InstrumentCost,
-const validateCleanInstrumentParam: NameAndValidator<CleanInstrumentParam> = composeNameAndValidators (
-  validateChildString ( 'description' ),
-  validateChildString ( 'default', true ),
-)
 //   "format": DisplayFormat,
-export const validateCommonScriptIntrument: NameAndValidator<CommonInstrument> = composeNameAndValidators<CommonInstrument> (
-  validateChildString ( 'description' ),
-  validateChild ( 'params', orValidators<any> ( '', validateNameAnd ( validateCleanInstrumentParam ), validateString () ) ),
-  validateChildNumber ( 'staleness', true ),
-  validateChildValue ( 'cost', "low", "medium", "high", undefined )
-)
 
 const validateTableFormat: NameAndValidator<TableFormat> = composeNameAndValidators<TableFormat> (
   validateChildString ( 'type' ),
@@ -118,13 +108,13 @@ export const validateScriptAndDisplay: NameAndValidator<ScriptAndDisplay> = comp
   validateChild ( 'format', validateDisplayFormat, true )
 )
 export const validateSharedScriptInstrument: NameAndValidator<SharedScriptInstrument> = composeNameAndValidators<SharedScriptInstrument> (
-  validateCommonScriptIntrument,
+  validateCommonInstrument,
   validateScriptAndDisplay,
   validateChild ( 'outputColumns', validateArray ( validateString () ) as NameAndValidator<string[] | undefined>, true )
 )
 
 export const validateVaryingScriptInstrument: NameAndValidator<VaryingScriptInstrument> = composeNameAndValidators<any> (
-  validateCommonScriptIntrument,
+  validateCommonInstrument,
   validateChild ( 'windows', validateScriptAndDisplay ),
   validateChild ( 'linux', validateScriptAndDisplay )
 )

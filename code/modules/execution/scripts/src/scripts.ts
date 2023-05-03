@@ -28,3 +28,7 @@ export function osType (): OS {
   if ( s === "Linux" ) return s as OS
   throw new Error ( `Unknown OS type ${s}. Only Darwin, Windows_NT and Linux are supported.` )
 }
+
+export function homeDir (): string {
+  return os.homedir ()
+}
