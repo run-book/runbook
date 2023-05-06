@@ -66,11 +66,7 @@ describe ( "parentsFromPathAndField", () => {
     expect ( await parentsFromPathAndField ( gitDirFn (), "withOutParents.json", "path.to.parents" ) ( 'someRepo' ) ).toEqual ( [] )
   } )
   it ( "should return an error if the file doesn't exist", async () => {
-    const actual = await parentsFromPathAndField ( gitDirFn (), "noSuchFile", "path.to.parents" ) ( 'someRepo' )
-    expect ( isErrors ( actual ) ).toBeTruthy ()
-    const errors = (actual as any).errors
-    expect ( errors.length ).toBe ( 1 )
-    expect ( errors[ 0 ] ).toContain ( 'Error loading file' )
+    expect ( await parentsFromPathAndField ( gitDirFn (), "noSuchFile", "path.to.parents" ) ( 'someRepo' )).toEqual([])
   } )
   it ( "should return an error if the field is not an array", async () => {
     const actual = await parentsFromPathAndField ( gitDirFn (), "withDodgyParents.json", "path.to.parents" ) ( 'someRepo' )

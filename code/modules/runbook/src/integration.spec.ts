@@ -1,4 +1,4 @@
-import { findDirectoryHoldingFileOrThrow, readExpected, readTestFile } from "@runbook/files";
+import { fileNameNormalise, findDirectoryHoldingFileOrThrow, readExpected, readTestFile } from "@runbook/files";
 import { executeScriptInShell } from "@runbook/scripts";
 import * as path from "path";
 import * as fs from "fs";
@@ -24,7 +24,7 @@ describe ( 'runbook', () => {
       const runbookDir = path.join ( testDir, '.runbook' )
       const runbookFileName = path.join ( runbookDir, 'runbook.json' );
       fs.writeFileSync ( runbookFileName, "{ }" )
-      expect ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ).toEqual ( readExpected ( testDir ) )
+      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ) ).toEqual ( readExpected ( testDir ) )
       expect ( toForwardSlash ( readTestFile ( runbookDir, 'runbook.json' ) ) ).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
       fs.rmSync ( runbookFileName, { force: true } )
     } )
@@ -35,7 +35,7 @@ describe ( 'runbook', () => {
       const runbookDir = path.join ( testDir, '.runbook' )
       const runbookFileName = path.join ( runbookDir, 'runbook.json' );
       fs.rmSync ( runbookFileName, { force: true } )
-      expect ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ).toEqual ( readExpected ( testDir ) )
+      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ) ).toEqual ( readExpected ( testDir ) )
       expect ( fs.existsSync ( runbookFileName ) ).toBeFalsy ()
     } )
     it ( 'noConfigSubDir', async () => {
@@ -43,7 +43,7 @@ describe ( 'runbook', () => {
       const runbookDir = path.join ( testDir, '.runbook' )
       const runbookFileName = path.join ( runbookDir, 'runbook.json' );
       fs.rmSync ( runbookFileName, { force: true } )
-      expect ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ).toEqual ( readExpected ( testDir ) )
+      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ) ).toEqual ( readExpected ( testDir ) )
       expect ( fs.existsSync ( runbookFileName ) ).toBeFalsy ()
     } )
   } )
@@ -82,14 +82,14 @@ describe ( 'runbook', () => {
       const testDir = path.resolve ( configDir, 'malformed' )
       const runbookDir = path.join ( testDir, '.runbook' )
       const runbookFileName = path.join ( runbookDir, 'runbook.json' );
-      expect ( await executeRunbook ( testDir, 'config validateBeforeCompose' ) ).toEqual ( readExpected ( testDir ) )
+      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash(await executeRunbook ( testDir, 'config validateBeforeCompose' )) ) ).toEqual ( readExpected ( testDir ) )
 
     } )
     it ( 'noConfigSubDir', async () => {
       const testDir = path.resolve ( configDir, 'noConfigSubDir' )
       const runbookDir = path.join ( testDir, '.runbook' )
       const runbookFileName = path.join ( runbookDir, 'runbook.json' );
-      expect ( await executeRunbook ( testDir, 'config validateBeforeCompose' ) ).toEqual ( readExpected ( testDir ) )
+      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash(await executeRunbook ( testDir, 'config validateBeforeCompose' ) )) ).toEqual ( readExpected ( testDir ) )
 
     } )
   } )

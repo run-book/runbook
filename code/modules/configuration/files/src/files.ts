@@ -1,6 +1,6 @@
 import path, * as Path from "path";
 import fs from "fs";
-import { cleanLineEndings, ErrorsAnd, isErrors, mapErrors, parseJson } from "@runbook/utils";
+import { cleanLineEndings, ErrorsAnd, isErrors, mapErrors, parseJson, toForwardSlash } from "@runbook/utils";
 
 export function findInParent ( directory: string, acceptor: ( filename: string ) => boolean ): string | undefined {
   function find ( dir: string ): string | undefined {
@@ -53,8 +53,15 @@ export function findDirectoryHoldingFileOrThrow ( directory: string, file: strin
 export function findFileInParentsOrError ( directory: string, file: string ): ErrorsAnd<string> {
   return mapErrors ( findDirectoryHoldingFileOrError ( directory, file ), dir => Path.join ( dir, file ) );
 }
+
+export const fileNameNormalise = ( dir: string ) => {
+  const fullPath = toForwardSlash(path.normalize ( dir ))
+  return ( s: string ) => s.replace ( fullPath, '<root>' ).replace ( fullPath, '<root>' ).replace ( fullPath, '<root>' ).replace ( fullPath, '<root>' );
+}
+
 export function readTestFile ( dir: string, file: string ) {
-  return cleanLineEndings ( fs.readFileSync ( Path.join ( dir, file ), 'utf8' ) )
+  let result = toForwardSlash (  cleanLineEndings ( fs.readFileSync ( Path.join ( dir, file ), 'utf8' ) ) ) ;
+  return result
 }
 
 export function readExpected ( dir: string ) {

@@ -5,10 +5,6 @@ import { Mereology, validateMereology } from "@runbook/mereology";
 import { ReferenceData, validateReferenceData } from "@runbook/referencedata";
 
 
-export const runbookMarker = ".runbook"
-export const configSubDirName = "config"
-export const runbookConfigFileName = "runbook.config.json"
-export const cachedConfigFileName = "runbook.json"
 export interface Config {
 
 }
