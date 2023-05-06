@@ -1,7 +1,7 @@
 {
   "name": "@runbook/config",
   "description": "",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,10 +17,10 @@
     ]
   },
   "dependencies": {
-    "@runbook/scriptinstruments": "0.2.1",
-    "@runbook/views": "0.2.1",
-    "@runbook/git": "0.2.1",
-    "@runbook/files": "0.2.1"
+    "@runbook/scriptinstruments": "0.2.2",
+    "@runbook/views": "0.2.2",
+    "@runbook/git": "0.2.2",
+    "@runbook/files": "0.2.2"
   },
   "devDependencies": {
     "typescript": "^4.1.5",
