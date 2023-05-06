@@ -1,7 +1,7 @@
 {
   "name": "@runbook/runbook_state",
   "description": "",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "storybook": "^7.0.6",
-    "@runbook/optics": "0.1.7",
+    "@runbook/optics": "0.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "^5.0.4"
