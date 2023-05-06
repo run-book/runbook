@@ -65,8 +65,7 @@ export function findFileInParentsOrError ( directory: string, file: string ): Er
 export const fileNameNormalise = ( dir: string ) => {
   const fullPath = toForwardSlash ( path.normalize ( dir ) )
   const homePath = toForwardSlash ( os.homedir () )
-  return ( s: string ) => s.replace ( fullPath, '<root>' ).replace ( fullPath, '<root>' ).replace ( fullPath, '<root>' ).replace ( fullPath, '<root>' )
-    .replace ( homePath, '<home>' ).replace ( homePath, '<home>' ).replace ( homePath, '<home>' ).replace ( homePath, '<home>' )
+  return ( s: string ) => s.replace ( new RegExp ( fullPath, 'g' ), '<root>' ).replace ( new RegExp ( homePath, 'g' ), '<home>' )
 }
 
 export function readTestFile ( dir: string, file: string ) {

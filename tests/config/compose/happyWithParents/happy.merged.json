@@ -7,8 +7,8 @@
       "local"
     ],
     "__from": [
-      "inheritance/environment.inheritance.json",
-      "inheritance/service.inheritance.json"
+      "<root>/config/inheritance/environment.inheritance.json",
+      "<root>/config/inheritance/service.inheritance.json"
     ],
     "service": [
       "leo",
@@ -16,15 +16,15 @@
     ]
   },
   "__from": [
-    "inheritance/environment.inheritance.json",
-    "inheritance/service.inheritance.json",
-    "mereology/main.mereology.json",
-    "reference/reference.json",
-    "situation/situation.json",
-    "views/debug/displayGit.view.json",
-    "views/debug/domain.view.json",
-    ".runbook/config/echo.instrument.json",
-    ".runbook/config/ls.instrument.json"
+    "<root>/config/inheritance/environment.inheritance.json",
+    "<root>/config/inheritance/service.inheritance.json",
+    "<root>/config/mereology/main.mereology.json",
+    "<root>/config/reference/reference.json",
+    "<root>/config/situation/situation.json",
+    "<root>/config/views/debug/displayGit.view.json",
+    "<root>/config/views/debug/domain.view.json",
+    "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/echo.instrument.json",
+    "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/ls.instrument.json"
   ],
   "mereology": {
     "environment": {
@@ -49,7 +49,7 @@
         }
       },
       "__from": [
-        "mereology/main.mereology.json"
+        "<root>/config/mereology/main.mereology.json"
       ]
     },
     "fields": {
@@ -57,11 +57,11 @@
         "description": "The tag that will be in each service's git repo for the code that is in this environment"
       },
       "__from": [
-        "mereology/main.mereology.json"
+        "<root>/config/mereology/main.mereology.json"
       ]
     },
     "__from": [
-      "mereology/main.mereology.json"
+      "<root>/config/mereology/main.mereology.json"
     ]
   },
   "service": {
@@ -73,11 +73,11 @@
         "description": "The git repo for this service"
       },
       "__from": [
-        "mereology/main.mereology.json"
+        "<root>/config/mereology/main.mereology.json"
       ]
     },
     "__from": [
-      "mereology/main.mereology.json"
+      "<root>/config/mereology/main.mereology.json"
     ]
   },
   "reference": {
@@ -93,7 +93,7 @@
       },
       "gitTag": "dev",
       "__from": [
-        "reference/reference.json"
+        "<root>/config/reference/reference.json"
       ]
     },
     "test:environment": {
@@ -108,7 +108,7 @@
       },
       "gitTag": "test",
       "__from": [
-        "reference/reference.json"
+        "<root>/config/reference/reference.json"
       ]
     },
     "prod:environment": {
@@ -123,21 +123,21 @@
       },
       "gitTag": "prod",
       "__from": [
-        "reference/reference.json"
+        "<root>/config/reference/reference.json"
       ]
     },
     "ngprod:database": {
       "url": "ngprod.url",
       "type": "oracle",
       "__from": [
-        "reference/reference.json"
+        "<root>/config/reference/reference.json"
       ]
     },
     "ngtest:database": {
       "url": "ngtest.url",
       "type": "oracle",
       "__from": [
-        "reference/reference.json"
+        "<root>/config/reference/reference.json"
       ]
     },
     "leo:service": {
@@ -145,7 +145,7 @@
         "url": "leo.git.url"
       },
       "__from": [
-        "reference/reference.json"
+        "<root>/config/reference/reference.json"
       ]
     },
     "npx:service": {
@@ -153,41 +153,41 @@
         "url": "npx.git.url"
       },
       "__from": [
-        "reference/reference.json"
+        "<root>/config/reference/reference.json"
       ]
     },
     "__from": [
-      "reference/reference.json"
+      "<root>/config/reference/reference.json"
     ]
   },
   "situation": {
     "leo": {
       "__from": [
-        "situation/situation.json"
+        "<root>/config/situation/situation.json"
       ]
     },
     "local": {
       "__from": [
-        "situation/situation.json"
+        "<root>/config/situation/situation.json"
       ]
     },
     "npx": {
       "__from": [
-        "situation/situation.json"
+        "<root>/config/situation/situation.json"
       ]
     },
     "test": {
       "__from": [
-        "situation/situation.json"
+        "<root>/config/situation/situation.json"
       ]
     },
     "dev": {
       "__from": [
-        "situation/situation.json"
+        "<root>/config/situation/situation.json"
       ]
     },
     "__from": [
-      "situation/situation.json"
+      "<root>/config/situation/situation.json"
     ]
   },
   "view": {
@@ -225,12 +225,12 @@
         }
       },
       "__from": [
-        "views/debug/displayGit.view.json"
+        "<root>/config/views/debug/displayGit.view.json"
       ]
     },
     "__from": [
-      "views/debug/displayGit.view.json",
-      "views/debug/domain.view.json"
+      "<root>/config/views/debug/displayGit.view.json",
+      "<root>/config/views/debug/domain.view.json"
     ],
     "domain": {
       "type": "view",
@@ -260,7 +260,7 @@
         }
       },
       "__from": [
-        "views/debug/domain.view.json"
+        "<root>/config/views/debug/domain.view.json"
       ]
     }
   },
@@ -280,12 +280,12 @@
         "hideHeader": 1
       },
       "__from": [
-        ".runbook/config/echo.instrument.json"
+        "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/echo.instrument.json"
       ]
     },
     "__from": [
-      ".runbook/config/echo.instrument.json",
-      ".runbook/config/ls.instrument.json"
+      "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/echo.instrument.json",
+      "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/ls.instrument.json"
     ],
     "ls": {
       "type": "script",
@@ -317,7 +317,7 @@
         }
       },
       "__from": [
-        ".runbook/config/ls.instrument.json"
+        "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/ls.instrument.json"
       ]
     }
   }

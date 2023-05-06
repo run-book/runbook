@@ -24,8 +24,10 @@ describe ( 'runbook', () => {
       const runbookDir = path.join ( testDir, '.runbook' )
       const runbookFileName = path.join ( runbookDir, 'runbook.cached.json' );
       fs.writeFileSync ( runbookFileName, "{ }" )
-      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ) ).toEqual ( readExpected ( testDir ) )
-      expect ( toForwardSlash ( readTestFile ( runbookDir, 'runbook.cached.json' ) ) ).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
+      let executed = await executeRunbook ( testDir, 'config compose' );
+      // expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( executed ) ) ).toEqual ( readExpected ( testDir ) )
+      let raw = readTestFile ( runbookDir, 'runbook.cached.json' );
+      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( raw ) ) ).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
       fs.rmSync ( runbookFileName, { force: true } )
     } )
 
@@ -54,10 +56,10 @@ describe ( 'runbook', () => {
       const runbookFileName = path.join ( runbookDir, 'runbook.cached.json' );
       fs.writeFileSync ( runbookFileName, "{ }" )
       expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ) ).toEqual ( readExpected ( testDir ) )
-      const actual = toForwardSlash ( readTestFile ( runbookDir, 'runbook.cached.json' ) );
-      // expect ( actual ).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
+      const actual = fileNameNormalise ( runbookDir ) ( toForwardSlash ( readTestFile ( runbookDir, 'runbook.cached.json' ) ) );
+      expect ( actual ).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
       const json = JSON.parse ( actual )
-      expect ( json.instrument ).toBeDefined()
+      expect ( json.instrument ).toBeDefined ()
       fs.rmSync ( runbookFileName, { force: true } )
     } )
 

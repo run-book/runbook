@@ -82,7 +82,7 @@ export function addFromMutator ( dir: string, file: string, json: any ) {
     if ( depth > 2 ) return json
     if ( isPrimitive ( json ) ) return json
     if ( Array.isArray ( json ) ) return json.map ( j => withDepth ( j, depth ) )
-    let from = [ path.relative ( dir, file ) ];
+    let from = [ file ];
     const result = mapObjValues ( json, j => withDepth ( j, depth + 1 ) );
     result.__from = from
     return result
