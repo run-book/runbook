@@ -45,7 +45,7 @@ describe ( "git clone", () => {
     await gitReallyPullToRunbookHome ( home, repo )
 
     expect ( async () => await fs.stat ( path.join ( dir, 'README1.md' ) ) ).rejects.toThrow ( 'no such file or directory' )
-    expect ( await fs.readFile ( path.join ( dir, 'README.md' ), 'utf-8' ) ).toEqual ( expect.stringContaining ( 'A test repo' ) )
+    expect ( await fs.readFile ( path.join ( dir, 'README.md' ), 'utf-8' ) ).toEqual ( expect.stringContaining ( 'This is testRepo1:' ) )
   } )
 
   it ( "cloneOrPull", async () => {
@@ -58,7 +58,7 @@ describe ( "git clone", () => {
     await fs.writeFile ( path.join ( dir, 'README.md' ), 'junk' )
     await cloneOrPull ( home, repo )
     expect ( async () => await fs.stat ( path.join ( dir, 'README1.md' ) ) ).rejects.toThrow ( 'no such file or directory' )
-    expect ( await fs.readFile ( path.join ( dir, 'README.md' ), 'utf-8' ) ).toEqual ( expect.stringContaining ( 'A test repo' ) )
+    expect ( await fs.readFile ( path.join ( dir, 'README.md' ), 'utf-8' ) ).toEqual ( expect.stringContaining ( 'This is testRepo1:' ) )
 
   } )
 } )

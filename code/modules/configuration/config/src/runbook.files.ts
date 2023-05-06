@@ -6,7 +6,7 @@ import { isErrors, mapErrors } from "@runbook/utils";
 export const runbookMarker = ".runbook"
 export const configSubDirName = "config"
 export const runbookConfigFileName = "runbook.config.json"
-export const cachedConfigFileName = "runbook.json"
+export const cachedConfigFileName = "runbook.cached.json"
 export const findRunbookDirectoryOrError = ( cwd: string ) =>
   mapErrors ( findDirectoryHoldingFileOrError ( cwd, runbookMarker ), d => path.join ( d, runbookMarker ) );
 

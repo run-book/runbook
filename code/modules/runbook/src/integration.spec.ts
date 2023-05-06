@@ -22,10 +22,10 @@ describe ( 'runbook', () => {
     it ( 'happy', async () => {
       const testDir = path.resolve ( configDir, 'happy' )
       const runbookDir = path.join ( testDir, '.runbook' )
-      const runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      const runbookFileName = path.join ( runbookDir, 'runbook.cached.json' );
       fs.writeFileSync ( runbookFileName, "{ }" )
       expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ) ).toEqual ( readExpected ( testDir ) )
-      expect ( toForwardSlash ( readTestFile ( runbookDir, 'runbook.json' ) ) ).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
+      expect ( toForwardSlash ( readTestFile ( runbookDir, 'runbook.cached.json' ) ) ).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
       fs.rmSync ( runbookFileName, { force: true } )
     } )
 
