@@ -1,6 +1,7 @@
 import path, * as Path from "path";
 import fs from "fs";
 import { cleanLineEndings, ErrorsAnd, isErrors, mapErrors, parseJson, toForwardSlash } from "@runbook/utils";
+import * as os from "os";
 
 export function findInParent ( directory: string, acceptor: ( filename: string ) => boolean ): string | undefined {
   function find ( dir: string ): string | undefined {
@@ -26,6 +27,13 @@ export async function loadAndParseFile<T> ( file: string ): Promise<ErrorsAnd<T>
   }
   let json: ErrorsAnd<T> = mapErrors ( await loadFile (), parseJson<T> )
   return json
+}
+export async function loadAndParseFileOrDefaultIfNoFile<T> ( file: string, defaultIfNoFile: () => T ): Promise<ErrorsAnd<T>> {
+  try {
+    return parseJson<T> ( (await fs.promises.readFile ( file )).toString ( 'utf-8' ) );
+  } catch ( e: any ) {
+    return defaultIfNoFile ()
+  }
 }
 export function loadFileInDirectory ( cwd: string, errorString: string, marker: string, filenameFn: ( dir: string ) => string ) {
   const dir = findDirectoryHoldingFileOrError ( cwd, marker )
@@ -55,12 +63,14 @@ export function findFileInParentsOrError ( directory: string, file: string ): Er
 }
 
 export const fileNameNormalise = ( dir: string ) => {
-  const fullPath = toForwardSlash(path.normalize ( dir ))
-  return ( s: string ) => s.replace ( fullPath, '<root>' ).replace ( fullPath, '<root>' ).replace ( fullPath, '<root>' ).replace ( fullPath, '<root>' );
+  const fullPath = toForwardSlash ( path.normalize ( dir ) )
+  const homePath = toForwardSlash ( os.homedir () )
+  return ( s: string ) => s.replace ( fullPath, '<root>' ).replace ( fullPath, '<root>' ).replace ( fullPath, '<root>' ).replace ( fullPath, '<root>' )
+    .replace ( homePath, '<home>' ).replace ( homePath, '<home>' ).replace ( homePath, '<home>' ).replace ( homePath, '<home>' )
 }
 
 export function readTestFile ( dir: string, file: string ) {
-  let result = toForwardSlash (  cleanLineEndings ( fs.readFileSync ( Path.join ( dir, file ), 'utf8' ) ) ) ;
+  let result = toForwardSlash ( cleanLineEndings ( fs.readFileSync ( Path.join ( dir, file ), 'utf8' ) ) );
   return result
 }
 

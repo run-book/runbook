@@ -1,0 +1,5 @@
+{
+  "inheritance": {
+    "service": ["leo", "npx"]
+  }
+}

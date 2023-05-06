@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from "path";
 import * as util from "util";
-import { deepCombineTwoObjectsWithPrune, Errors, ErrorsAnd, flatMap, indentAll, isErrors, isPrimitive, mapErrors, mapObjValues, NameAndValidator, toErrorsAnd } from "@runbook/utils";
+import { deepCombineTwoObjectsWithPrune, ErrorsAnd, flatMap, indentAll, isErrors, isPrimitive, mapErrors, mapObjValues, NameAndValidator, toErrorsAnd } from "@runbook/utils";
 
 const astat = util.promisify ( fs.stat );
 const areaddir = util.promisify ( fs.readdir );
@@ -23,6 +23,12 @@ async function loadAllFiles ( acceptor: (( f: string ) => boolean) | undefined, 
 export async function mergeJsonFiles ( dir: string, mutator: ( dir: string, file: string, contents: any ) => ErrorsAnd<any>, acceptor?: ( f: string ) => boolean ): Promise<ErrorsAnd<any>> {
   return mapErrors ( await loadAllFiles ( acceptor, dir, mutator ),
     all => all.reduce ( deepCombineTwoObjectsWithPrune ( j => j ), {} ) )
+}
+export async function mergeJsonDirs( dirs: string[], mutator: ( dir: string, file: string, contents: any ) => ErrorsAnd<any>, acceptor?: ( f: string ) => boolean ): Promise<ErrorsAnd<any>> {
+  let result = toErrorsAnd ( await Promise.all ( dirs.map ( d => mergeJsonFiles ( d, mutator, acceptor ) ) ) );
+  if (isErrors(result)) return result
+  return result.reduce ( deepCombineTwoObjectsWithPrune ( j => j ), {} )
+
 }
 
 export interface FileAndResult<T> {
@@ -52,6 +58,13 @@ export function consoleLogValidationAndShouldExit ( fs: ErrorsAnd<DisplayValidat
   if ( displayNoErrors )
     console.log ( 'No validation issues' )
   return false
+}
+
+export async function validateJsonDirs ( dirs: string[], acceptor: ( f: string ) => boolean, validator: NameAndValidator<any> ): Promise<ErrorsAnd<FileAndResult<any>[]>> {
+  let all: ErrorsAnd<FileAndResult<any>[][]> = toErrorsAnd ( await Promise.all ( dirs.map ( d => validateJsonFiles ( d, acceptor, validator ) ) ) )
+  if ( isErrors ( all ) ) return all
+  const result: FileAndResult<any>[] = flatten ( all )
+  return result
 }
 export async function validateJsonFiles ( dir: string, acceptor: ( f: string ) => boolean, validator: NameAndValidator<any> ): Promise<ErrorsAnd<FileAndResult<any>[]>> {
   try {
@@ -88,7 +101,7 @@ export async function walkDirectory ( dir: string ): Promise<string[]> {
   return flatten ( files );
 }
 //https://stackoverflow.com/questions/52189973/recursive-directory-listing-using-promises-in-node-js
-function flatten<T> ( arr: any ): string[] {
+function flatten<T> ( arr: any ): T[] {
   return arr.reduce ( ( flat: any, toFlatten: any ) => flat.concat ( Array.isArray ( toFlatten ) ? flatten ( toFlatten ) : toFlatten ), [] );
 }
 async function walkDirectoryPrim ( dir: string ): Promise<any> {

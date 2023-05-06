@@ -3,6 +3,7 @@ import { executeScriptInShell } from "@runbook/scripts";
 import * as path from "path";
 import * as fs from "fs";
 import { toForwardSlash } from "@runbook/utils";
+import { configSubDir } from "@runbook/config";
 
 export const inCi = process.env[ 'CI' ] === 'true'
 export const codeRootDir = findDirectoryHoldingFileOrThrow ( process.cwd (), "laoban.json" );
@@ -16,7 +17,6 @@ export function executeRunbook ( cwd: string, cmd: string ): Promise<string> {
 }
 
 describe ( 'runbook', () => {
-
   describe ( "config compose ", () => {
     const configDir = path.resolve ( testRoot, 'config', 'compose' )
     it ( 'happy', async () => {
@@ -46,6 +46,21 @@ describe ( 'runbook', () => {
       expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ) ).toEqual ( readExpected ( testDir ) )
       expect ( fs.existsSync ( runbookFileName ) ).toBeFalsy ()
     } )
+
+    it ( 'happyWithParents', async () => {
+      //Note that there is no instrument sub directory here. Instruments have to come from the parent
+      const testDir = path.resolve ( configDir, 'happyWithParents' )
+      const runbookDir = path.join ( testDir, '.runbook' )
+      const runbookFileName = path.join ( runbookDir, 'runbook.cached.json' );
+      fs.writeFileSync ( runbookFileName, "{ }" )
+      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( await executeRunbook ( testDir, 'config compose' ) ) ) ).toEqual ( readExpected ( testDir ) )
+      const actual = toForwardSlash ( readTestFile ( runbookDir, 'runbook.cached.json' ) );
+      // expect ( actual ).toEqual ( readTestFile ( testDir, 'happy.merged.json' ) )
+      const json = JSON.parse ( actual )
+      expect ( json.instrument ).toBeDefined()
+      fs.rmSync ( runbookFileName, { force: true } )
+    } )
+
   } )
   describe ( "config issues", () => {
     const configDir = path.resolve ( testRoot, 'config', 'issues' )
@@ -78,19 +93,32 @@ describe ( 'runbook', () => {
       const runbookFileName = path.join ( runbookDir, 'runbook.json' );
       expect ( await executeRunbook ( testDir, 'config validateBeforeCompose' ) ).toEqual ( readExpected ( testDir ) )
     } )
+    it ( 'happyWithParents', async () => {
+      const testDir = path.resolve ( configDir, 'happyWithParents' )
+      const runbookDir = path.join ( testDir, '.runbook' )
+      const runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      expect ( await executeRunbook ( testDir, 'config validateBeforeCompose' ) ).toEqual ( readExpected ( testDir ) )
+    } )
     it ( 'malformed', async () => {
       const testDir = path.resolve ( configDir, 'malformed' )
       const runbookDir = path.join ( testDir, '.runbook' )
       const runbookFileName = path.join ( runbookDir, 'runbook.json' );
-      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash(await executeRunbook ( testDir, 'config validateBeforeCompose' )) ) ).toEqual ( readExpected ( testDir ) )
+      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( await executeRunbook ( testDir, 'config validateBeforeCompose' ) ) ) ).toEqual ( readExpected ( testDir ) )
+
+    } )
+    it ( 'malformedWithParents', async () => {
+      const testDir = path.resolve ( configDir, 'malformedWithParents' )
+      const runbookDir = path.join ( testDir, '.runbook' )
+      const runbookFileName = path.join ( runbookDir, 'runbook.json' );
+      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( await executeRunbook ( testDir, 'config validateBeforeCompose' ) ) ) ).toEqual ( readExpected ( testDir ) )
 
     } )
     it ( 'noConfigSubDir', async () => {
       const testDir = path.resolve ( configDir, 'noConfigSubDir' )
       const runbookDir = path.join ( testDir, '.runbook' )
       const runbookFileName = path.join ( runbookDir, 'runbook.json' );
-      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash(await executeRunbook ( testDir, 'config validateBeforeCompose' ) )) ).toEqual ( readExpected ( testDir ) )
-
+      await fs.promises.rm ( configSubDir ( runbookDir ), { recursive: true, force: true } )
+      expect ( fileNameNormalise ( runbookDir ) ( toForwardSlash ( await executeRunbook ( testDir, 'config validateBeforeCompose' ) ) ) ).toEqual ( readExpected ( testDir ) )
     } )
   } )
   describe ( 'instrument', () => {

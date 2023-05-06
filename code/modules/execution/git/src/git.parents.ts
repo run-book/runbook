@@ -10,6 +10,9 @@ import path from "path";
  * */
 export type ParentsFn = ( repo: string ) => Promise<ErrorsAnd<string[]>>
 
+export interface DefaultParents{
+  parents?: string[]
+}
 
 export const cloneGitRepoAndParentsIfNeeded = ( cloneIfDoesntExist: GitCloneFn, parentsFn: ParentsFn ) => async ( repo: string ): Promise<ErrorsAnd<string[]>> =>
   mapErrorsK ( await cloneIfDoesntExist ( repo ), async () => {
