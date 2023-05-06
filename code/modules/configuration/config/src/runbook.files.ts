@@ -1,15 +1,25 @@
-import { findDirectoryHoldingFileOrThrow } from "@runbook/files";
+import { findDirectoryHoldingFileOrError, findDirectoryHoldingFileOrThrow } from "@runbook/files";
 import path from "path";
-import { configFileName, configSubDirName, runbookMarker } from "./config";
+import { cachedConfigFileName, configSubDirName, runbookConfigFileName, runbookMarker } from "./config";
+import { isErrors, mapErrors } from "@runbook/utils";
 
-export function findRunbookDirectory ( cwd: string ) {
-  return path.join ( findDirectoryHoldingFileOrThrow ( cwd, runbookMarker ), runbookMarker );
+export const findRunbookDirectoryOrError = ( cwd: string ) =>
+  mapErrors ( findDirectoryHoldingFileOrError ( cwd, runbookMarker ), d => path.join ( d, runbookMarker ) );
+
+export function findRunbookDirectoryOrThrow ( cwd: string ) {
+  const result = findDirectoryHoldingFileOrError ( cwd, runbookMarker );
+  if ( isErrors ( result ) ) throw result.errors;
+  return result
+
 }
 
 export function configSubDir ( runBookDir: string ) {
   return path.join ( runBookDir, configSubDirName )
 }
 
-export function configFile(runbookDir: string ) {
-  return path.join ( runbookDir, configFileName )
+export function cachedConfigFile ( runbookDir: string ) {
+  return path.join ( configSubDir ( runbookDir ), cachedConfigFileName )
+}
+export function runbookConfigFile ( runbookDir: string ) {
+  return path.join ( configSubDir ( runbookDir ), runbookConfigFileName )
 }

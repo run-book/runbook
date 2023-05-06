@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { CleanConfig, configFile, configFileName, configSubDir, findRunbookDirectory, validateConfig, validationConfigPartial } from "@runbook/config";
+import { CleanConfig, cachedConfigFile, cachedConfigFileName, configSubDir, findRunbookDirectoryOrThrow, validateConfig, validationConfigPartial } from "@runbook/config";
 import { addFromMutator, consoleLogValidationAndShouldExit, defaultMergeAccept, displayFilesAndResultsForValidation, DisplayValidation, mergeJsonFiles, validateJsonFiles } from "@runbook/files";
 import { ErrorsAnd, isErrors } from "@runbook/utils";
 import fs from "fs";
@@ -18,7 +18,7 @@ export function addConfigCommand ( configCmd: Command, cleanConfig: CleanConfig,
   const validateBeforeComposeCmd = configCmd.command ( 'validateBeforeCompose' )
     .description ( 'validates the small files that will be merged into the compose' )
     .action ( async () => {
-      const dir = findRunbookDirectory ( cwd )
+      const dir = findRunbookDirectoryOrThrow ( cwd )
       const validation = await validateJsonFiles ( configSubDir ( dir ), defaultMergeAccept, validateConfig ( true ) )
       const dispValidation: ErrorsAnd<DisplayValidation> = displayFilesAndResultsForValidation ( validation )
       consoleLogValidationAndShouldExit ( dispValidation, true )
@@ -27,7 +27,7 @@ export function addConfigCommand ( configCmd: Command, cleanConfig: CleanConfig,
     .description ( 'Merges all the files in the .runbook directory to make the .runbook.json' )
     .option ( '-f|--force', 'force the merge even if there are errors' )
     .action ( async () => {
-      const dir = findRunbookDirectory ( cwd )
+      const dir = findRunbookDirectoryOrThrow ( cwd )
       if ( !configComposeCmd.optsWithGlobals ().force ) {
         const validation = await validateJsonFiles ( configSubDir ( dir ), defaultMergeAccept, validationConfigPartial )
         const dispValidation: ErrorsAnd<DisplayValidation> = displayFilesAndResultsForValidation ( validation )
@@ -39,7 +39,7 @@ export function addConfigCommand ( configCmd: Command, cleanConfig: CleanConfig,
         newConfig.errors.forEach ( x => console.log ( x ) )
         return
       }
-      const filename = configFile ( dir )
+      const filename = cachedConfigFile ( dir )
       fs.writeFileSync ( filename, JSON.stringify ( newConfig, null, 2 ) )
       console.log ( 'created new', filename )
 

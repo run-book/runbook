@@ -1,6 +1,6 @@
 import path, * as Path from "path";
 import fs from "fs";
-import { cleanLineEndings, ErrorsAnd, isErrors, mapErrors } from "@runbook/utils";
+import { cleanLineEndings, ErrorsAnd, isErrors, mapErrors, parseJson } from "@runbook/utils";
 
 export function findInParent ( directory: string, acceptor: ( filename: string ) => boolean ): string | undefined {
   function find ( dir: string ): string | undefined {
@@ -15,6 +15,17 @@ export function findDirectoryHoldingFileOrError ( directory: string, file: strin
   const dir = findInParent ( directory, dir => fs.existsSync ( Path.join ( dir, file ) ) )
   if ( dir === undefined ) return { errors: [ `Cannot find ${file}. Started looking in ${directory}` ] }
   return dir
+}
+export async function loadAndParseFile<T> ( file: string ): Promise<ErrorsAnd<T>> {
+  async function loadFile () {
+    try {
+      return (await fs.promises.readFile ( file )).toString ( 'utf-8' );
+    } catch ( e: any ) {
+      return { errors: [ `Error loading file ${file}: ${e}` ] }
+    }
+  }
+  let json: ErrorsAnd<T> = mapErrors ( await loadFile (), parseJson<T> )
+  return json
 }
 export function loadFileInDirectory ( cwd: string, errorString: string, marker: string, filenameFn: ( dir: string ) => string ) {
   const dir = findDirectoryHoldingFileOrError ( cwd, marker )

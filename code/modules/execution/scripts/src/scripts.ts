@@ -4,12 +4,13 @@ import * as os from "os";
 
 export type ExecuteScriptFn = ( cwd: string, cmd: string ) => Promise<string>
 export type ExecuteScriptLinesFn = ( cwd: string, cmd: string[] ) => Promise<string>
-export const executeScriptInShell: ExecuteScriptFn = ( cwd: string, cmd: string ): Promise<string> => new Promise<string> ( resolve => {
-  cp.exec ( cmd, { cwd, env: process.env }, ( error, stdout, stdErr ) => {
-    let result = cleanLineEndings ( stdout.toString () + (stdErr.length > 0 ? "\n" + stdErr : '') );
-    resolve ( result )
-  } )
-} );
+export const executeScriptInShell: ExecuteScriptFn = ( cwd: string, cmd: string ): Promise<string> =>
+  new Promise<string> ( resolve => {
+    cp.exec ( cmd, { cwd, env: process.env }, ( error, stdout, stdErr ) => {
+      let result = cleanLineEndings ( stdout.toString () + (stdErr.length > 0 ? "\n" + stdErr : '') );
+      resolve ( result )
+    } )
+  } );
 
 
 export const editFile = ( os: OS, cwd: string, file: string ): Promise<string> => new Promise<string> ( resolve => {
