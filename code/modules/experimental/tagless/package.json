@@ -1,7 +1,7 @@
 {
   "name": "tagless",
   "description": "",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "@runbook/bindings": "0.2.0"
+    "@runbook/bindings": "0.2.1"
   },
   "devDependencies": {
     "typescript": "^4.1.5",

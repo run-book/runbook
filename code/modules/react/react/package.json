@@ -1,7 +1,7 @@
 {
   "name": "@runbook/react",
   "description": "",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,12 +17,12 @@
     ]
   },
   "dependencies": {
-    "@runbook/instruments_react": "0.2.0",
-    "@runbook/fixtures": "0.2.0",
-    "@runbook/store": "0.2.0",
-    "@runbook/views_react": "0.2.0",
-    "@runbook/menu_react": "0.2.0",
-    "@runbook/referencedata_react": "0.2.0",
+    "@runbook/instruments_react": "0.2.1",
+    "@runbook/fixtures": "0.2.1",
+    "@runbook/store": "0.2.1",
+    "@runbook/views_react": "0.2.1",
+    "@runbook/menu_react": "0.2.1",
+    "@runbook/referencedata_react": "0.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "storybook": "^7.0.6",
