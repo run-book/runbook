@@ -1,0 +1,24 @@
+{
+  "template":    "typescript",
+  "name":        "@runbook/node-fetch",
+  "description": "",
+  "packageJson": {
+    "dependencies":    {
+      "node-fetch": "^3.3.1",
+      "proxy-agent": "^6.1.2"
+
+    },
+    "devDependencies": {
+    },
+    "scripts":         {
+      "start": "react-scripts start"
+    }
+  },
+  "links":       [],
+  "guards":      {
+    "compile": true,
+    "publish": true,
+    "test":    true,
+    "react":   true
+  }
+}

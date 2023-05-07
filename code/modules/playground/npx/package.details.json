@@ -1,0 +1,16 @@
+{
+  "template":    "typescript",
+  "name":        "@runbook/playground_npx",
+  "description": "",
+  "packageJson": {
+    "dependencies":    {},
+    "devDependencies": {}
+  },
+  "links":       ["@runbook/koa", "@runbook/apistatus"],
+  "guards":      {
+    "compile":    true,
+    "publish":    true,
+    "test":       true,
+    "playground": 8002
+  }
+}

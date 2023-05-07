@@ -20,7 +20,7 @@
     "NPM_TOKEN": ""
   },
   "scripts":        {
-    "ls-react":     {
+    "ls-react":      {
       "description": "Lists all the react projects",
       "commands":    [
         {
@@ -29,7 +29,25 @@
         }
       ]
     },
-    "build":        {
+    "ls-playground": {
+      "description": "Lists all the playground projects",
+      "commands":    [
+        {
+          "guard":   "${packageDetails.guards.playground}",
+          "command": "js:process.cwd()+ '    '+ ${packageDetails.guards.playground}"
+        }
+      ]
+    },
+    "playground":    {
+      "description": "starts all the playground projects",
+      "commands":    [
+        {
+          "guard":   "${packageDetails.guards.playground}",
+          "command": "node dist/index.js ${packageDetails.guards.playground}"
+        }
+      ]
+    },
+    "build":         {
       "description": "Packages the react projects",
       "commands":    [
         {
@@ -38,7 +56,7 @@
         }
       ]
     },
-    "ls-storybook": {
+    "ls-storybook":  {
       "description": "Lists all the react projects",
       "commands":    [
         {
@@ -47,7 +65,7 @@
         }
       ]
     },
-    "storybook":    {
+    "storybook":     {
       "description": "Starts storybook",
       "commands":    [
         {

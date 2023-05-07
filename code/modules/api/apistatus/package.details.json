@@ -1,19 +1,17 @@
 {
   "template":    "typescript",
-  "name":        "@runbook/api_koa",
+  "name":        "@runbook/apistatus",
   "description": "",
   "packageJson": {
     "dependencies":    {
-      "koa":            "^2.14.2",
-      "koa-bodyparser": "^4.4.0"
     },
     "devDependencies": {
-      "supertest": "^6.3.3"
     },
     "scripts":         {
+
     }
   },
-  "links":       [],
+  "links":       ["@runbook/koa"],
   "guards":      {
     "compile": true,
     "publish": true,
