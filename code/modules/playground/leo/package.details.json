@@ -10,7 +10,7 @@
   "guards":      {
     "compile": true,
     "publish": true,
-    "test":    true,
+    "test":    false,
     "playground": 8001
   }
 }

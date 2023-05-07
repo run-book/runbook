@@ -2,8 +2,10 @@ import { CommonInstrument, ExecuteStriptInstrumentK, ScriptAndDisplay, validateC
 import { bracesVarDefn, derefence } from "@runbook/variables";
 import { ExecuteScriptFn, ExecuteScriptLinesFn } from "@runbook/scripts";
 import { DisplayFormat, stringToJson, TableFormat } from "@runbook/displayformat";
-import { composeNameAndValidators, mapObjToArray, NameAndValidator, orValidators, OS, toArray, validateArray, validateBoolean, validateChild, validateChildString, validateItemOrArray, validateNumber, validateString, validateValue } from "@runbook/utils";
+import { composeNameAndValidators, mapObjToArray, NameAnd, NameAndValidator, orValidators, OS, Primitive, toArray, validateArray, validateBoolean, validateChild, validateChildString, validateItemOrArray, validateNumber, validateString, validateValue } from "@runbook/utils";
 import {} from "@runbook/gitinstruments";
+import { Executable, ExecutableOutput } from "@runbook/executors";
+import cp from 'child_process'
 
 /** This is when the script is shared on both linux and windows */
 export interface SharedScriptInstrument extends CommonScript, ScriptAndDisplay {
@@ -40,31 +42,61 @@ export interface ExecuteOptions {
   showCmd?: boolean
   raw?: boolean
 }
+function findSD ( os: OS, si: ScriptInstrument ): ScriptAndDisplay {
+  if ( isVaryingScriptInstument ( si ) ) return os === 'Windows_NT' ? si.windows : si.linux;
+  return si
+}
+function makeCmds ( context: string, sd: ScriptAndDisplay, params: NameAnd<string | number | boolean>, debug: boolean ) {
+  const allArgs = mapObjToArray ( params, p => p ).join ( ' ' )
+  const argsNames = mapObjToArray ( params, ( p, n ) => n ).join ( ' ' )
+
+  let dic = { ...params, allArgs, argsNames };
+  if ( debug ) console.log ( '   dic', JSON.stringify ( dic ) )
+  const cmds = toArray ( sd.script ).map ( script => derefence ( context, dic, script, { variableDefn: bracesVarDefn } ) );
+  return cmds;
+}
+
+
+export const executeInstrument = ( os: OS, context: string, debug?: boolean ) => ( [ name, si ]: [ string, ScriptInstrument ] ) => ( params: NameAnd<Primitive> ): ExecutableOutput => {
+  const sd = findSD ( os, si )
+  const script = makeCmds ( context, sd, params, debug ).join ( '\n' )
+  const sp = cp.spawn ( script, { shell: true } )
+  let promise = new Promise<number> ( ( resolve ) => sp.on ( 'close', resolve ) );
+  return { out: sp.stdout, err: sp.stderr, promise }
+}
+
+
+export const scriptExecutor = ( os: OS, context: string, debug?: boolean ): Executable<[ string, ScriptInstrument ]> => {
+  let execute = executeInstrument ( os, context, debug );
+  return {
+    name: ( [ name, s ] ) => `Script: ${name}`,
+    description: ( [ name, s ] ) => s.description,
+    execute,
+    params: ( [ name, s ] ) => s.params
+  }
+};
+
 
 export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteStriptInstrumentK<ScriptInstrument> =>
   ( sdFn ) => ( context: string, i: ScriptInstrument, ) => async ( params ) => {
-    if ( opt.debug ) console.log ( 'executeSharedScriptInstrument', JSON.stringify ( i ) )
-    if ( opt.debug ) console.log ( '  opt', JSON.stringify ( opt ) )
+    let debug = opt.debug;
+    if ( debug ) console.log ( 'executeSharedScriptInstrument', JSON.stringify ( i ) )
+    if ( debug ) console.log ( '  opt', JSON.stringify ( opt ) )
     if ( i === undefined ) throw new Error ( `Instrument is undefined` )
     const sd = sdFn ( i )
-    if ( opt.debug ) console.log ( '   sd', JSON.stringify ( sd ) )
-    const allArgs = mapObjToArray ( params, p => p ).join ( ' ' )
-    const argsNames = mapObjToArray ( params, ( p, n ) => n ).join ( ' ' )
-
-    let dic = { ...params, allArgs, argsNames };
-    if ( opt.debug ) console.log ( '   dic', JSON.stringify ( dic ) )
-    const cmds = toArray ( sd.script ).map ( script => derefence ( context, dic, script, { variableDefn: bracesVarDefn } ) );
+    if ( debug ) console.log ( '   sd', JSON.stringify ( sd ) )
+    const cmds = makeCmds ( context, sd, params, debug );
     const { cwd, showCmd, raw } = opt
     if ( showCmd ) return cmds.join ( '\n' )
-    if ( opt.debug ) console.log ( '   cmds', JSON.stringify ( cmds ) )
+    if ( debug ) console.log ( '   cmds', JSON.stringify ( cmds ) )
     let res = await opt.executeScripts ( cwd, cmds );
-    if ( opt.debug ) console.log ( '   res', JSON.stringify ( res ) )
+    if ( debug ) console.log ( '   res', JSON.stringify ( res ) )
     let lines = res.split ( '\n' ).map ( t => t.trim () ).filter ( l => l.length > 0 );
     let dispOpt: DisplayFormat = raw ? "raw" : sd.format ? sd.format : { type: "table" };
-    if ( opt.debug ) console.log ( '   lines', JSON.stringify ( lines ) )
-    if ( opt.debug ) console.log ( '   dispOpt', JSON.stringify ( dispOpt ) )
+    if ( debug ) console.log ( '   lines', JSON.stringify ( lines ) )
+    if ( debug ) console.log ( '   dispOpt', JSON.stringify ( dispOpt ) )
     let result = stringToJson ( lines, dispOpt );
-    if ( opt.debug ) console.log ( '   result', result )
+    if ( debug ) console.log ( '   result', result )
     return result
   }
 export const findScriptAndDisplay = ( os: OS ) => ( s: ScriptInstrument ): ScriptAndDisplay => {

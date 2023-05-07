@@ -6,7 +6,7 @@
     "dependencies":    {},
     "devDependencies": {}
   },
-  "links":       ["@runbook/instruments", "@runbook/displayformat", "@runbook/fixtures"],
+  "links":       ["@runbook/instruments", "@runbook/displayformat", "@runbook/fixtures", "@runbook/executors"],
   "guards":      {
     "compile": true,
     "publish": true,

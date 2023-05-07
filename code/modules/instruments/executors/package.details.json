@@ -1,0 +1,15 @@
+{
+  "template": "typescript",
+  "name": "@runbook/executors",
+  "description": "Instruments may take a long time, so we need to be able to monitor their progress and cancel them if necessary. This package provides a set of executors that can be used to run instruments.",
+  "packageJson": {
+    "dependencies": {},
+    "devDependencies": {}
+  },
+  "links": ["@runbook/instruments"],
+  "guards": {
+    "compile": true,
+    "publish": true,
+    "test": false
+  }
+}

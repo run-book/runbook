@@ -1,4 +1,8 @@
-import { ExecuteOptions, executeSharedScriptInstrument, findScriptAndDisplay, SharedScriptInstrument, validateScriptInstrument, VaryingScriptInstrument } from "./scriptInstruments";
+import { ExecuteOptions, executeSharedScriptInstrument, findScriptAndDisplay, scriptExecutor, ScriptInstrument, SharedScriptInstrument, validateScriptInstrument, VaryingScriptInstrument } from "./scriptInstruments";
+import { execute, Execution, Executor, SlowExecutor, SlowParams } from "@runbook/executors";
+import * as os from "os";
+import { osType } from "@runbook/scripts";
+import { cleanLineEndings } from "@runbook/utils";
 
 const sharedI = ( script: string ): SharedScriptInstrument => ({
   type: "script",
@@ -92,5 +96,41 @@ describe ( 'validateScriptInstrument', () => {
       "  prefix.script is undefined"
     ] )
 
+  } )
+} )
+
+
+function setup (): Executor {
+  let id = 0
+  let date = 10000
+  return { date: () => date++, nextId: () => "id" + id++, active: {} }
+}
+const oneEchos: SharedScriptInstrument = {
+  type: "script",
+  script: "echo 1",
+  description: "",
+  format: { type: "table" },
+  params: {},
+}
+const twoEchos: SharedScriptInstrument = {
+  type: "script",
+  script: [ "echo 1", "echo 2", "echo 3" ],
+  description: "",
+  format: { type: "table" },
+  params: {},
+}
+describe ( "script executor", () => {
+  it ( "should execute a shared script that is just one line",  ( done ) => {
+    const executor = setup ()
+    const execution = execute ( executor ) ( scriptExecutor ( osType (), 'someContext', false ), 1000 ) ( [ 'oneEchos', oneEchos ], {} )
+    setTimeout ( () => {
+      expect ( execution.finished ).toEqual ( true )
+      expect ( cleanLineEndings ( execution.out ) ).toEqual ( cleanLineEndings ( '1\n' ) )
+      expect ( execution.err ).toEqual ( '' )
+      execution.promise.then ( result => {
+        expect ( result.code ).toEqual ( 0 )
+        done ()
+      } )
+    }, 100 )
   } )
 } )
