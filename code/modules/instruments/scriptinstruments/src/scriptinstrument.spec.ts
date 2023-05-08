@@ -112,7 +112,7 @@ const oneEchos: SharedScriptInstrument = {
   format: { type: "table" },
   params: {},
 }
-const twoEchos: SharedScriptInstrument = {
+const threeEchos: SharedScriptInstrument = {
   type: "script",
   script: [ "echo 1", "echo 2", "echo 3" ],
   description: "",
@@ -120,12 +120,25 @@ const twoEchos: SharedScriptInstrument = {
   params: {},
 }
 describe ( "script executor", () => {
-  it ( "should execute a shared script that is just one line",  ( done ) => {
+  it ( "should execute a shared script that is just one line", ( done ) => {
     const executor = setup ()
-    const execution = execute ( executor ) ( scriptExecutor ( osType (), 'someContext', false ), 1000 ) ( [ 'oneEchos', oneEchos ], {} )
-    setTimeout ( () => {
+    const execution = execute ( executor ) ( scriptExecutor ( osType (), 'someContext', false ),
+      1000, [ 'oneEchos', oneEchos ], {} )
+    execution.promise.then ( result => {
       expect ( execution.finished ).toEqual ( true )
       expect ( cleanLineEndings ( execution.out ) ).toEqual ( cleanLineEndings ( '1\n' ) )
+      expect ( execution.err ).toEqual ( '' )
+      expect ( result.code ).toEqual ( 0 )
+      done ()
+    } )
+  } )
+  it ( "should execute a shared script that is multiple lines", ( done ) => {
+    const executor = setup ()
+    const execution = execute ( executor ) ( scriptExecutor ( osType (), 'someContext', false ),
+      1000, [ 'threeEchos', threeEchos ], {} )
+    setTimeout ( () => {
+      expect ( execution.finished ).toEqual ( true )
+      expect ( cleanLineEndings ( execution.out ) ).toEqual ( cleanLineEndings ( '1\n2\n3\n' ) )
       expect ( execution.err ).toEqual ( '' )
       execution.promise.then ( result => {
         expect ( result.code ).toEqual ( 0 )

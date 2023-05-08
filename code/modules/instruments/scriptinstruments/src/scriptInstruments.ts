@@ -2,9 +2,8 @@ import { CommonInstrument, ExecuteStriptInstrumentK, ScriptAndDisplay, validateC
 import { bracesVarDefn, derefence } from "@runbook/variables";
 import { ExecuteScriptFn, ExecuteScriptLinesFn } from "@runbook/scripts";
 import { DisplayFormat, stringToJson, TableFormat } from "@runbook/displayformat";
-import { composeNameAndValidators, mapObjToArray, NameAnd, NameAndValidator, orValidators, OS, Primitive, toArray, validateArray, validateBoolean, validateChild, validateChildString, validateItemOrArray, validateNumber, validateString, validateValue } from "@runbook/utils";
-import {} from "@runbook/gitinstruments";
-import { Executable, ExecutableOutput } from "@runbook/executors";
+import { composeNameAndValidators, mapObjToArray, NameAnd, NameAndValidator, orValidators, OS, toArray, validateArray, validateBoolean, validateChild, validateChildString, validateItemOrArray, validateNumber, validateString, validateValue } from "@runbook/utils";
+import { Executable, ExecutableNextFn, ExecutableOutput, ExecuteFn } from "@runbook/executors";
 import cp from 'child_process'
 
 /** This is when the script is shared on both linux and windows */
@@ -55,15 +54,33 @@ function makeCmds ( context: string, sd: ScriptAndDisplay, params: NameAnd<strin
   const cmds = toArray ( sd.script ).map ( script => derefence ( context, dic, script, { variableDefn: bracesVarDefn } ) );
   return cmds;
 }
-
-
-export const executeInstrument = ( os: OS, context: string, debug?: boolean ) => ( [ name, si ]: [ string, ScriptInstrument ] ) => ( params: NameAnd<Primitive> ): ExecutableOutput => {
-  const sd = findSD ( os, si )
-  const script = makeCmds ( context, sd, params, debug ).join ( '\n' )
-  const sp = cp.spawn ( script, { shell: true } )
-  let promise = new Promise<number> ( ( resolve ) => sp.on ( 'close', resolve ) );
-  return { out: sp.stdout, err: sp.stderr, promise }
+interface CmdAndArgs {
+  cmd: string
+  args: string[]
 }
+
+
+type NameAndScriptInstrument = [ string, ScriptInstrument ]
+export const executeInstrument = ( os: OS, context: string, debug?: boolean ): ExecuteFn<NameAndScriptInstrument> =>
+  ( common, outListener, errListener ): ExecutableOutput<NameAndScriptInstrument> => {
+    let si: ScriptInstrument = common.t[ 1 ];
+    const sd = findSD ( os, si )
+    const script = makeCmds ( context, sd, common.params, debug )
+    if ( script.length === 0 ) throw Error ( `No script for ${JSON.stringify ( si )}` )
+    const sp = cp.spawn ( script[ 0 ], { shell: true } )
+    let promise = new Promise<number> ( ( resolve ) => sp.on ( 'close', resolve ) );
+    let next: ExecutableNextFn<NameAndScriptInstrument> = ( common ) => {
+      if ( common.stage >= script.length ) return undefined
+      const sp = cp.spawn ( script[ common.stage ], { shell: true } )
+      outListener ( sp.stdout )
+      errListener ( sp.stderr )
+      let promise = new Promise<number> ( ( resolve ) => sp.on ( 'close', resolve ) );
+      return { promise, next }
+    }
+    outListener ( sp.stdout )
+    errListener ( sp.stderr )
+    return { promise, next }
+  }
 
 
 export const scriptExecutor = ( os: OS, context: string, debug?: boolean ): Executable<[ string, ScriptInstrument ]> => {

@@ -6,6 +6,7 @@ export type Params = NameAnd<Primitive>
 
 export interface ExecutionCommon<T> {
   executorId: string;
+  stage: number;
   startTime: number;
   timeout: number;
   executable: Executable<T>
@@ -22,17 +23,25 @@ export interface Execution<T> extends ExecutionCommon<T> {
   promise: Promise<ExecutionResult<T>>
 }
 
-export interface ExecutableOutput {
-  out?: stream.Readable
-  err?: stream.Readable
+export type ExecutableNextFn<T> = ( executionCommon: ExecutionCommon<T>,
+                                    outListener: ( s: stream.Readable ) => void,
+                                    errListener: ( s: stream.Readable ) => void ) => ExecutableOutput<T> | undefined
+
+export interface ExecutableOutput<T> {
+  // out?: stream.Readable
+  // err?: stream.Readable
   promise: Promise<number>
-  // next: () => ExecutableOutput|undefined
+  next: ExecutableNextFn<T>
 }
+
+export type ExecuteFn<T> = ( executionCommon: ExecutionCommon<T>,
+                             outListener: ( s: stream.Readable ) => void,
+                             errListener: ( s: stream.Readable ) => void ) => ExecutableOutput<T>
 export interface Executable<T> {
   name: ( t: T ) => string,
   description: ( t: T ) => string,
   params: ( t: T ) => string | NameAnd<CleanInstrumentParam>,
-  execute: ( t: T ) => ( params: NameAnd<Primitive> ) => ExecutableOutput
+  execute: ExecuteFn<T>
 }
 
 export interface Executor {
@@ -41,24 +50,36 @@ export interface Executor {
   active: NameAnd<Execution<any>>
 }
 
-function listenTo ( out: stream.Readable | undefined, param2: ( s ) => any ) {
-  if ( out ) out.on ( 'data', param2 )
+const listenTo = ( listener: ( s ) => any ) => ( out: stream.Readable | undefined ) => {
+  if ( out ) out.on ( 'data', listener )
 }
-export const execute = ( e: Executor ) => <T> ( executable: Executable<T>, timeout: number ) => ( t: T, params: any ) => {
-  const executionOutput: ExecutableOutput = executable.execute ( t ) ( params )
-  const id = e.nextId ()
 
-  const common: ExecutionCommon<T> = {
-    executorId: id, startTime: e.date (), timeout, t, executable, params, out: '', err: '', finished: false
-  }
-  listenTo ( executionOutput.out, s => {
-    console.log ( 'out', s )
-    return common.out += s;
-  } )
-  listenTo ( executionOutput.err, s => common.err += s )
-  common[ 'promise' ] = executionOutput.promise.then ( code => {
-    common.finished = true
-    return ({ ...common, code, });
+function getOnfulfilled<T> ( common: ExecutionCommon<T>, output0: ExecutableOutput<T>, resolve: ( number ) => void ) {
+  return code => {
+    // console.log ( 'in getOnfulfilled', code )
+    if ( code === 0 ) {
+      common.stage = common.stage + 1
+      const next = output0.next ( common, listenTo ( s => common.out += s ), listenTo ( s => common.err += s ) )
+      if ( next ) {
+        next.promise.then ( getOnfulfilled ( common, output0, resolve ) )
+      } else {
+        // console.log ( 'next returned undefined, so finishing execution' )
+        common.finished = true
+        resolve ( { ...common, code } )
+      }
+    } else {
+      common.finished = true
+      resolve ( { ...common, code } )
+    }
+  };
+}
+export const execute = ( e: Executor ) => <T> ( executable: Executable<T>, timeout: number, t: T, params: any ) => {
+  const id = e.nextId ()
+  const common: ExecutionCommon<T> = { executorId: id, startTime: e.date (), timeout, t, executable, params, out: '', err: '', finished: false, stage: 0 }
+
+  const output0: ExecutableOutput<T> = executable.execute ( common, listenTo ( s => common.out += s ), listenTo ( s => common.err += s ) );
+  common[ 'promise' ] = new Promise ( ( resolve, reject ) => {
+    output0.promise.then ( getOnfulfilled ( common, output0, resolve ) )
   } )
   const execution: Execution<T> = common as Execution<T>
   e.active[ id ] = execution
