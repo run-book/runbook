@@ -3,7 +3,7 @@ import { bracesVarDefn, derefence } from "@runbook/variables";
 import { ExecuteScriptFn, ExecuteScriptLinesFn } from "@runbook/scripts";
 import { DisplayFormat, stringToJson, TableFormat } from "@runbook/displayformat";
 import { composeNameAndValidators, mapObjToArray, NameAnd, NameAndValidator, orValidators, OS, toArray, validateArray, validateBoolean, validateChild, validateChildString, validateItemOrArray, validateNumber, validateString, validateValue } from "@runbook/utils";
-import { Executable, ExecutableNextFn, ExecutableOutput, ExecuteFn } from "@runbook/executors";
+import { Executable, ExecutableNextFn, ExecutableOutput, ExecuteFn, ExecutionCommon, ExitCodeAndOutput } from "@runbook/executors";
 import cp from 'child_process'
 
 /** This is when the script is shared on both linux and windows */
@@ -52,6 +52,7 @@ function makeCmds ( context: string, sd: ScriptAndDisplay, params: NameAnd<strin
   let dic = { ...params, allArgs, argsNames };
   if ( debug ) console.log ( '   dic', JSON.stringify ( dic ) )
   const cmds = toArray ( sd.script ).map ( script => derefence ( context, dic, script, { variableDefn: bracesVarDefn } ) );
+  if ( debug ) console.log ( '   cmds', cmds )
   return cmds;
 }
 interface CmdAndArgs {
@@ -60,40 +61,49 @@ interface CmdAndArgs {
 }
 
 
-type NameAndScriptInstrument = [ string, ScriptInstrument ]
+export type NameAndScriptInstrument = [ string, ScriptInstrument ]
 export const executeInstrument = ( os: OS, context: string, debug?: boolean ): ExecuteFn<NameAndScriptInstrument> =>
   ( common, outListener, errListener ): ExecutableOutput<NameAndScriptInstrument> => {
     let si: ScriptInstrument = common.t[ 1 ];
     const sd = findSD ( os, si )
     const script = makeCmds ( context, sd, common.params, debug )
     if ( script.length === 0 ) throw Error ( `No script for ${JSON.stringify ( si )}` )
-    const sp = cp.spawn ( script[ 0 ], { shell: true } )
-    let promise = new Promise<number> ( ( resolve ) => sp.on ( 'close', resolve ) );
-    let next: ExecutableNextFn<NameAndScriptInstrument> = ( common ) => {
-      if ( common.stage >= script.length ) return undefined
+    if ( debug ) console.log ( 'executeInstrument - script', script )
+    function executeOne ( common: ExecutionCommon<NameAndScriptInstrument> ): ExecutableOutput<NameAndScriptInstrument> {
       const sp = cp.spawn ( script[ common.stage ], { shell: true } )
       outListener ( sp.stdout )
       errListener ( sp.stderr )
-      let promise = new Promise<number> ( ( resolve ) => sp.on ( 'close', resolve ) );
+      let promise = new Promise<ExitCodeAndOutput> ( ( resolve ) => sp.on ( 'close', code =>
+        resolve ( { code } ) ) );
       return { promise, next }
     }
-    outListener ( sp.stdout )
-    errListener ( sp.stderr )
-    return { promise, next }
+    let next: ExecutableNextFn<NameAndScriptInstrument> = ( common ) => {
+      let result: ExecutableOutput<NameAndScriptInstrument> | undefined = common.stage >= script.length ? undefined : executeOne ( common );
+      if ( debug ) console.log ( '  next', common, 'script.length', script.length, 'result', result )
+      return result;
+    }
+    return executeOne ( common )
   }
 
 
-export const scriptExecutor = ( os: OS, context: string, debug?: boolean ): Executable<[ string, ScriptInstrument ]> => {
-  let execute = executeInstrument ( os, context, debug );
-  return {
-    name: ( [ name, s ] ) => `Script: ${name}`,
-    description: ( [ name, s ] ) => s.description,
-    execute,
-    params: ( [ name, s ] ) => s.params
-  }
-};
+export const scriptExecutable = ( os: OS, context: string, debug?: boolean ): Executable<[ string, ScriptInstrument ]> => ({
+  name: ( [ name, s ] ) => `Script: ${name}`,
+  description: ( [ name, s ] ) => s.description,
+  execute: executeInstrument ( os, context, debug ),
+  params: ( [ name, s ] ) => s.params
+});
 
 
+export function makeOutput ( debug: boolean, res: string, raw: boolean, sd: ScriptAndDisplay ) {
+  if ( debug ) console.log ( '   res', JSON.stringify ( res ) )
+  let lines = res.split ( '\n' ).map ( t => t.trim () ).filter ( l => l.length > 0 );
+  let dispOpt: DisplayFormat = raw ? "raw" : sd.format ? sd.format : { type: "table" };
+  if ( debug ) console.log ( '   lines', JSON.stringify ( lines ) )
+  if ( debug ) console.log ( '   dispOpt', JSON.stringify ( dispOpt ) )
+  let result = stringToJson ( lines, dispOpt );
+  if ( debug ) console.log ( '   result', result )
+  return result;
+}
 export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteStriptInstrumentK<ScriptInstrument> =>
   ( sdFn ) => ( context: string, i: ScriptInstrument, ) => async ( params ) => {
     let debug = opt.debug;
@@ -107,13 +117,7 @@ export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteStr
     if ( showCmd ) return cmds.join ( '\n' )
     if ( debug ) console.log ( '   cmds', JSON.stringify ( cmds ) )
     let res = await opt.executeScripts ( cwd, cmds );
-    if ( debug ) console.log ( '   res', JSON.stringify ( res ) )
-    let lines = res.split ( '\n' ).map ( t => t.trim () ).filter ( l => l.length > 0 );
-    let dispOpt: DisplayFormat = raw ? "raw" : sd.format ? sd.format : { type: "table" };
-    if ( debug ) console.log ( '   lines', JSON.stringify ( lines ) )
-    if ( debug ) console.log ( '   dispOpt', JSON.stringify ( dispOpt ) )
-    let result = stringToJson ( lines, dispOpt );
-    if ( debug ) console.log ( '   result', result )
+    let result = makeOutput ( debug, res, raw, sd );
     return result
   }
 export const findScriptAndDisplay = ( os: OS ) => ( s: ScriptInstrument ): ScriptAndDisplay => {
@@ -137,11 +141,6 @@ export const executeScriptInstrument = ( opt: ExecuteOptions ): ExecuteStriptIns
       executeSharedScriptInstrument ( opt ) ( sdFn ) ( context, i, ) ( params );
   }
 
-//  description: string,
-//   params: string | NameAnd<CleanInstrumentParam>,
-//   staleness: number,
-//   cost: InstrumentCost,
-//   "format": DisplayFormat,
 
 const validateTableFormat: NameAndValidator<TableFormat> = composeNameAndValidators<TableFormat> (
   validateChildString ( 'type' ),

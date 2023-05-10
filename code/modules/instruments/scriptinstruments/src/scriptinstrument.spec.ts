@@ -1,4 +1,4 @@
-import { ExecuteOptions, executeSharedScriptInstrument, findScriptAndDisplay, scriptExecutor, ScriptInstrument, SharedScriptInstrument, validateScriptInstrument, VaryingScriptInstrument } from "./scriptInstruments";
+import { ExecuteOptions, executeSharedScriptInstrument, findScriptAndDisplay, scriptExecutable, ScriptInstrument, SharedScriptInstrument, validateScriptInstrument, VaryingScriptInstrument } from "./scriptInstruments";
 import { execute, Execution, Executor, SlowExecutor, SlowParams } from "@runbook/executors";
 import * as os from "os";
 import { osType } from "@runbook/scripts";
@@ -122,19 +122,19 @@ const threeEchos: SharedScriptInstrument = {
 describe ( "script executor", () => {
   it ( "should execute a shared script that is just one line", ( done ) => {
     const executor = setup ()
-    const execution = execute ( executor ) ( scriptExecutor ( osType (), 'someContext', false ),
+    const execution = execute ( executor ) ( scriptExecutable ( osType (), 'someContext', false ),
       1000, [ 'oneEchos', oneEchos ], {} )
     execution.promise.then ( result => {
       expect ( execution.finished ).toEqual ( true )
       expect ( cleanLineEndings ( execution.out ) ).toEqual ( cleanLineEndings ( '1\n' ) )
       expect ( execution.err ).toEqual ( '' )
-      expect ( result.code ).toEqual ( 0 )
+      expect ( result.code ).toEqual (0 )
       done ()
     } )
   } )
   it ( "should execute a shared script that is multiple lines", ( done ) => {
     const executor = setup ()
-    const execution = execute ( executor ) ( scriptExecutor ( osType (), 'someContext', false ),
+    const execution = execute ( executor ) ( scriptExecutable ( osType (), 'someContext', false ),
       1000, [ 'threeEchos', threeEchos ], {} )
     setTimeout ( () => {
       expect ( execution.finished ).toEqual ( true )

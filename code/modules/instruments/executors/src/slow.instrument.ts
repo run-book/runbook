@@ -1,4 +1,4 @@
-import { Executable, ExecutableOutput, ExecutionCommon } from "./executors";
+import { Executable, ExecutableOutput, ExecutionCommon, ExitCodeAndOutput } from "./executors";
 import { NameAnd } from "@runbook/utils";
 import { CleanInstrumentParam } from "@runbook/instruments";
 import * as stream from "stream";
@@ -10,7 +10,7 @@ export interface SlowParams {
   stopAt: number
 }
 
-export function slowExecution ( p: SlowParams, stream: stream.Readable ): Promise<number> {
+export function slowExecution ( p: SlowParams, stream: stream.Readable ): Promise<ExitCodeAndOutput> {
   return new Promise ( ( resolve, reject ) => {
     function delay ( i: number ) {
       // console.log ( 'delay', i, p.stopAt )
@@ -20,7 +20,7 @@ export function slowExecution ( p: SlowParams, stream: stream.Readable ): Promis
         if ( i <= 1 ) {
           // console.log ( 'finished', `i ${i}` )
           stream.destroy ()
-          resolve ( 0 )
+          resolve ( { code: 0 } )
         } else
           setTimeout ( () => delay ( i - 1 ), p.delay )
       } else

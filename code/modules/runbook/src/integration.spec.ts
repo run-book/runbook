@@ -140,7 +140,7 @@ describe ( 'runbook', () => {
     } )
     it ( 'instrument echo --params a:1 b:2', async () => {
       const testDir = path.resolve ( instrumentDir, 'echo' )
-      expect ( await executeRunbook ( testDir, 'instrument echo --params a:1 b:2' ) ).toEqual ( readExpected ( testDir ) )
+      expect ( await executeRunbook ( testDir, 'instrument echo --params a:1 b:2 ' ) ).toEqual ( readExpected ( testDir ) )
     } )
     it ( 'instrument echo (empty)', async () => {
       const testDir = path.resolve ( instrumentDir, 'echo', 'empty' )

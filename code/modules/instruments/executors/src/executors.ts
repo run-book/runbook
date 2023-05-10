@@ -18,6 +18,7 @@ export interface ExecutionCommon<T> {
 }
 export interface ExecutionResult<T> extends ExecutionCommon<T> {
   code: number
+  output: any
 }
 export interface Execution<T> extends ExecutionCommon<T> {
   promise: Promise<ExecutionResult<T>>
@@ -27,10 +28,13 @@ export type ExecutableNextFn<T> = ( executionCommon: ExecutionCommon<T>,
                                     outListener: ( s: stream.Readable ) => void,
                                     errListener: ( s: stream.Readable ) => void ) => ExecutableOutput<T> | undefined
 
+export interface ExitCodeAndOutput {
+  code: number
+}
 export interface ExecutableOutput<T> {
   // out?: stream.Readable
   // err?: stream.Readable
-  promise: Promise<number>
+  promise: Promise<ExitCodeAndOutput>
   next: ExecutableNextFn<T>
 }
 
@@ -50,12 +54,17 @@ export interface Executor {
   active: NameAnd<Execution<any>>
 }
 
+export function makeExecutor (): Executor {
+  let id = 0
+  return { date: () => Date.now (), nextId: () => "id" + id++, active: {} }
+}
+
 const listenTo = ( listener: ( s ) => any ) => ( out: stream.Readable | undefined ) => {
   if ( out ) out.on ( 'data', listener )
 }
 
-function getOnfulfilled<T> ( common: ExecutionCommon<T>, output0: ExecutableOutput<T>, resolve: ( number ) => void ) {
-  return code => {
+function getOnfulfilled<T> ( common: ExecutionCommon<T>, output0: ExecutableOutput<T>, resolve: ( e: ExitCodeAndOutput ) => void ) {
+  return ( { code } ) => {
     // console.log ( 'in getOnfulfilled', code )
     if ( code === 0 ) {
       common.stage = common.stage + 1

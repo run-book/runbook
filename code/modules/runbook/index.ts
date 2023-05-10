@@ -4,6 +4,7 @@ import { loadFileInDirectory } from "@runbook/files";
 import { cachedConfigFile, cachedConfigFileName, CleanConfig, runbookMarker, validateConfig } from "@runbook/config";
 import { makeProgram, processProgram } from "./src/cli";
 import { prune } from "@runbook/utils";
+import { Executor, makeExecutor } from "@runbook/executors";
 
 
 export function findVersion () {
@@ -14,8 +15,8 @@ export function findVersion () {
     return "version not known"
   }
 }
-function processCli ( cwd: string, config: CleanConfig, cleanConfig: CleanConfig, argV: string[] ) {
-  const program = makeProgram ( cwd, config, cleanConfig, findVersion () );
+function processCli ( cwd: string, config: CleanConfig, cleanConfig: CleanConfig, executor: Executor, argV: string[] ) {
+  const program = makeProgram ( cwd, config, cleanConfig, executor, findVersion () );
   return processProgram ( program, argV );
 }
 
@@ -25,7 +26,9 @@ const config = loadFileInDirectory ( process.cwd (), 'loading runbook config', r
 const cleanConfig = prune ( config, '__from' ) as CleanConfig
 const errors = validateConfig () ( cachedConfigFileName ) ( cleanConfig );
 if ( errors.length > 0 ) console.error ( "There were errors in the runbook config file. Use 'runbook config' to see the issues" )
-processCli ( process.cwd (), config, cleanConfig, process.argv )
+const executor = makeExecutor ()
+
+processCli ( process.cwd (), config, cleanConfig, executor, process.argv )
 
 
 

@@ -1,4 +1,4 @@
-import { execute, Execution, Executor, executorStatus } from "./executors";
+import { execute, Execution, ExecutionResult, Executor, executorStatus } from "./executors";
 import { MultipleSlowExecutor, MultipleSlowParams, SlowExecutor, SlowParams } from "./slow.instrument";
 
 function setup (): Executor {
@@ -24,9 +24,10 @@ describe ( "slowInstrument", () => {
     setTimeout ( () => {
       expect ( execution.out ).toEqual ( 'slow 2\n' )
       slow.stopAt = 0
-      execution.promise.then ( result => {
+      execution.promise.then ( ( result: ExecutionResult<SlowParams> ) => {
         expect ( result.code ).toEqual ( 0 )
         expect ( result.out ).toEqual ( 'slow 2\nslow 1\n' )
+        expect ( result.output ).toEqual ( {} )
         expect ( result.err ).toEqual ( '' )
         expect ( execution.finished ).toEqual ( true )
         done ()

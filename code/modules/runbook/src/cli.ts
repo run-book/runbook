@@ -1,12 +1,15 @@
 import { Command } from "commander";
 import { CleanConfig } from "@runbook/config";
 import { mapObjValues, safeObject } from "@runbook/utils";
-import { ScriptInstrument } from "@runbook/scriptinstruments";
 import { addAllReferenceCommands, addOntologyCommand } from "./reference.command";
 import { addViewCommand } from "./view.command";
 import { addInstrumentCommand } from "./instrument.command";
 import { addConfigCommand } from "./config.command";
 import { addGuiCommand } from "./gui.command";
+import { addNewInstrumentCommand } from "./instrument1.command";
+import * as os from "os";
+import { osType } from "@runbook/scripts";
+import { Executor } from "@runbook/executors";
 
 
 function addSituationCommand ( command: Command, config: CleanConfig ) {
@@ -14,7 +17,7 @@ function addSituationCommand ( command: Command, config: CleanConfig ) {
     console.log ( JSON.stringify ( config.situation ) )
   } )
 }
-export function makeProgram ( cwd: string, withFromsConfig: CleanConfig, cleanConfig: CleanConfig, version: string ): Command {
+export function makeProgram ( cwd: string, withFromsConfig: CleanConfig, cleanConfig: CleanConfig, executor: Executor, version: string ): Command {
   let program = new Command ()
     .name ( 'run-book' )
     .usage ( '<command> [options]' )
@@ -23,8 +26,11 @@ export function makeProgram ( cwd: string, withFromsConfig: CleanConfig, cleanCo
 
   const instruments = program.command ( 'instrument' ).description ( `Instruments are the raw tools that find things out` )
 
+  // mapObjValues ( safeObject ( cleanConfig?.instrument ), ( instrument, name ) =>
+  //   addInstrumentCommand ( cwd, instruments.command ( name ), name, instrument, withFromsConfig ) )
+
   mapObjValues ( safeObject ( cleanConfig?.instrument ), ( instrument, name ) =>
-    addInstrumentCommand ( cwd, instruments.command ( name ), name, instrument, withFromsConfig ) )
+    addNewInstrumentCommand ( cwd, os.homedir (), osType (), instruments.command ( name ), name, instrument, withFromsConfig, executor ) )
 
   const views: Command = program.command ( 'view' ).description ( 'Commands to work with views which allow you to find things out about systems' )
   mapObjValues ( safeObject ( cleanConfig?.view ), ( view, name ) => addViewCommand ( views.command ( name ), cwd, name, withFromsConfig, cleanConfig, view ) )
