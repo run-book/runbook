@@ -3,7 +3,6 @@ import { CleanConfig } from "@runbook/config";
 import { mapObjValues, safeObject } from "@runbook/utils";
 import { addAllReferenceCommands, addOntologyCommand } from "./reference.command";
 import { addViewCommand } from "./view.command";
-import { addInstrumentCommand } from "./instrument.command";
 import { addConfigCommand } from "./config.command";
 import { addGuiCommand } from "./gui.command";
 import { addNewInstrumentCommand } from "./instrument1.command";
@@ -42,7 +41,7 @@ export function makeProgram ( cwd: string, withFromsConfig: CleanConfig, cleanCo
   addSituationCommand ( program.command ( 'situation' ).description ( 'Commands about the current situation: the ticket you are working on, or a playground' ), cleanConfig )
 
   addConfigCommand ( program.command ( 'config' ).description ( 'Views the cleanConfig and any issues with it' ), cleanConfig, cwd );
-  addGuiCommand ( program, cleanConfig, cwd );
+  addGuiCommand ( osType (), program, cleanConfig, cwd, executor );
   // const gui: Command = program.command ( 'gui' ).description ( 'Starts the gui' ).action ( () => {
   //   process.env.ROOT_DIR = './';
   //   koa.start();

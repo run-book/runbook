@@ -82,7 +82,7 @@ function getOnfulfilled<T> ( common: ExecutionCommon<T>, output0: ExecutableOutp
     }
   };
 }
-export const execute = ( e: Executor ) => <T> ( executable: Executable<T>, timeout: number, t: T, params: any ) => {
+export const execute = ( e: Executor ) => <T> ( executable: Executable<T>, timeout: number, t: T, params: any ): Execution<T> => {
   const id = e.nextId ()
   const common: ExecutionCommon<T> = { executorId: id, startTime: e.date (), timeout, t, executable, params, out: '', err: '', finished: false, stage: 0 }
 

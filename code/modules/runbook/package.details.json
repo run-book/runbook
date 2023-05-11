@@ -11,7 +11,7 @@
   },
   "links":       [
     "@runbook/config", "@runbook/utils", "@runbook/files", "@runbook/gitinstruments",
-    "@runbook/variables", "@runbook/scripts", "@runbook/api_koa"
+    "@runbook/variables", "@runbook/scripts", "@runbook/api_koa", "@runbook/koa_instrument"
   ],
   "guards":      {
     "compile": true,

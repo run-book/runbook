@@ -1,0 +1,20 @@
+{
+  "template":    "typescript",
+  "name":        "@runbook/koa_instrument",
+  "description": "",
+  "packageJson": {
+    "dependencies":    {
+    },
+    "devDependencies": {
+    },
+    "scripts":         {
+    }
+  },
+  "links":       ["@runbook/koa", "@runbook/executors", "@runbook/cache"],
+  "guards":      {
+    "compile": true,
+    "publish": true,
+    "test":    false,
+    "react":   true
+  }
+}

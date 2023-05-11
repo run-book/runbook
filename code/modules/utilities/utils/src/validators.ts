@@ -1,6 +1,6 @@
 import { flatMap } from "./list";
 import { flatMapEntries, NameAnd } from "./nameAnd";
-import { isPrimitive } from "./types";
+import { isPrimitive, Primitive } from "./types";
 import { indentAll } from "./strings";
 
 
@@ -87,6 +87,9 @@ export const validateHasAtLeastOneKey = ( hint: string ) => <Main, K extends key
     }
     return [ `${name} does not have any of ${keys.toString ()}${hint}` ];
   };
+export const validatePrimitive = ( allowUndefined?: true ): NameAndValidator<Primitive> => ( name ) => ( value ) =>
+  isPrimitive ( value ) ? [] : [ `${name} is not a primitive` ];
+
 export function validateNameAnd<T> ( validator: NameAndValidator<T>, allowUndefined?: true ): NameAndValidator<NameAnd<T> | undefined> {
   return name => ( value: NameAnd<T | undefined> | undefined ) => {
     if ( Array.isArray ( value ) ) return [ `${name} is an array and not an object` ]
