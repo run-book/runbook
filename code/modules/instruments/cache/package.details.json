@@ -1,0 +1,15 @@
+{
+  "template": "typescript",
+  "name": "@runbook/cache",
+  "description": "Cache for Runbook",
+  "packageJson": {
+    "dependencies": {},
+    "devDependencies": {}
+  },
+  "links": ["@runbook/instruments"],
+  "guards": {
+    "compile": true,
+    "publish": true,
+    "test": false
+  }
+}

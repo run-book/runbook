@@ -18,7 +18,7 @@
   },
   "service":   {
     "fields":   {
-      "summary": {"description": "A one line summary of what this service does"},
+      "summary": {"description": "A one line summary of what this service does"}
     },
     "children": {
       "git": {

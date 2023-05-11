@@ -1,18 +1,18 @@
 {
   "instrument": {
-    "ping": {
+    "delay": {
       "type":        "script",
-      "description": "pings a server",
-      "params":      {"domain": { "description": "The domain name to ping"}},
+      "description": "Delay for a number of seconds",
+      "params":      {"delay": { "description": "How many seconds to delay "}},
       "staleness":   5000,
       "cost":        "low",
       "format":      {"type": "table", "headers": ["file"]},
       "windows":     {
-        "script": "ping -n 5 {domain}",
+        "script": "ping 127.0.0.1 -n {delay}",
         "format": {"type": "table", "headers": ["file"]}
       },
       "linux":       {
-        "script": "ping -n 5 {domain}",
+        "script": "sleep 5s",
         "format": {
           "type": "table", "headers": ["notdoneyet"]
         }
