@@ -1,1 +1,1 @@
-export * from 'node-fetch';
+export * from './src/nodefetch';
