@@ -1,7 +1,7 @@
 {
   "name": "@runbook/bindings_react",
   "description": "",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,8 +17,8 @@
     ]
   },
   "dependencies": {
-    "@runbook/bindings": "0.2.5",
-    "@runbook/fixtures": "0.2.5",
+    "@runbook/bindings": "0.2.6",
+    "@runbook/fixtures": "0.2.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "storybook": "^7.0.6",

@@ -2158,13 +2158,18 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@runbook/koa@0.2.3":
+"@runbook/koa@0.2.5":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@runbook/koa/-/koa-0.2.3.tgz#89fe296ebc5949d2814b3feac4e6b9238833caef"
   integrity sha512-3Ld6j/+oPJgVIwA7Gp6wmLuUQS+M5xi3vcjRMbqGNNETsLici80RfdxWFsBgxBAzkg4uqQRwe3uvyzAcAmLZNg==
   dependencies:
     "@runbook/utils" "0.2.3"
     koa "^2.14.2"
+
+"@runbook/utils@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@runbook/utils/-/utils-0.2.3.tgz#728c5279befe7cebbe053c6f71d269016d0ffe3c"
+  integrity sha512-hvgL10jKEKXK8YzHgsGTmNL2DZEgvBDznPEoN6PHCYCCkMLYXcFUyZGZP1wbyJftwrPtCXgGyh/IVOrnLIY8bQ==
 
 "@rushstack/eslint-patch@^1.1.0":
   version "1.2.0"
@@ -17290,11 +17295,6 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
-
-typescript@^4.1.5:
-  version "4.9.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
-  integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 typescript@^5.0.4:
   version "5.0.4"

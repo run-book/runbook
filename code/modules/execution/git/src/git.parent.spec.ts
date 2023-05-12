@@ -1,5 +1,5 @@
 import { cloneGitRepoAndParentsIfNeeded, parentsFromPathAndField } from "./git.parents";
-import { isErrors } from "@runbook/utils";
+import { isErrors, toForwardSlash } from "@runbook/utils";
 
 function makeHappyPathGitCloneFn () {
   const gitCloneFn = jest.fn ()
@@ -66,13 +66,14 @@ describe ( "parentsFromPathAndField", () => {
     expect ( await parentsFromPathAndField ( gitDirFn (), "withOutParents.json", "path.to.parents" ) ( 'someRepo' ) ).toEqual ( [] )
   } )
   it ( "should return an error if the file doesn't exist", async () => {
-    expect ( await parentsFromPathAndField ( gitDirFn (), "noSuchFile", "path.to.parents" ) ( 'someRepo' )).toEqual([])
+    expect ( await parentsFromPathAndField ( gitDirFn (), "noSuchFile", "path.to.parents" ) ( 'someRepo' ) ).toEqual ( [] )
   } )
   it ( "should return an error if the field is not an array", async () => {
     const actual = await parentsFromPathAndField ( gitDirFn (), "withDodgyParents.json", "path.to.parents" ) ( 'someRepo' )
-    expect ( actual ).toEqual ( {
+    if ( !isErrors ( actual ) ) throw Error ( `expected errors got ${JSON.stringify ( actual )}` )
+    expect ( actual.errors.map ( toForwardSlash ) ).toEqual ( {
       "errors": [
-        "Repo: someRepo file: tests\\withDodgyParents.json, path: path.to.parents was not an array it was {\"not\":\"an array\"}"
+        "Repo: someRepo file: tests/withDodgyParents.json, path: path.to.parents was not an array it was {\"not\":\"an array\"}"
       ]
     } )
   } )
