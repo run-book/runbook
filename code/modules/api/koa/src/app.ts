@@ -21,8 +21,8 @@ export const defaultHandler = ( ...handlers: KoaPartialFunction[] ): ( from: Con
 
 export function startKoa ( root: string, port: number, handler?: ( c: ContextAndStats ) => Promise<void> ): Promise<KoaAndServer> {
   const app = new Koa ();
-  const realHandler = handler || defaultHandler ();
   app.use(bodyParser());
+  const realHandler = handler || defaultHandler ();
   app.use ( async ctx => realHandler ( await contextAndStats ( ctx, root ) ) )
   const server = http.createServer ( app.callback () );
   return new Promise<KoaAndServer> ( ( resolve, reject ) => {

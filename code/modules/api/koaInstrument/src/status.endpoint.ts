@@ -10,7 +10,7 @@ export function executeStatusEndpoint<T> ( path: string, cache: Cache<Execution<
       const status = mapObjValues ( cache, ( { cached, count, lastUpdated } ) => {
         const name = cached.t[ 0 ];
         const params = cached.params;
-        
+
         const finished = cached.finished;
         return { name, finished, count, lastUpdated, params };
       } );
