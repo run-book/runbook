@@ -27,7 +27,7 @@
     "@runbook/gitinstruments": "0.2.6",
     "@runbook/variables": "0.2.6",
     "@runbook/scripts": "0.2.6",
-    "@runbook/api_koa": "0.2.6",
+    "@runbook/koa": "0.2.6",
     "@runbook/koa_instrument": "0.2.6"
   },
   "devDependencies": {

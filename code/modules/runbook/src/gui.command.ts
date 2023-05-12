@@ -3,7 +3,7 @@ import { CleanConfig, runbookMarker } from "@runbook/config";
 import { findDirectoryHoldingFileOrError } from "@runbook/files";
 import path from "path";
 import { isErrors, OS } from "@runbook/utils";
-import { BodyHandlerResult, defaultHandler, getHandler, postHandler, startKoa } from "@runbook/api_koa";
+import { BodyHandlerResult, defaultHandler, getHandler, postHandler, startKoa } from "@runbook/koa";
 import { executeScriptInShell, osType } from "@runbook/scripts";
 import { scriptExecutable, ScriptInstrument } from "@runbook/scriptinstruments";
 import { jsonToDisplay } from "@runbook/displayformat";

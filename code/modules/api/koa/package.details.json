@@ -1,6 +1,6 @@
 {
   "template":    "typescript",
-  "name":        "@runbook/api_koa",
+  "name":        "@runbook/koa",
   "description": "",
   "packageJson": {
     "dependencies":    {

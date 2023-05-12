@@ -1,4 +1,4 @@
-import { ContextAndStats, KoaPartialFunction } from "@runbook/api_koa";
+import { ContextAndStats, KoaPartialFunction } from "@runbook/koa";
 import { NameAnd, Primitive } from "@runbook/utils";
 
 export const response200 = ( body: string ) => async ( from: ContextAndStats ) => {

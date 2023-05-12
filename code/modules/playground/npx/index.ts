@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { defaultHandler, startKoa } from "@runbook/api_koa";
+import { defaultHandler, startKoa } from "@runbook/koa";
 import { executeScriptInShell, osType } from "@runbook/scripts";
 import { ping, status } from "@runbook/apistatus";
 

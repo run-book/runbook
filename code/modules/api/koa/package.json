@@ -1,5 +1,5 @@
 {
-  "name": "@runbook/api_koa",
+  "name": "@runbook/koa",
   "description": "",
   "version": "0.2.6",
   "main": "dist/index",

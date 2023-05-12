@@ -1,4 +1,4 @@
-import { KoaPartialFunction } from "@runbook/api_koa";
+import { KoaPartialFunction } from "@runbook/koa";
 import { Execution } from "@runbook/executors";
 import { Cache, CacheDetails, cacheGet, CacheOptions } from "@runbook/cache";
 import { Params } from "@runbook/loaders";

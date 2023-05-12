@@ -1,4 +1,4 @@
-import { KoaPartialFunction } from "@runbook/api_koa";
+import { KoaPartialFunction } from "@runbook/koa";
 import { Execution } from "@runbook/executors";
 import { Cache } from "@runbook/cache";
 import { mapObjValues } from "@runbook/utils";
