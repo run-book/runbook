@@ -71,10 +71,8 @@ describe ( "parentsFromPathAndField", () => {
   it ( "should return an error if the field is not an array", async () => {
     const actual = await parentsFromPathAndField ( gitDirFn (), "withDodgyParents.json", "path.to.parents" ) ( 'someRepo' )
     if ( !isErrors ( actual ) ) throw Error ( `expected errors got ${JSON.stringify ( actual )}` )
-    expect ( actual.errors.map ( toForwardSlash ) ).toEqual ( {
-      "errors": [
-        "Repo: someRepo file: tests/withDodgyParents.json, path: path.to.parents was not an array it was {\"not\":\"an array\"}"
-      ]
-    } )
+    expect ( actual.errors.map ( toForwardSlash ) ).toEqual ([
+      "Repo: someRepo file: tests/withDodgyParents.json, path: path.to.parents was not an array it was {\"not\":\"an array\"}"
+    ])
   } )
 } )
