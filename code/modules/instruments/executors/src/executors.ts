@@ -3,7 +3,13 @@ import { CleanInstrumentParam } from "@runbook/instruments";
 import * as stream from "stream";
 
 export type Params = NameAnd<Primitive>
-
+export interface StatusEndpointData {
+  name: string
+  finished: boolean
+  count: number
+  lastUpdated: number
+  params: NameAnd<Primitive>
+}
 export interface ExecutionCommon<T> {
   executorId: string;
   stage: number;

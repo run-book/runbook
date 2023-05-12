@@ -1,13 +1,14 @@
 import { KoaPartialFunction } from "@runbook/koa";
-import { Execution } from "@runbook/executors";
+import { Execution, StatusEndpointData } from "@runbook/executors";
 import { Cache } from "@runbook/cache";
-import { mapObjValues } from "@runbook/utils";
+import { mapObjValues, NameAnd, Primitive } from "@runbook/utils";
+
 
 export function executeStatusEndpoint<T> ( path: string, cache: Cache<Execution<[ string, T ]>> ): KoaPartialFunction {
   return {
     isDefinedAt: ( { context } ) => context.path === path && context.method === "GET",
     apply: async ( { context } ) => {
-      const status = mapObjValues ( cache, ( { cached, count, lastUpdated } ) => {
+      const status: NameAnd<StatusEndpointData> = mapObjValues ( cache, ( { cached, count, lastUpdated } ) => {
         const name = cached.t[ 0 ];
         const params = cached.params;
 

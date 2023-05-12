@@ -3,8 +3,11 @@
   "name":        "@runbook/scriptinstruments",
   "description": "",
   "packageJson": {
-    "dependencies":    {},
-    "devDependencies": {}
+    "dependencies":    {"node": "16.20.0"},
+    "devDependencies": {},
+    "browser":         {
+      "child_process": false
+    }
   },
   "links":       ["@runbook/instruments", "@runbook/displayformat", "@runbook/fixtures", "@runbook/executors"],
   "guards":      {

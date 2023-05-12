@@ -1,0 +1,17 @@
+{
+  "template": "react",
+  "name": "@runbook/executors_react",
+  "description": "",
+  "packageJson": {
+    "dependencies": {   },
+    "devDependencies": { "@sambego/storybook-state": "^2.0.1"}
+  },
+  "links": ["@runbook/executors","@runbook/runbook_state"],
+  "guards": {
+    "compile": true,
+    "publish": false,
+    "test": false,
+    "react": true,
+    "storybook": 6002
+  }
+}

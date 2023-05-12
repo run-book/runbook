@@ -10,6 +10,7 @@
   },
   "links":       [
     "@runbook/instruments_react",
+    "@runbook/executors_react",
     "@runbook/fixtures",
     "@runbook/store",
     "@runbook/views_react",

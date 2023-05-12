@@ -35,6 +35,12 @@ export function menuDefn<S> ( display: ( name: string ) => ( path: string[] ) =>
     ReferenceData: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'reference' ], display: dispRefData } },
     Instruments: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'instrument' ], display: path => displayScriptInstrument<S> () } },
     Views: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'view' ], display: path => displayView<S> ( path[ path.length - 1 ] ) } },
+    Status: {
+      type: 'navBarItem', path: [ 'status' ], display: display ( 'status' ),
+      children: {
+        "Executors": { type: 'dropdownItem', path: [ 'status', 'executor' ], display: display ( 'executors' ), },
+      }
+    },
   }
 }
 
