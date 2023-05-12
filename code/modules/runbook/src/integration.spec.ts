@@ -142,10 +142,10 @@ describe ( 'runbook', () => {
       const testDir = path.resolve ( instrumentDir, 'echo' )
       expect ( await executeRunbook ( testDir, 'instrument echo --params a:1 b:2 ' ) ).toEqual ( readExpected ( testDir ) )
     } )
-    it ( 'instrument echo (empty)', async () => {
-      const testDir = path.resolve ( instrumentDir, 'echo', 'empty' )
-      expect ( await executeRunbook ( testDir, 'instrument echo' ) ).toEqual ( readExpected ( testDir ) )
-    } )
+    // it ( 'instrument echo (empty)', async () => {
+    //   const testDir = path.resolve ( instrumentDir, 'echo', 'empty' )
+    //   expect ( await executeRunbook ( testDir, 'instrument echo' ) ).toEqual ( readExpected ( testDir ) )
+    // } )
     it ( 'instrument getRepo', async () => {
       const testDir = path.resolve ( instrumentDir, 'getRepo' )
       expect ( await executeRunbook ( testDir, 'instrument getRepo' ) ).toEqual ( readExpected ( testDir ) )

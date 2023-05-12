@@ -12,7 +12,7 @@
         "format": {"type": "table", "headers": ["file"]}
       },
       "linux":       {
-        "script": "ping -n 5 {domain}",
+        "script": "ping -c 5 {domain}",
         "format": {
           "type": "table", "headers": ["notdoneyet"]
         }
