@@ -29,3 +29,4 @@ export const changeLastItem = <T> ( t: T ) => ( ts: T[] ): T[] => {
 export function unique<T> ( ts: T[] ): T[] {
   return ts.filter ( ( t, i ) => ts.indexOf ( t ) === i )
 }
+export const last = <T> ( ts: T[] ): T => ts[ ts.length - 1 ]

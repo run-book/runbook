@@ -41,7 +41,7 @@ export function executeEndpoint<T> ( path: string, cacheOptions: CacheOptions,
     isDefinedAt: ( { context } ) => context.path === path && context.method === "POST",
     apply: async ( { context } ) => {
       const body: ExecuteBody = context.request.body;
-      console.log('body', body)
+      console.log ( 'body', typeof body, body )
       const validated = validateExecuteBody ( '' ) ( body );
       if ( validated.length > 0 ) {
         context.status = 400;

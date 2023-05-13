@@ -51,7 +51,7 @@ export function addGuiCommand ( os: OS, cmd: Command, cleanConfig: CleanConfig, 
         execute ( executor ) ( scriptExecutable ( os, 'api', opts.debug ), 10000, [ name, s ], params )
       await startKoa ( reactDir, port, defaultHandler (
         getHandler ( '/config', JSON.stringify ( cleanConfig ), 'application/json' ),
-        postHandler ( '/instrument', instrumentBodyHandler ( cwd, cleanConfig ) ),
+        // postHandler ( '/instrument', instrumentBodyHandler ( cwd, cleanConfig ) ),
         executeEndpoint ( '/execute', cacheOptions, nameToInstrument, cache, executeFn ),
         executeStatusEndpoint ( '/executeStatus', cache ) ) )
 

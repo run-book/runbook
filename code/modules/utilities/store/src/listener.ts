@@ -2,7 +2,7 @@ import { checkStore, isFullStore, Store } from "./store";
 
 export interface StoreListener<State> {
   updated?: ( state: State ) => Promise<void>
-  error?: ( state: State, error: any ) => Promise<void>
+  error?: ( state: State, error: any, source: any ) => Promise<void>
 }
 export const emptyStoreListener: StoreListener<any> = {
   updated: async () => { },
@@ -21,9 +21,9 @@ export async function notifyListeners<State> ( store: Store<State>, fn: ( l: Sto
 export async function notifyUpdateListeners<State> ( store: Store<State> ): Promise<void> {
   return notifyListeners ( store, ( listener, state ) => listener?.updated?. ( state ) )
 }
-export async function notifyErrorListeners<State> ( store: Store<State>, error: any ): Promise<void> {
+export async function notifyErrorListeners<State> ( store: Store<State>, error: any, source?: any ): Promise<void> {
   try {
-    await notifyListeners ( store, ( listener, state ) => listener?.error?. ( state, error ) )
+    await notifyListeners ( store, ( listener, state ) => listener?.error?. ( state, error, source ) )
   } catch ( e ) {
     console.error ( 'Error notifying error listeners', e )
   }

@@ -4,6 +4,7 @@ import { AttributeValueList, displayLabeledChild, displayLabeledChildWithLabel, 
 import { CleanInstrumentParam, CommonInstrument, ScriptAndDisplay } from "@runbook/instruments";
 import { mapObjToArray, NameAnd, RefAndData, safeObject } from "@runbook/utils";
 import { focusQuery, getOptional, Optional, optionalForRefAndData } from "@runbook/optics";
+import { FetchCommand } from "@runbook/commands";
 
 
 export function scriptAndDisplay<S, C extends ScriptAndDisplay> ( prefix: string | undefined ): RunbookComponent<S, C> {
@@ -64,25 +65,25 @@ export function displayParamsFromInstrument<S> (): RunbookComponent<S, ScriptIns
   }
 }
 
-function runButtonOnClick<S> ( st: RunbookState<S, ScriptInstrument> ) {
+const runButtonOnClick = <S extends any> ( fetchCommandOpt: Optional<S, FetchCommand[]>, name: string ) => ( st: RunbookState<S, ScriptInstrument> ) => {
   const dataOpt = paramDataOptional ( st );
   const params = getOptional ( dataOpt, st.state )
   const instrument = st.optGet ()
   return async () => {
-    let url = window.location.href + 'instrument';
-    console.log ( 'runButtonOnClick', url, { params, instrument } )
-    const json = await (await fetch ( url, { body: JSON.stringify ( { params, instrument } ), method: 'POST' } )).json ()
-    console.log ( 'result', json )
-    return json;
+    let url = window.location.href + 'execute';
+    const body = { execute: [ { name, params } ] }
+    const cmd: FetchCommand = { requestInfo: url, requestInit: { method: 'POST', body: JSON.stringify ( body ) }, target: 'instrumentResult' }
+    console.log ( 'runButtonOnClick', cmd )
+    st.withOpt ( fetchCommandOpt ).set ( [ cmd ] )
   }
-}
-export function displayRunForInstrument<S> (): RunbookComponent<S, ScriptInstrument> {
+};
+export function displayRunForInstrument<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>, name: string ): RunbookComponent<S, ScriptInstrument> {
   return st => ( props ) => {
     return <div>
       <h1>Run</h1>
       <h2>Params</h2>
       {display ( st, props, displayParamsFromInstrument<S> () )}
-      <button onClick={runButtonOnClick ( st )}>Run!!</button>
+      <button onClick={runButtonOnClick ( fetchCommandOpt, name ) ( st )}>Run!!</button>
       <h2>Results</h2>
       {displayLabeledChild ( st, { ...props, mode: 'view' }, textArea ( { rows: 5 } ), 'result' as any )}
     </div>
@@ -110,13 +111,13 @@ export function displaySharedInstrument<S> (): RunbookComponent<S, SharedScriptI
     </AttributeValueList>
 }
 
-export function displayScriptInstrument<S> (): RunbookComponent<S, ScriptInstrument> {
+export function displayScriptInstrument<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>, name: string ): RunbookComponent<S, ScriptInstrument> {
   return st => ( props ) => {
     return <div><h1>Instrument</h1>
       <Layout layout={[ 1, 1, 1 ]} component='displayScriptInstrument'>
         {isRunbookStateFor ( st, isSharedScriptInstrument ) && display<S, SharedScriptInstrument> ( st, props, displaySharedInstrument<S> () )}
         {isRunbookStateFor ( st, isVaryingScriptInstument ) && display<S, VaryingScriptInstrument> ( st, props, displayVaryingInstrument<S> () )}
-        {display<S, ScriptInstrument> ( st, { ...props, mode: 'run' }, displayRunForInstrument<S> () )}
+        {display<S, ScriptInstrument> ( st, { ...props, mode: 'run' }, displayRunForInstrument<S> ( fetchCommandOpt, name ) )}
       </Layout>
     </div>
   }

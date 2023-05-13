@@ -104,11 +104,13 @@ instrument which must be in the 'main' field of the package.json: basically as n
 The JSInstrument needs to implement an interface that looks like this:
 
 ```typescript
-type JSExecutor= (args: any) => Promise<any>
+type JSExecutor = ( args: any ) => Promise<any>
 ```
+
 The args are the ones specified in the config for the instrument.
 
 ## How do we ensure that the javascript  instruments are safe?
+
 I think we will use signed git commits. Not yet of course, but that's the plan
 
 ## How do we let the js instruments access other javascript files?
@@ -116,15 +118,8 @@ I think we will use signed git commits. Not yet of course, but that's the plan
 [By means of node_modules and require.](https://nodejs.org/api/modules.html)
 
 The secret is NODE_PATH. This is a list of directories that node will look in when you do a require. So we append
-our git repo node_modules to the NODE_PATH and then we can require any of the files in the repo. This is done by the jsinstrument
-
-
-
-
-
-
-
-
+our git repo node_modules to the NODE_PATH and then we can require any of the files in the repo. This is done by the
+jsinstrument
 
 ## Views
 
@@ -271,9 +266,70 @@ We may in the future also allow npm packages as those are great for 'permanent h
 much better for the kind of ad hoc self service we are trying to encourage, and is really easy for people to set up
 themselves.
 
+# Middleware
 
+## How do we do things like 'call the backend'
 
+We want to be able to do things like 'execute instructions on the back end'. We want this to be debuggable, testable,
+very visable.
+Options include:
 
+* having a pattern like redux: actions
+* doing it adhoc: just call it and when the back end responds add ot to the state
+* Using a command pattern in the state. The components add to the state and some middleware picks up the command and
+  executes it.
+
+Given my personal focus on 'make it easy to test' and 'let's have it very visual what is going on', I picked the
+last approach. The reason it is easy to test is that we have separated 'what we are going to do' from 'the doing of it'.
+The middleware can easily be replaced or actually not present (in storybooks for example) and the components
+are now just pure functions that take a state and return a new state.
+
+Thus the components are easy to test, and the middleware is easy to test.
+
+Effectively this is like the redux/actions... but we use a part of the state of the remember the actions to be executed.
+
+## Why the signature
+
+```typescript
+export interface Middleware<S, Command> {
+  optional: Optional<S, Command[]>
+  process: ( c: Command[] ) => Promise<TransformCmd<S, any>[]>
+}
+```
+Firstly we need the Promise in there because there will often be calls to the backend and they happen asynchronously...
+
+Secondly we could have done something like `(s: S) => Promise<S>` but then we loose information. If we want to record 
+things like 'what we did' for debugging reasons it's difficult to do anything other than say 'you went from this huge state to 
+this huge state'. But with the TransformCmds we can say 'this tiny change happened'
+
+Thirdly we process all the commands together because that allows us to have the option of writing more efficient middleware
+
+## What is the work flow around middleware
+
+A typical flow is as possible
+* A user event occurs (the run button is pressed)
+* The component adds a command to the state
+  * In the generic runbook code before the state is updated the middleware is called. 
+  * The commands are removed from the state (they never get added to the store)
+  * The middle is triggered
+  * The state WITHOUT commands is placed in the store
+* The middleware does its thing
+  * The promise concludes
+  * The generic runbook code processes the transform commands 
+
+Thus the middleware only needs to implement this interface, and the components only need to add commands to the state.
+
+# React commands in the store
+What do we do when the execution of a command fails? Note that there are multiple commands in the queue in general
+and that also they can come from different places. For example some come from a user operation, and others from the 
+api added by a promise.
+
+It's pretty clear that we want atomic operations, but we also want to control the granularity of the atomicity.
+For example the event might add three actions: Change the selection state, add a command to call an api and change the state. 
+those commands added at the same time want to be atomic.
+
+Let's add a composed command. When we execute a composed command it will execute all the commands in the array. This allows
+us to leave the granularity to the caller. 
 
 
 

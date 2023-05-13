@@ -1,0 +1,16 @@
+{
+  "template":    "typescript",
+  "name":        "@runbook/commands",
+  "description": "",
+  "packageJson": {
+    "dependencies":    {},
+    "devDependencies": {}
+  },
+  "links":       ["@runbook/store"],
+  "guards":      {
+    "compile":   true,
+    "publish":   false,
+    "test":      false,
+    "storybook": 6004
+  }
+}

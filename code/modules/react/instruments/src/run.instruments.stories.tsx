@@ -6,6 +6,7 @@ import { gitScriptInstrument, lsScriptInstrument } from "@runbook/fixtures";
 import { displayRunForInstrument } from "./instruments.react";
 import { NameAnd } from "@runbook/utils";
 import { ScriptInstrument } from "@runbook/scriptinstruments";
+import { FetchCommand } from "@runbook/commands";
 
 //exists to just finesse Storybook
 const RunInstruments = <S extends any> (): JSX.Element => <div></div>;
@@ -26,25 +27,28 @@ type Story = StoryObj<TestArgsForParams>;
 type ScriptIntrumentWithParamAndResult = ScriptInstrument & { paramData?: NameAnd<string>, result?: any }
 interface TestStateForParams {
   instrument: ScriptIntrumentWithParamAndResult
+  fetchCommands: FetchCommand[]
 }
 interface TestArgsForParams {
   instrument: ScriptIntrumentWithParamAndResult
   params: NameAnd<string>
   result: any
+  name: string,
   mode: string
 }
 
 const instrumentL: Optional<TestStateForParams, ScriptInstrument> = focusOn ( identity<TestStateForParams> (), 'instrument' )
-
+const fetchCommandsL: Optional<TestStateForParams, FetchCommand[]> = focusOn ( identity<TestStateForParams> (), 'fetchCommands' )
 
 const render = ( args: TestArgsForParams ) => {
-  return <DisplayStoryBook s={{ instrument: { ...args.instrument, paramData: args.params, result: args.result } }}
-                           opt={instrumentL} mode={args.mode}>{displayRunForInstrument<TestStateForParams> ()}</DisplayStoryBook>
+  return <DisplayStoryBook s={{ instrument: { ...args.instrument, paramData: args.params, result: args.result }, fetchCommands: [] }}
+                           opt={instrumentL} mode={args.mode}>{displayRunForInstrument<TestStateForParams> ( fetchCommandsL, args.name )}</DisplayStoryBook>
 };
 export const LS: Story = {
   render,
   args: {
     mode: 'run',
+    name: 'ls',
     instrument: lsScriptInstrument as ScriptInstrument,
     params: {}
   },
@@ -53,6 +57,7 @@ export const Git: Story = {
   render,
   args: {
     mode: 'run',
+    name: 'git',
     instrument: gitScriptInstrument as ScriptInstrument,
     params: {
       service: 'some service',

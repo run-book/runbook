@@ -34,12 +34,10 @@ export class RunbookState<S, C> {
   readonly state: S;
   readonly opt: Optional<S, C>
   setS: ( s: S ) => void;
-  getInCons: any
   constructor ( s: S, opt: Optional<S, C>, setS: ( s: S ) => void ) {
     this.state = s;
     this.opt = opt;
     this.setS = setS;
-    this.getInCons = this.get
   }
   static clone<S, C> ( r: RunbookState<S, C> ) {return new RunbookState ( r.state, r.opt, r.setS )}
   focusQuery<K extends keyof C> ( k: K ): RunbookState<S, C[K]> {

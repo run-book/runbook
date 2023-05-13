@@ -6,7 +6,7 @@ import { CleanConfig } from "@runbook/config";
 import { createRoot } from "react-dom/client";
 import { startProcessing } from "@runbook/store";
 import { getElement } from "./react.helpers";
-import { FullState, refAndDataOpt, selectionStateOpt } from "./fullState";
+import { fetchCommandsOpt, FullState, refAndDataOpt, selectionStateOpt } from "./fullState";
 import { DisplayRsInState, makeStore } from "./makeStore";
 import { bootStrapCombine, bootstrapMenu, changeMode, findMenuAndDisplay, MenuAndDisplayFnsForRunbook, MenuDefn, MenuDefnForRunbook, SelectionState } from "@runbook/menu_react";
 import { Optional } from "@runbook/optics";
@@ -17,12 +17,13 @@ import { DisplayMereologyContext } from "@runbook/referencedata_react";
 import { BindingContext } from "@runbook/bindings";
 import { mereologyToSummary } from "@runbook/mereology";
 import { fromReferenceData } from "@runbook/referencedata";
-import { inheritsFrom, makeStringDag, prune } from "@runbook/utils";
+import { inheritsFrom, last, makeStringDag, prune } from "@runbook/utils";
 import { tableProps } from "@runbook/bindings_react";
 import { runbookCompAllDataFor } from "@runbook/referencedata_react";
+import { FetchCommand } from "@runbook/commands";
 
 
-export function menuDefn<S> ( display: ( name: string ) => ( path: string[] ) => RunbookComponent<S, any>, dispRefData: ( path: string[] ) => RunbookComponent<S, any> ): MenuDefn<RunbookComponent<S, any>> {
+export function menuDefn<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>, display: ( name: string ) => ( path: string[] ) => RunbookComponent<S, any>, dispRefData: ( path: string[] ) => RunbookComponent<S, any> ): MenuDefn<RunbookComponent<S, any>> {
   return {
     Ontology: {
       type: 'navBarItem', path: [], display: display ( 'ontology' ),
@@ -33,7 +34,7 @@ export function menuDefn<S> ( display: ( name: string ) => ( path: string[] ) =>
       }
     },
     ReferenceData: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'reference' ], display: dispRefData } },
-    Instruments: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'instrument' ], display: path => displayScriptInstrument<S> () } },
+    Instruments: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'instrument' ], display: path => displayScriptInstrument<S> ( fetchCommandOpt, last ( path ) ) } },
     Views: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'view' ], display: path => displayView<S> ( path[ path.length - 1 ] ) } },
     Status: {
       type: 'navBarItem', path: [ 'status' ], display: display ( 'status' ),
@@ -70,7 +71,7 @@ function dispMContext ( config: CleanConfig ): DisplayMereologyContext {
 
 
 const md = ( config: CleanConfig ): MenuDefnForRunbook<FullState> =>
-  menuDefn ( fixtureDisplayWithMode<FullState> ( selectionStateOpt ), runbookCompAllDataFor ( dispMContext ( config ) ) )
+  menuDefn ( fetchCommandsOpt, fixtureDisplayWithMode<FullState> ( selectionStateOpt ), runbookCompAllDataFor ( dispMContext ( config ) ) )
 
 
 export const displayRsForMenuDefn: DisplayRsInState<FullState, CleanConfig> =
@@ -85,9 +86,10 @@ console.log ( 'loc: ', loc, 'filename: ', filename );
 const rootElement = getElement ( "root" );
 fetch ( filename ).then ( response => response.json () ).then ( config => {
   const realConfig = prune ( config, '__from' )
-  let initial: FullState = { config: realConfig as any, selectionState: { menuPath: [ 'situation' ] } };
+  let initial: FullState = { config: realConfig as any, selectionState: { menuPath: [ 'situation' ] }, fetchCommands: [] };
   const root = createRoot ( rootElement )
-  const { store, rs } = makeStore<FullState, CleanConfig> ( root, initial, refAndDataOpt, displayRsForMenuDefn );
+  const { store, rs } =
+          makeStore<FullState, CleanConfig> ( root, initial, refAndDataOpt, fetchCommandsOpt, displayRsForMenuDefn );
 
   startProcessing ( store )
   rs.setS ( initial )

@@ -1,6 +1,6 @@
 import { RunbookComponent } from "@runbook/runbook_state";
 import { StatusEndpointData } from "@runbook/executors";
-import { mapObjToArray, mapObjValues, NameAnd, safeObject } from "@runbook/utils";
+import { mapObjToArray, NameAnd, safeObject } from "@runbook/utils";
 
 export function displayExecutors<S> (): RunbookComponent<S, NameAnd<StatusEndpointData>> {
   return st => ( { id, focusedOn } ) => {
