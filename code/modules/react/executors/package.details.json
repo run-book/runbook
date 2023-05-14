@@ -4,14 +4,14 @@
   "description": "",
   "packageJson": {
     "dependencies": {   },
-    "devDependencies": { "@sambego/storybook-state": "^2.0.1"}
+    "devDependencies": {}
   },
-  "links": ["@runbook/executors","@runbook/runbook_state"],
+  "links": ["@runbook/executors","@runbook/runbook_state", "@runbook/storybook"],
   "guards": {
     "compile": true,
     "publish": false,
     "test": false,
     "react": true,
-    "storybook": 6002
+    "storybook": 6004
   }
 }

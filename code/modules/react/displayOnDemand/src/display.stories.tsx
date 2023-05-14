@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { identity } from "@runbook/optics";
 import { NameAnd, split } from "@runbook/utils";
-import React from "react";
-import { DisplayStoryBook, RunbookState } from "@runbook/runbook_state";
+import { DisplayStoryBook } from "@runbook/storybook";
+import {  RunbookState } from "@runbook/runbook_state";
 import { DisplayContext, displayOnDemand } from "./displayOnDemand";
 import { fixtureDisplayContext, fixtureDisplayWithoutMode, sampleDisplay } from "./display.fixture";
 

@@ -1,7 +1,7 @@
 import { focusOn, focusQuery, identity, Optional } from "@runbook/optics";
 import { Meta, StoryObj } from "@storybook/react";
-import { DisplayStoryBook, RunbookComponent } from "@runbook/runbook_state";
-import React from "react";
+import { RunbookComponent } from "@runbook/runbook_state";
+import { DisplayStoryBook } from "@runbook/storybook";
 import { echoScriptInstrument, gitScriptInstrument, lsScriptInstrument } from "@runbook/fixtures";
 import { displayScriptInstrument } from "./instruments.react";
 import { ScriptInstrument } from "@runbook/scriptinstruments";

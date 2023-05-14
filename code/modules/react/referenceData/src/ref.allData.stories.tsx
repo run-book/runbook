@@ -1,8 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
-import React from "react";
 
 import { displayMereologyContext } from "./ref.react.fixture";
-import { displayMereology, makeConditionToDisplayOneRefData } from "./ref.react";
 import { displayAllDataFor, displayOneMereologyRoot } from "./ref.react.allDataFor";
 
 const AllDataForRoot = <S extends any> (): JSX.Element => <div></div>;

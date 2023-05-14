@@ -1,7 +1,6 @@
 import { focusOn, identity, Optional } from "@runbook/optics";
 import { Meta, StoryObj } from "@storybook/react";
-import { DisplayStoryBook } from "@runbook/runbook_state";
-import React from "react";
+import { DisplayStoryBook } from "@runbook/storybook";
 import { gitScriptInstrument, lsScriptInstrument } from "@runbook/fixtures";
 import { displayParamsFromInstrument } from "./instruments.react";
 import { NameAnd } from "@runbook/utils";

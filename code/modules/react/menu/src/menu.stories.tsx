@@ -1,11 +1,10 @@
 import { focusOn, identity, Optional } from "@runbook/optics";
 import { Meta, StoryObj } from "@storybook/react";
-import { DisplayStoryBook } from "@runbook/runbook_state";
 import { NameAnd, RefAndData } from "@runbook/utils";
 import { fixtureDisplayWithMode, menuDefn, sampleDisplay } from "./menu.fixture";
 import { findMenuAndDisplay, MenuAndDisplayFnsForRunbook, MenuDefnForRunbook, SelectionState } from "./menu";
 import { bootStrapCombine, bootstrapMenu } from "./bootstrapMenu";
-
+import { DisplayStoryBook } from "@runbook/storybook";
 //exists to just finesse Storybook
 const Menu = <S extends any> (): JSX.Element => <div></div>;
 

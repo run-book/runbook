@@ -7,11 +7,11 @@
     "devDependencies": {}
   },
   "links":       ["@runbook/scriptinstruments", "@runbook/optics",
-    "@runbook/components", "@runbook/runbook_state","@runbook/commands"],
+    "@runbook/components", "@runbook/runbook_state","@runbook/commands", "@runbook/storybook"],
   "guards":      {
     "compile": true,
     "publish": false,
     "test":    false,
-    "storybook": 6003
+    "storybook": 6005
   }
 }

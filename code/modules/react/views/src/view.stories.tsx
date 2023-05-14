@@ -1,7 +1,6 @@
 import { focusOn, identity, Optional } from "@runbook/optics";
 import { Meta, StoryObj } from "@storybook/react";
-import { DisplayStoryBook } from "@runbook/runbook_state";
-import React from "react";
+import { DisplayStoryBook } from "@runbook/storybook";
 import { fixtureView } from "@runbook/fixtures";
 import { View } from "@runbook/views";
 import { displayView } from "./view.react";
@@ -35,7 +34,7 @@ const viewL: Optional<TestStateForView, View> = focusOn ( identity<TestStateForV
 
 
 const render = ( args: TestArgsForView ) => {
-  return <DisplayStoryBook s={{ view: args.view }} opt={viewL} mode={args.mode}>{displayView (args.name)}</DisplayStoryBook>
+  return <DisplayStoryBook s={{ view: args.view }} opt={viewL} mode={args.mode}>{displayView ( args.name )}</DisplayStoryBook>
 };
 export const ViewInViewMode: Story = {
   render,

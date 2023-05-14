@@ -10,7 +10,7 @@ export interface InputComponentConfig<C, Props> {
   valueProps: ( t: C | undefined, printer: ( t: C | undefined ) => string ) => Props
   modeProps: ( mode: string | undefined ) => Props
   extraProps?: Props
-  setProps: <S>( st: RunbookState<S, C> ) => Props
+  setProps: <S>( st: RunbookState<S, C>, parser: ( s: string ) => ErrorsAnd<C> ) => Props
 
 }
 
@@ -18,7 +18,13 @@ export const defaultInputComponentConfig = {
   extraProps: {},
   modeProps: ( mode: string | undefined ) => mode === 'view' ? { disabled: true } : {},
   valueProps: ( t: any, printer: ( t: any ) => string ) => ({ value: printer ( t ) }),
-  setProps: <S, C> ( st: RunbookState<S, C> ) => ({ onChange: ( e: any ) => st.set ( e.target.value ) })
+  setProps: <S, C> ( st: RunbookState<S, C>, parser: ( s: string ) => ErrorsAnd<C> ) => ({
+    onChange: ( e: any ) => {
+      const parsed = parser ( e.target.value )
+      if ( isErrors ( parsed ) ) console.error ( "Errors: " + parsed.errors.join ( ", " ) );
+      else st.set ( parsed );
+    }
+  })
 }
 
 export const commonStringInputComponentConfig = {
@@ -45,7 +51,7 @@ export function propsFrom<S, C, Props> ( st: RunbookState<S, C>, props: RunbookP
     ...config.modeProps ( props.mode ),
     ...config.extraProps,
     ...extraProps,
-    ...config.setProps ( st )
+    ...config.setProps ( st, config.parser )
   };
 }
 

@@ -15,13 +15,13 @@
     "@runbook/store",
     "@runbook/views_react",
     "@runbook/menu_react",
-    "@runbook/referencedata_react"
+    "@runbook/referencedata_react",
+    "@runbook/storybook"
   ],
   "guards":      {
-    "compile":   true,
-    "publish":   false,
-    "test":      false,
-    "react":     true,
-    "storybook": 6000
+    "compile": true,
+    "publish": false,
+    "test":    false,
+    "react":   true
   }
 }

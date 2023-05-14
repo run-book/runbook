@@ -19,9 +19,10 @@
   "dependencies": {
     "@runbook/bindings_react": "0.2.8",
     "@runbook/fixtures": "0.2.8",
+    "@runbook/storybook": "0.2.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "storybook": "^7.0.6",
+    "storybook": "^7.0.11",
     "typescript": "^5.0.4"
   },
   "devDependencies": {

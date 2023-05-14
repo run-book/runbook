@@ -1,16 +1,16 @@
 {
-  "template": "react",
-  "name": "@runbook/runbook_state",
+  "template":    "react",
+  "name":        "@runbook/runbook_state",
   "description": "",
   "packageJson": {
-    "dependencies": {"storybook": "^7.0.6"},
+    "dependencies":    {},
     "devDependencies": {}
   },
-  "links": ["@runbook/optics"],
-  "guards": {
+  "links":       ["@runbook/optics"],
+  "guards":      {
     "compile": true,
     "publish": false,
-    "test": false,
-    "react": true
+    "test":    false,
+    "react":   true
   }
 }

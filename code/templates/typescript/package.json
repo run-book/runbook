@@ -16,7 +16,6 @@
     "ts-jest":                     "29.1.0"
   },
   "keywords":        [
-    "react",
     "runbook"
   ],
   "main":            "dist/index",

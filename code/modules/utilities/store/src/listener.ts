@@ -12,7 +12,10 @@ export function addListener<State> ( store: Store<State>, listener: StoreListene
   if ( !isFullStore ( store ) ) throw new Error ( 'Store not initialised' )
   store.listeners.push ( listener )
 }
-
+export function removeListener<State> ( store: Store<State>, listener: StoreListener<State> ): void {
+  if ( !isFullStore ( store ) ) throw new Error ( 'Store not initialised' )
+  store.listeners = store.listeners.filter ( l => l !== listener )
+}
 export async function notifyListeners<State> ( store: Store<State>, fn: ( l: StoreListener<State>, state: State ) => Promise<void> | undefined ): Promise<void> {
   let fullStore = checkStore ( store );
   await Promise.all ( fullStore.listeners.map ( listener => fn ( listener, fullStore.state ) ) )

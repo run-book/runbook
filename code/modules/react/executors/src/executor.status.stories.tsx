@@ -1,12 +1,11 @@
 import { focusOn, identity, Optional } from "@runbook/optics";
 import { Meta, StoryObj } from "@storybook/react";
-import { DisplayStoryBook } from "@runbook/runbook_state";
-import React from "react";
-import { gitScriptInstrument } from "@runbook/fixtures";
+import { DisplayStoryBook } from "@runbook/storybook";
+
 import { NameAnd } from "@runbook/utils";
-import { ScriptInstrument } from "@runbook/scriptinstruments";
 import { StatusEndpointData } from "@runbook/executors";
 import { displayExecutors } from "./react.executors";
+import { newStore } from "@runbook/store";
 
 //exists to just finesse Storybook
 const ExecutorStatus = <S extends any> (): JSX.Element => <div></div>;
@@ -35,6 +34,7 @@ const statusL: Optional<TestStateForParams, NameAnd<StatusEndpointData>> =
 
 
 const render = ( args: TestArgsForParams ) => {
+  const executorStatusStore = newStore ( args.status, 1000 )
   return <DisplayStoryBook s={args} opt={statusL} mode='view'>{displayExecutors<TestStateForParams> ()}</DisplayStoryBook>
 };
 export const Executors: Story = {

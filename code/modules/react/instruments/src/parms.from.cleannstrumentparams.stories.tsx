@@ -2,8 +2,7 @@ import { focusOn, identity, Optional, optionalForRefAndData } from "@runbook/opt
 
 import { CleanInstrumentParam } from "@runbook/instruments";
 import { Meta, StoryObj } from "@storybook/react";
-import { DisplayStoryBook } from "@runbook/runbook_state";
-import React from "react";
+import { DisplayStoryBook } from "@runbook/storybook";
 import { displayParamsFromReference } from "./instruments.react";
 import { NameAnd } from "@runbook/utils";
 

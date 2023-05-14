@@ -1,5 +1,4 @@
 import { Meta, StoryObj } from "@storybook/react";
-import React from "react";
 import { Binding } from "@runbook/bindings";
 import { BindingTable, displayBindings, tableProps } from "./binding.react";
 

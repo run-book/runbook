@@ -1,6 +1,6 @@
 import { focusOn, identity, LensR, Optional } from "@runbook/optics";
 import { Meta, StoryObj } from "@storybook/react";
-import { DisplayStoryBook } from "@runbook/runbook_state";
+import { DisplayStoryBook } from "@runbook/storybook";
 import React from "react";
 import { labelAnd } from "./labelAnd";
 import { textInput } from "./textInput";
