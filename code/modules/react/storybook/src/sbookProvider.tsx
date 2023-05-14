@@ -1,5 +1,5 @@
 import { Optional } from "@runbook/optics";
-import { RunbookComponent, RunbookState } from "@runbook/runbook_state";
+import { display, RunbookComponent, RunbookState } from "@runbook/runbook_state";
 import { addCmd, addListener, checkStore, emptyStoreListener, newStore, removeListener, Store, StoreListener } from "@runbook/store";
 import { useState, useSyncExternalStore } from "react";
 
@@ -29,7 +29,7 @@ export function DisplayStoryBook<S, C> ( props: SBookProps<S, C> ) {
   const [ state, setState ] = useState ( s )
   const st: RunbookState<S, C> = new RunbookState<S, C> ( state, opt, setState )
   return <div>
-    {children ( st ) ( props )}
+    {display(st, props, children ) }
     <hr/>
     <h3>State</h3>
     <pre>{JSON.stringify ( st.state, null, 2 )}</pre>

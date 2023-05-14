@@ -1,4 +1,4 @@
-import { findFromPath, mapObjToArray, NameAnd, RefAndData, safeObject } from "@runbook/utils";
+import { findFromPath, getDescription, mapObjToArray, NameAnd, RefAndData, safeObject } from "@runbook/utils";
 import { display, RunbookComponent, RunbookState } from "@runbook/runbook_state";
 import { focusOnJustData, focusOnJustRef, parsePath } from "@runbook/optics";
 import { CleanConfig } from "@runbook/config";
@@ -150,7 +150,7 @@ export function findMenuAndDisplay<S, Config> ( prefix: string, fns: MenuAndDisp
   return rs => ( props ) => {
     const rsForSelection: RunbookState<S, SelectionState> = rs.withOpt ( focusOnJustRef ( rs.opt ) )
     let config = props.focusedOn?.data;
-    if ( config === undefined ) throw Error ( `No config in ${JSON.stringify ( props.focusedOn )}` )
+    if ( config === undefined ) throw Error ( `No config in ${JSON.stringify ( props.focusedOn )}. Opt ${getDescription(rs.opt)} State is ${JSON.stringify(rs.state,null,2)}` )
     console.log ( 'config', config )
     const menu: RunbookComponent<S, SelectionState> = applyMenuDefn ( prefix, fns, mdFn, config )
     const selectedDisplay = findDisplay ( fns, mdFn )
