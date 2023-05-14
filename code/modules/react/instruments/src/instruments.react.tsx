@@ -72,7 +72,7 @@ const runButtonOnClick = <S extends any> ( fetchCommandOpt: Optional<S, FetchCom
   return async () => {
     let url = window.location.href + 'execute';
     const body = { execute: [ { name, params } ] }
-    const cmd: FetchCommand = { requestInfo: url, requestInit: { method: 'POST', body: JSON.stringify ( body ) }, target: 'instrumentResult' }
+    const cmd: FetchCommand = { requestInfo: url, requestInit: { method: 'POST', body: JSON.stringify ( body ), headers: { "Content-Type": "application/json" } }, target: 'instrumentResult' }
     console.log ( 'runButtonOnClick', cmd )
     st.withOpt ( fetchCommandOpt ).set ( [ cmd ] )
   }
