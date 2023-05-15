@@ -6,7 +6,11 @@ import { mapObjValues, NameAnd, Primitive } from "@runbook/utils";
 
 export function executeStatusEndpoint<T> ( path: string, cache: Cache<Execution<[ string, T ]>> ): KoaPartialFunction {
   return {
-    isDefinedAt: ( { context } ) => context.path === path && context.method === "GET",
+    isDefinedAt: ( { context } ) => {
+      let result = context.path === path && context.method === "GET";
+      console.log ( 'executeStatusEndpoint', result )
+      return result;
+    },
     apply: async ( { context } ) => {
       const status: NameAnd<StatusEndpointData> = mapObjValues ( cache, ( { cached, count, lastUpdated } ) => {
         const name = cached.t[ 0 ];

@@ -8,6 +8,7 @@ export interface FullState {
   config: CleanConfig
   selectionState: SelectionState
   fetchCommands: FetchCommand[]
+  status: { executor: {} }
 }
 export const idOpt = identity<FullState> ()
 export const fetchCommandsOpt = focusQuery ( idOpt, 'fetchCommands' )

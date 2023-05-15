@@ -4,7 +4,7 @@ import { getDescription } from "@runbook/utils";
 import { getOptional } from "./getter";
 
 
-export type TransformCmd<M, C> = TransformSet<M, C> | TransformMap<M, C> | TransformClear<M, C> | TransformCompose<M, C>
+export type TransformCmd<M, C> = TransformSet<M, C> | TransformMap<M, C> | TransformClear<M, C> | TransformCompose<M, C> | TransformNull<M, C>
 
 //See ARCHITECTURAL_DECISION_LOG for why this exists
 export interface TransformCompose<M, C> {
@@ -12,6 +12,13 @@ export interface TransformCompose<M, C> {
 }
 export function isTransformCompose<M, C> ( t: TransformCmd<M, C> ): t is TransformCompose<M, C> {
   return (t as TransformCompose<M, C>).cmds !== undefined
+}
+
+export interface TransformNull<M, C> {
+  null: true
+}
+export function isTransformNull<M, C> ( t: TransformCmd<M, C> ): t is TransformNull<M, C> {
+  return (t as TransformNull<M, C>).null !== undefined
 }
 
 export interface TransformSet<M, C> extends HasOptional<M, C> {
@@ -43,6 +50,7 @@ export function isTransformClear<M, C> ( t: TransformCmd<M, C> ): t is Transform
 
 
 export function applyOneTransformFn<M, C> ( m: M, t: TransformCmd<M, C> ): M {
+  if ( isTransformNull ( t ) ) return m
   if ( isTransformMap ( t ) ) return processMap ( t ) ( m )
   if ( isTransformSet ( t ) ) return mapOptionalOrOriginal ( t.optional ) ( m, () => t.set )
   if ( isTransformClear ( t ) ) return mapOptionalOrOriginal ( t.optional ) ( m, () => undefined as any )
@@ -53,6 +61,7 @@ export function applyOneTransformFn<M, C> ( m: M, t: TransformCmd<M, C> ): M {
 }
 
 export function transformToString<State, T> ( t: TransformCmd<State, T> ): string {
+  if ( isTransformNull ( t ) ) return 'tx:null'
   if ( isTransformCompose ( t ) ) return "{" + t.cmds.map ( transformToString ).join ( ',' ) + "}"
   const desc = getDescription ( t.optional, o => `Unknown optional` )
   if ( isTransformMap ( t ) ) return `tx:map(${desc}, ${getDescription ( t.map, o => 'unknownFn' )})`

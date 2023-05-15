@@ -23,7 +23,7 @@ export interface FullStore<State> extends Store<State> {
   queue: TransformCmd<State, any>[]
   state: State
   listeners: StoreListener<State>[]
-  middleWare: Middleware<State, any>[]
+  middleWare: Middleware<State>[]
 }
 export function isFullStore<State> ( store: Store<State> ): store is FullStore<State> {
   return (store as FullStore<State>).state !== undefined
@@ -32,7 +32,7 @@ export function checkStore<State> ( store: Store<State> ): FullStore<State> {
   if ( !isFullStore ( store ) ) throw new Error ( 'Store not initialised' )
   return store
 }
-export function newStore<State> ( state: State, wait: number = 50, ...middleWare: Middleware<State, any>[] ): Store<State> {
+export function newStore<State> ( state: State, wait: number = 50, ...middleWare: Middleware<State>[] ): Store<State> {
   return { state, listeners: [], queue: [], wait, middleWare }
 }
 

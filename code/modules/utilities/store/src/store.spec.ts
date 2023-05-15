@@ -1,5 +1,5 @@
-import { addCmd, checkStore, FullStore, newStore, Store } from "./store";
-import { Middleware } from "./middleware";
+import { addCmd, checkStore, FullStore, newStore } from "./store";
+import { CommandMiddleware } from "./middleware";
 import { focusOn, focusQuery, identity, TransformCmd, TransformSet } from "@runbook/optics";
 import { processCmdOnlyForTest } from "./processCmds";
 import { addListener, StoreListener } from "./listener";
@@ -13,15 +13,15 @@ interface TestState {
   processedCommands?: string[]
 }
 let processedCommandsOpt = focusOn ( identity<TestState> (), 'processedCommands' );
-const testMiddleWare1: Middleware<TestState, string> = {
+const testMiddleWare1: CommandMiddleware<TestState, string> = {
   optional: focusOn ( identity<TestState> (), 'commands1' ),
   process: ( cmds: string[] ) => Promise.resolve ( cmds.map ( c => ({ map: old => [ ...old, c + '_1' ], optional: processedCommandsOpt, default: [] }) ) )
 }
-const testMiddleWare2: Middleware<TestState, string> = {
+const testMiddleWare2: CommandMiddleware<TestState, string> = {
   optional: focusOn ( identity<TestState> (), 'commands2' ),
   process: ( cmds: string[] ) => Promise.resolve ( cmds.map ( c => { return ({ map: old => [ ...old, c + '_2' ], optional: processedCommandsOpt, default: [] }); } ) )
 }
-const testBrokenMiddleWare: Middleware<TestState, string> = {
+const testBrokenMiddleWare: CommandMiddleware<TestState, string> = {
   optional: focusOn ( identity<TestState> (), 'brokenCmds' ),
   process: ( cmds: string[] ) => {throw new Error ( 'broken' )}
 }

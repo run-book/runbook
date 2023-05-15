@@ -1,4 +1,4 @@
-import { Middleware } from "@runbook/store";
+import { CommandMiddleware } from "@runbook/store";
 import { opticsParserO, Optional } from "@runbook/optics";
 import { mapKWithNotifyOnError, parseJson } from "@runbook/utils";
 
@@ -10,11 +10,11 @@ export interface FetchCommand {
   target: string
 }
 
-interface Response{
+interface Response {
   json: () => Promise<any>
 }
 
-export function fetchMiddleware<S> ( commandOpt: Optional<S, FetchCommand[]>, fetch: ( info: RequestInfo, init?: RequestInit ) => Promise<Response> ): Middleware<S, any> {
+export function fetchMiddleware<S> ( commandOpt: Optional<S, FetchCommand[]>, fetch: ( info: RequestInfo, init?: RequestInit ) => Promise<Response> ): CommandMiddleware<S, FetchCommand> {
   return {
     optional: commandOpt,
     process: async ( commands: FetchCommand[], onError ) =>
@@ -25,5 +25,5 @@ export function fetchMiddleware<S> ( commandOpt: Optional<S, FetchCommand[]>, fe
         return { set, optional }
       }, onError )
   }
-
 }
+

@@ -35,7 +35,7 @@ const statusL: Optional<TestStateForParams, NameAnd<StatusEndpointData>> =
 
 const render = ( args: TestArgsForParams ) => {
   const executorStatusStore = newStore ( args.status, 1000 )
-  return <DisplayStoryBook s={args} opt={statusL} mode='view'>{displayExecutors<TestStateForParams> ()}</DisplayStoryBook>
+  return <DisplayStoryBook s={args} opt={statusL} mode='view'>{displayExecutors<TestStateForParams> (executorStatusStore)}</DisplayStoryBook>
 };
 export const Executors: Story = {
   render,

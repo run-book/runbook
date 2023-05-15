@@ -427,5 +427,6 @@
         "views\\debug\\domain.view.json"
       ]
     }
-  }
+  },
+  "status":{"executor":{}}
 }

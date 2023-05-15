@@ -1,7 +1,7 @@
 {
   "name": "@runbook/koa",
   "description": "",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {

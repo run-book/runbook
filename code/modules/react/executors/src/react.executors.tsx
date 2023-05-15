@@ -1,12 +1,15 @@
 import { RunbookComponent } from "@runbook/runbook_state";
 import { StatusEndpointData } from "@runbook/executors";
-import { mapObjToArray, NameAnd, safeObject } from "@runbook/utils";
+import { mapObjToArray, NameAnd } from "@runbook/utils";
+import { Store } from "@runbook/store";
+import { useSyncExternalStore } from "react";
+import { getSnapshot, subscribe } from "@runbook/storybook";
 
-export function displayExecutors<S> (): RunbookComponent<S, NameAnd<StatusEndpointData>> {
-  return st => ( { id, focusedOn } ) => {
-    const statusData = safeObject ( focusedOn )
+export function displayExecutors<S> ( executorStore: Store<NameAnd<StatusEndpointData>> ): RunbookComponent<S, any> {
+  return st => ( { id } ) => {
+    const statusData = useSyncExternalStore ( subscribe ( executorStore ), getSnapshot ( executorStore ) )
     return <><h1>Executors</h1>
-      <table>
+      <table id={id}>
         <thead>
         <tr>
           <th>ID</th>

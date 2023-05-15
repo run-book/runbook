@@ -1,7 +1,7 @@
 {
   "name": "@runbook/playground_npx",
   "description": "",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,8 +17,8 @@
     ]
   },
   "dependencies": {
-    "@runbook/koa": "0.2.8",
-    "@runbook/apistatus": "0.2.8"
+    "@runbook/koa": "0.2.9",
+    "@runbook/apistatus": "0.2.9"
   },
   "devDependencies": {
     "typescript": "^5.0.4",

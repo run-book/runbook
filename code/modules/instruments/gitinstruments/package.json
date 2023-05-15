@@ -1,7 +1,7 @@
 {
   "name": "@runbook/gitinstruments",
   "description": "",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,10 +17,10 @@
     ]
   },
   "dependencies": {
-    "@runbook/instruments": "0.2.8",
-    "@runbook/displayformat": "0.2.8",
-    "@runbook/fixtures": "0.2.8",
-    "@runbook/git": "0.2.8"
+    "@runbook/instruments": "0.2.9",
+    "@runbook/displayformat": "0.2.9",
+    "@runbook/fixtures": "0.2.9",
+    "@runbook/git": "0.2.9"
   },
   "devDependencies": {
     "typescript": "^5.0.4",

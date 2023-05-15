@@ -13,6 +13,7 @@ async function processCmds<State> ( store: Store<State> ): Promise<void> {
   const middleWare = fullStore.middleWare
   fullStore.queue = []
   if ( cmds.length === 0 ) return
+  console.log ( 'processCmds', cmds.length )
   const onError = async ( c: any, e: any ) => {notifyErrorListeners ( store, e, c )}
   const newStatePreMiddleware: State = await foldWithNotify ( cmds, fullStore.state, applyOneTransformFn, async e => {notifyErrorListeners ( store, e )} );
   const newState: State = await foldWithNotify ( middleWare, newStatePreMiddleware, applyMiddleware ( store, onError ),
