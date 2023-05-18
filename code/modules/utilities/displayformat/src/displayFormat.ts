@@ -1,4 +1,4 @@
-export type DisplayFormat = "json" | "onelinejson" | "oneperlinejson" | "raw" | TableFormat
+export type DisplayFormat = "json" | "onelinejson" | "oneperlinejson" | "raw" | "exitcode" | "exitcode==0" | TableFormat
 
 export interface TableFormat {
   type: "table"

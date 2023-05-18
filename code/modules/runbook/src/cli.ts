@@ -5,7 +5,7 @@ import { addAllReferenceCommands, addOntologyCommand } from "./reference.command
 import { addViewCommand } from "./view.command";
 import { addConfigCommand } from "./config.command";
 import { addGuiCommand } from "./gui.command";
-import { addNewInstrumentCommand } from "./instrument1.command";
+import { addNewInstrumentCommand } from "./instrument.command";
 import * as os from "os";
 import { osType } from "@runbook/scripts";
 import { Executor } from "@runbook/executors";
@@ -28,11 +28,12 @@ export function makeProgram ( cwd: string, withFromsConfig: CleanConfig, cleanCo
   // mapObjValues ( safeObject ( cleanConfig?.instrument ), ( instrument, name ) =>
   //   addInstrumentCommand ( cwd, instruments.command ( name ), name, instrument, withFromsConfig ) )
 
+  let theOs = osType ();
   mapObjValues ( safeObject ( cleanConfig?.instrument ), ( instrument, name ) =>
-    addNewInstrumentCommand ( cwd, os.homedir (), osType (), instruments.command ( name ), name, instrument, withFromsConfig, executor ) )
+    addNewInstrumentCommand ( cwd, os.homedir (), theOs, instruments.command ( name ), name, instrument, withFromsConfig, executor ) )
 
   const views: Command = program.command ( 'view' ).description ( 'Commands to work with views which allow you to find things out about systems' )
-  mapObjValues ( safeObject ( cleanConfig?.view ), ( view, name ) => addViewCommand ( views.command ( name ), cwd, name, withFromsConfig, cleanConfig, view ) )
+  mapObjValues ( safeObject ( cleanConfig?.view ), ( view, name ) => addViewCommand ( views.command ( name ), cwd, name, withFromsConfig, cleanConfig, view, executor, theOs ) )
   const ontology: Command = program.command ( 'ontology' ).description ( `Commands to view the 'ontology': relationships and meanings and reference data` )
   addOntologyCommand ( ontology, 'inheritance', cleanConfig.inheritance, `This is the classical 'isa' relationship. For example a cat isa mammel` )
   addOntologyCommand ( ontology, 'mereology', cleanConfig.mereology, `This describes 'is part of' for example a wheel is part of a car` )
@@ -41,7 +42,7 @@ export function makeProgram ( cwd: string, withFromsConfig: CleanConfig, cleanCo
   addSituationCommand ( program.command ( 'situation' ).description ( 'Commands about the current situation: the ticket you are working on, or a playground' ), cleanConfig )
 
   addConfigCommand ( program.command ( 'config' ).description ( 'Views the cleanConfig and any issues with it' ), cleanConfig, cwd );
-  addGuiCommand ( osType (), program, cleanConfig, cwd, executor );
+  addGuiCommand ( theOs, program, cleanConfig, cwd, executor );
   // const gui: Command = program.command ( 'gui' ).description ( 'Starts the gui' ).action ( () => {
   //   process.env.ROOT_DIR = './';
   //   koa.start();

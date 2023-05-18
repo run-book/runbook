@@ -1,34 +1,19 @@
 import { Command } from "commander";
-import { executeScriptInstrument, findScriptAndDisplay, isScript, ScriptInstrument } from "@runbook/scriptinstruments";
-import { mapObjValues, nameValueToNameAndString, safeArray } from "@runbook/utils";
-import { executeScriptInShell, executeScriptLinesInShell, osType } from "@runbook/scripts";
+import { findScriptAndDisplay, isScript, makeOutput, scriptExecutable, ScriptInstrument } from "@runbook/scriptinstruments";
+import { mapObjValues, NameAnd, nameValueToNameAndString, OS, safeArray } from "@runbook/utils";
 import { addDisplayOptions, optionToDisplayFormat } from "./display";
 import { jsonToDisplay } from "@runbook/displayformat";
 import { addEditViewOptions, executeAndEditViewAndExit } from "./editView";
 import { CleanConfig } from "@runbook/config";
-import { executeGitInstrument, isGitInstrument } from "@runbook/gitinstruments";
-import { makeGitOps } from "@runbook/git";
-import * as os from "os";
+import { execute, Executor } from "@runbook/executors";
 
-export function makeExecuteOptions ( args: any, cwd: string, instrument: ScriptInstrument ) {
-  return {
-    ...args, cwd, instrument, executeScript: executeScriptInShell,
-    executeScripts: executeScriptLinesInShell
-  };
-}
-export async function executeScriptForCmd ( instrument: ScriptInstrument, args: any, cwd: string ) {
-  const params = instrument.params === '*' ? nameValueToNameAndString ( safeArray ( args.params ) ) : args
-  let executeOptions = makeExecuteOptions ( args, cwd, instrument );
-  const sdFn = findScriptAndDisplay ( osType () )
-  let json = await (executeScriptInstrument ( executeOptions ) ( sdFn ) ( 'runbook', instrument, ) ( params ));
+export async function executeScript ( executor: Executor, os: OS, name: string, instrument: ScriptInstrument, args: any, params: NameAnd<any> ) {
+  const res = execute ( executor ) ( scriptExecutable ( os, 'executeScript', args.debug ), 10000, [ name, instrument ], params )
+  await res.promise
+  const json = makeOutput ( args.debug, res.out, args.raw, findScriptAndDisplay ( os ) ( instrument ) )
   return json
 }
-async function executeScript ( instrument: ScriptInstrument, args: any, cwd: string ) {
-  let json = await executeScriptForCmd ( instrument, args, cwd );
-  const displayFormat = optionToDisplayFormat ( args )
-  console.log ( args.raw ? json : jsonToDisplay ( json, displayFormat ) )
-}
-export function addInstrumentCommand ( cwd: string, command: Command, name: string, instrument: ScriptInstrument, withFromsConfig: CleanConfig ) {
+export function addNewInstrumentCommand ( cwd: string, homeDir: string, os: OS, command: Command, name: string, instrument: ScriptInstrument, withFromsConfig: CleanConfig, executor: Executor ) {
   command.description ( instrument.description )
   const params = instrument.params
   if ( typeof params === 'string' ) {
@@ -45,8 +30,14 @@ export function addInstrumentCommand ( cwd: string, command: Command, name: stri
     const args: any = command.optsWithGlobals ()
     await executeAndEditViewAndExit ( cwd, args, withFromsConfig.instrument?. [ name ], instrument )
     if ( args.config ) return console.log ( JSON.stringify ( instrument, null, 2 ) )
-    if ( isScript ( instrument ) ) return await executeScript ( instrument, args, cwd );
-    if ( isGitInstrument ( instrument ) ) return await executeGitInstrument ( makeGitOps ( os.homedir () ) ) ( 'execute', instrument ) ( args );
+    const params = instrument.params === '*' ? nameValueToNameAndString ( safeArray ( args.params ) ) : args
+    if ( isScript ( instrument ) ) {
+      let json = await executeScript ( executor, os, name, instrument, args, params );
+      const displayFormat = optionToDisplayFormat ( args )
+      let result = args.raw ? json : jsonToDisplay ( json, displayFormat );
+      return console.log ( result );
+    }
+    // if ( isGitInstrument ( instrument ) ) return await executeGitInstrument ( makeGitOps ( homeDir ) ) ( 'execute', instrument ) ( args );
     throw new Error ( `Unknown instrument ${instrument}` )
   } )
 }

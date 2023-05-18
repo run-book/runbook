@@ -3,11 +3,9 @@ import { CleanConfig, runbookMarker } from "@runbook/config";
 import { findDirectoryHoldingFileOrError } from "@runbook/files";
 import path from "path";
 import { isErrors, OS } from "@runbook/utils";
-import { BodyHandlerResult, defaultHandler, getHandler, postHandler, startKoa } from "@runbook/koa";
+import { defaultHandler, getHandler, startKoa } from "@runbook/koa";
 import { executeScriptInShell, osType } from "@runbook/scripts";
 import { scriptExecutable, ScriptInstrument } from "@runbook/scriptinstruments";
-import { jsonToDisplay } from "@runbook/displayformat";
-import { executeScriptForCmd } from "./instrument.command";
 import { execute, Execution, Executor } from "@runbook/executors";
 import { executeEndpoint, executeStatusEndpoint } from "@runbook/koa_instrument";
 import { Cache, makeCacheOptions } from "@runbook/cache";
@@ -20,20 +18,6 @@ function findReactDir ( cwd: string ) {
   return reactDir;
 }
 
-async function executeInstrumentedScript ( args: any, cwd: string, instrument: ScriptInstrument ) {
-  let json = await executeScriptForCmd ( instrument, args, cwd );
-  const displayFormat = 'json'
-  return jsonToDisplay ( json, displayFormat )
-}
-
-const instrumentBodyHandler = ( cwd: string, config: CleanConfig ) => async ( body: string ): Promise<BodyHandlerResult> => {
-  console.log ( 'body', body )
-  return ({
-    status: 200,
-    body: `{"hello":"world"}`,
-    contentType: 'application/json'
-  });
-};
 
 
 export function addGuiCommand ( os: OS, cmd: Command, cleanConfig: CleanConfig, cwd: string, executor: Executor ) {

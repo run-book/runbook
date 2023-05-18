@@ -10,7 +10,7 @@
     "devDependencies": {}
   },
   "links":       [
-    "@runbook/config", "@runbook/utils", "@runbook/files", "@runbook/gitinstruments",
+    "@runbook/config", "@runbook/utils", "@runbook/files",
     "@runbook/variables", "@runbook/scripts", "@runbook/koa", "@runbook/koa_instrument"
   ],
   "guards":      {

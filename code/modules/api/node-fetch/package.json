@@ -1,7 +1,7 @@
 {
   "name": "@runbook/node-fetch",
   "description": "",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -18,7 +18,8 @@
   },
   "dependencies": {
     "node-fetch": "^3.3.1",
-    "proxy-agent": "^6.1.2"
+    "proxy-agent": "^6.1.2",
+    "debug": "^4.3.4"
   },
   "devDependencies": {
     "typescript": "^5.0.4",

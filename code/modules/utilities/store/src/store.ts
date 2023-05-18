@@ -2,18 +2,7 @@ import { TransformCmd } from "@runbook/optics";
 import { StoreListener } from "./listener";
 import { Middleware } from "./middleware";
 
-
-/** Bit of an experiment.
- *
- * We know that we need a store... the flux pattern doesn't work well when we have async actions.
- * I'm having the 'only changes you can do' be 'add cmds to the queue'.
- *
- * Then we process all the commands in the queue before notifying the listeners (reduces the event storm)
- *
- * Those listeners can trigger fetchs for example or anything else include async mutates, but the state won't change until the next 'process cmds'
- * So we are effectively batching up the cmds
- *
- */
+const debug = require ( 'debug' ) ( 'store' )
 
 export interface Store<State> {
 }
@@ -33,10 +22,13 @@ export function checkStore<State> ( store: Store<State> ): FullStore<State> {
   return store
 }
 export function newStore<State> ( state: State, wait: number = 50, ...middleWare: Middleware<State>[] ): Store<State> {
+  debug ( 'newStore -state', JSON.stringify ( state ) )
+  debug ( 'newStore -wait and middleware', wait, JSON.stringify ( middleWare ) )
   return { state, listeners: [], queue: [], wait, middleWare }
 }
 
 export const addCmd = <State> ( store: Store<State> ) => ( cmd: TransformCmd<State, any> ): void => {
+  debug ( 'addCmd', JSON.stringify ( cmd ) )
   checkStore ( store ).queue.push ( cmd )
   //Note that these will get picked up at the next 'processNext' in the full store
 };

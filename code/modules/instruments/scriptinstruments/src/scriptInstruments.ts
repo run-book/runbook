@@ -1,4 +1,4 @@
-import { CommonInstrument, ExecuteStriptInstrumentK, ScriptAndDisplay, validateCommonInstrument } from "@runbook/instruments";
+import { CommonInstrument, ScriptAndDisplay, validateCommonInstrument } from "@runbook/instruments";
 import { bracesVarDefn, derefence } from "@runbook/variables";
 import { ExecuteScriptFn, ExecuteScriptLinesFn } from "@runbook/scripts";
 import { DisplayFormat, stringToJson, TableFormat } from "@runbook/displayformat";
@@ -104,22 +104,22 @@ export function makeOutput ( debug: boolean, res: string, raw: boolean, sd: Scri
   if ( debug ) console.log ( '   result', result )
   return result;
 }
-export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteStriptInstrumentK<ScriptInstrument> =>
-  ( sdFn ) => ( context: string, i: ScriptInstrument, ) => async ( params ) => {
-    let debug = opt.debug;
-    if ( debug ) console.log ( 'executeSharedScriptInstrument', JSON.stringify ( i ) )
-    if ( debug ) console.log ( '  opt', JSON.stringify ( opt ) )
-    if ( i === undefined ) throw new Error ( `Instrument is undefined` )
-    const sd = sdFn ( i )
-    if ( debug ) console.log ( '   sd', JSON.stringify ( sd ) )
-    const cmds = makeCmds ( context, sd, params, debug );
-    const { cwd, showCmd, raw } = opt
-    if ( showCmd ) return cmds.join ( '\n' )
-    if ( debug ) console.log ( '   cmds', JSON.stringify ( cmds ) )
-    let res = await opt.executeScripts ( cwd, cmds );
-    let result = makeOutput ( debug, res, raw, sd );
-    return result
-  }
+// export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteStriptInstrumentK<ScriptInstrument> =>
+//   ( sdFn ) => ( context: string, i: ScriptInstrument, ) => async ( params ) => {
+//     let debug = opt.debug;
+//     if ( debug ) console.log ( 'executeSharedScriptInstrument', JSON.stringify ( i ) )
+//     if ( debug ) console.log ( '  opt', JSON.stringify ( opt ) )
+//     if ( i === undefined ) throw new Error ( `Instrument is undefined` )
+//     const sd = sdFn ( i )
+//     if ( debug ) console.log ( '   sd', JSON.stringify ( sd ) )
+//     const cmds = makeCmds ( context, sd, params, debug );
+//     const { cwd, showCmd, raw } = opt
+//     if ( showCmd ) return cmds.join ( '\n' )
+//     if ( debug ) console.log ( '   cmds', JSON.stringify ( cmds ) )
+//     let res = await opt.executeScripts ( cwd, cmds );
+//     let result = makeOutput ( debug, res, raw, sd );
+//     return result
+//   }
 export const findScriptAndDisplay = ( os: OS ) => ( s: ScriptInstrument ): ScriptAndDisplay => {
   function check ( s: ScriptAndDisplay ): ScriptAndDisplay {
     if ( s?.script === undefined ) throw new Error ( `OS is ${os}. No script for instrument ${s}` )
@@ -134,12 +134,12 @@ export const findScriptAndDisplay = ( os: OS ) => ( s: ScriptInstrument ): Scrip
   throw new Error ( `OS is ${os}. Cannot execute instrument type${s}` )
 };
 
-export const executeScriptInstrument = ( opt: ExecuteOptions ): ExecuteStriptInstrumentK<ScriptInstrument> =>
-  sdFn => ( context, i, ) => {
-    if ( i === undefined ) throw new Error ( `Instrument is undefined. Raw was ${JSON.stringify ( i, null, 2 )}` )
-    return async ( params ) =>
-      executeSharedScriptInstrument ( opt ) ( sdFn ) ( context, i, ) ( params );
-  }
+// export const executeScriptInstrument = ( opt: ExecuteOptions ): ExecuteStriptInstrumentK<ScriptInstrument> =>
+//   sdFn => ( context, i, ) => {
+//     if ( i === undefined ) throw new Error ( `Instrument is undefined. Raw was ${JSON.stringify ( i, null, 2 )}` )
+//     return async ( params ) =>
+//       executeSharedScriptInstrument ( opt ) ( sdFn ) ( context, i, ) ( params );
+//   }
 
 
 const validateTableFormat: NameAndValidator<TableFormat> = composeNameAndValidators<TableFormat> (
@@ -150,7 +150,7 @@ const validateTableFormat: NameAndValidator<TableFormat> = composeNameAndValidat
 
 
 const validateDisplayFormat: NameAndValidator<DisplayFormat | undefined> = orValidators<any> ( `Ìsn't a valid display format`,
-  validateTableFormat, validateValue ( 'raw', 'json', 'onelinejson', 'oneperlinejson' ) )
+  validateTableFormat, validateValue ( 'raw', 'json', 'onelinejson', 'oneperlinejson', 'exitcode', 'exitcode==0' ) )
 export const validateScriptAndDisplay: NameAndValidator<ScriptAndDisplay> = composeNameAndValidators (
   validateChild ( 'script', validateItemOrArray ( validateString () ) ),
   validateChild ( 'format', validateDisplayFormat, true )

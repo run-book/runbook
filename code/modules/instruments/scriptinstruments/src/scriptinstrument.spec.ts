@@ -1,6 +1,5 @@
-import { ExecuteOptions, executeSharedScriptInstrument, findScriptAndDisplay, scriptExecutable, ScriptInstrument, SharedScriptInstrument, validateScriptInstrument, VaryingScriptInstrument } from "./scriptInstruments";
-import { execute, Execution, Executor, SlowExecutor, SlowParams } from "@runbook/executors";
-import * as os from "os";
+import { ExecuteOptions, findScriptAndDisplay, scriptExecutable, SharedScriptInstrument, validateScriptInstrument, VaryingScriptInstrument } from "./scriptInstruments";
+import { execute, Executor } from "@runbook/executors";
 import { osType } from "@runbook/scripts";
 import { cleanLineEndings } from "@runbook/utils";
 
@@ -34,37 +33,37 @@ describe ( "findShared", () => {
 } )
 
 let sdFn = findScriptAndDisplay ( 'Windows_NT' );
-describe ( 'executeSharedScriptInstrument', function () {
-  const opt: ExecuteOptions = {
-    executeScript: ( cwd, cmd ) => Promise.resolve ( `${cwd} ${cmd}` ),
-    executeScripts: ( cwd, cmd ) => Promise.resolve ( `${cwd} ${cmd}` ),
-    instrument: si,
-    cwd: 'theCwd',
-    showCmd: false,
-    raw: false
-  }
-  it ( 'should execute a shared script when format table', async () => {
-    let actual = await executeSharedScriptInstrument ( opt ) ( sdFn ) ( 'context', { ...si, format: { type: 'table', hideHeader: true } } ) ( {} );
-    console.log ( 'actual', typeof actual, actual )
-    expect ( actual ).toEqual ( [ { theCwd: '1', A: '2', B: '3' }, { theCwd: '4', A: '5', B: '6' } ] )
-  } )
-  it ( 'should execute a shared script when format undefined', async () => {
-    let actual = await executeSharedScriptInstrument ( opt ) ( sdFn ) ( 'context', si ) ( {} );
-    console.log ( 'actual', typeof actual, actual )
-    expect ( actual ).toEqual ( [
-      { '1': 'theCwd', '2': 'A', '3': 'B' },
-      { '1': '1', '2': '2', '3': '3' },
-      { '1': '4', '2': '5', '3': '6' }
-    ] )
-  } )
-  it ( 'should execute a shared script, raw is true', async () => {
-    let actual = await executeSharedScriptInstrument ( { ...opt, raw: true } ) ( sdFn ) ( 'context', si ) ( {} );
-    console.log ( 'actual', typeof actual, actual )
-    expect ( actual ).toEqual ( `theCwd A B
-1 2 3
-4 5 6` )
-  } )
-} );
+// describe ( 'executeSharedScriptInstrument', function () {
+//   const opt: ExecuteOptions = {
+//     executeScript: ( cwd, cmd ) => Promise.resolve ( `${cwd} ${cmd}` ),
+//     executeScripts: ( cwd, cmd ) => Promise.resolve ( `${cwd} ${cmd}` ),
+//     instrument: si,
+//     cwd: 'theCwd',
+//     showCmd: false,
+//     raw: false
+//   }
+// it ( 'should execute a shared script when format table', async () => {
+//   let actual = await executeSharedScriptInstrument ( opt ) ( sdFn ) ( 'context', { ...si, format: { type: 'table', hideHeader: true } } ) ( {} );
+//   console.log ( 'actual', typeof actual, actual )
+//   expect ( actual ).toEqual ( [ { theCwd: '1', A: '2', B: '3' }, { theCwd: '4', A: '5', B: '6' } ] )
+// } )
+// it ( 'should execute a shared script when format undefined', async () => {
+//   let actual = await executeSharedScriptInstrument ( opt ) ( sdFn ) ( 'context', si ) ( {} );
+//   console.log ( 'actual', typeof actual, actual )
+//   expect ( actual ).toEqual ( [
+//     { '1': 'theCwd', '2': 'A', '3': 'B' },
+//     { '1': '1', '2': '2', '3': '3' },
+//     { '1': '4', '2': '5', '3': '6' }
+//   ] )
+// } )
+// it ( 'should execute a shared script, raw is true', async () => {
+//   let actual = await executeSharedScriptInstrument ( { ...opt, raw: true } ) ( sdFn ) ( 'context', si ) ( {} );
+//   console.log ( 'actual', typeof actual, actual )
+//   expect ( actual ).toEqual ( `theCwd A B
+// 1 2 3
+// 4 5 6` )
+//   } )
+// } );
 
 describe ( 'validateScriptInstrument', () => {
   it ( 'should validate the fixture script instruments', () => {
@@ -128,7 +127,7 @@ describe ( "script executor", () => {
       expect ( execution.finished ).toEqual ( true )
       expect ( cleanLineEndings ( execution.out ) ).toEqual ( cleanLineEndings ( '1\n' ) )
       expect ( execution.err ).toEqual ( '' )
-      expect ( result.code ).toEqual (0 )
+      expect ( result.code ).toEqual ( 0 )
       done ()
     } )
   } )

@@ -85,4 +85,11 @@ describe ( "convert stringToJson for table to json", () => {
       { "c": 3 }
     ] )
   } )
+
+  // it ( "should stringToJson for exitcode==0", () => {
+  //   fail ()
+  // } )
+  // it ( "should stringToJson for exitcode", () => {
+  //   fail ()
+  // } )
 } )

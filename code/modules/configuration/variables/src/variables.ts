@@ -3,6 +3,9 @@
 import { findPart, firstSegment, lastSegment, NameAnd, safeArray, safeString, toArray } from "@runbook/utils";
 import { stringFunctions } from "./stringFunctions";
 
+const debug = require ( 'debug' ) ( 'variables' )
+const verbose = require ( 'debug' ) ( 'variables:verbose' )
+
 export interface VariableDefn {
   regex: RegExp
   removeStartEnd: ( s: string ) => string
@@ -44,13 +47,17 @@ interface DereferenceOptions {
 
 /** If the string has ${a} in it, then that is replaced by the dic entry */
 export function derefence ( context: string, dic: any, s: string, options?: DereferenceOptions ) {
+  debug ( 'derefence', context, s, options )
+  verbose ( 'derefence - dictionary', dic )
   if ( options?.variableDefn === undefined ) return s;
   if ( s === undefined ) return s
   const regex = options.variableDefn.regex
   let result = s.replace ( regex, match => {
     let result = replaceVar ( context, match, dic, options );
+    verbose ( 'derefence ', match, 'result', result )
     return result;
   } );
+  debug ( 'derefence result', result )
   return result;
 }
 

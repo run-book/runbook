@@ -1,7 +1,7 @@
 {
   "name": "@runbook/displayformat",
   "description": "",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -16,7 +16,9 @@
       "not op_mini all"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "debug": "^4.3.4"
+  },
   "devDependencies": {
     "typescript": "^5.0.4",
     "@testing-library/jest-dom": "^5.11.6",

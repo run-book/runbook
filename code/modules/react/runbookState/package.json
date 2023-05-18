@@ -1,7 +1,7 @@
 {
   "name": "@runbook/runbook_state",
   "description": "",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,13 +17,14 @@
     ]
   },
   "dependencies": {
-    "@runbook/optics": "0.2.9",
+    "@runbook/optics": "0.2.10",
+    "debug": "^4.3.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "storybook": "^7.0.11",
-    "typescript": "^5.0.4"
+    "storybook": "^7.0.11"
   },
   "devDependencies": {
+    "typescript": "^5.0.4",
     "bootstrap": "^5.2.3",
     "@storybook/addon-essentials": "7.0.6",
     "@storybook/addon-interactions": "7.0.6",

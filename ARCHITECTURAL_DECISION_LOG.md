@@ -266,6 +266,39 @@ We may in the future also allow npm packages as those are great for 'permanent h
 much better for the kind of ad hoc self service we are trying to encourage, and is really easy for people to set up
 themselves.
 
+# Store
+We need a place to hold the react state. The flux pattern will not work for us because we call apis and
+we don't want to stop the gui while the apis are in flight
+
+## Commands
+We are using the same pattern as redux: commands are sent to the store. However they are extremely constrained and abstract. 
+commands. They are not the general actions that users can write. They are just
+* TransformNull: does nothing (a nop) useful for testing and to trigger middleware
+* TransformSet: Sets a value at a place specified by an optional
+* TransformClear: clears a value at a place specified by an optional
+* TransformCompose: compose multiple commands together to make them atomic
+* TransformMap: takes the value at a location specified by an optional and updates it using a function
+
+It is not expected that we will add more. 
+
+The power of these commands is that they cover all eventualities, are atomic, they are easy to test and easy to reason
+about. They can potentially be serialised (we need to sort out the serialisation of optionals first) which is great
+for things like auditing/event stores and so on
+
+## Queue
+We put a load of commands together on a queue and then execute them regularly. This is a change from the redux pattern.
+If we have a dozen commands happening very close together we don't want to re-render the screen a dozen times, and that
+can happen with api calls and things.
+
+All the commands are processed at the same time. An error in one command does not cause failure.
+
+## Listeners
+Each listener listens to two events:
+* updated Called after the commands in the queue have been processed
+* error Called for each error: either in the queue or the middleware. later we might want to make that more explicit but 
+for now we are just logging the errors
+
+
 # Middleware
 
 ## How do we do things like 'call the backend'
@@ -288,10 +321,21 @@ Thus the components are easy to test, and the middleware is easy to test.
 
 Effectively this is like the redux/actions... but we use a part of the state of the remember the actions to be executed.
 
-## Why the signature
+We have two types of middleware:
+* SimpleMiddleware
+* CommandMiddleware
+
+From experience with this pattern a very common thing to want to do is to have a command pattern where the gui can 
+send commands. A good example is the FetchCommand which says 'go get some data'. The command middleware is designed to 
+make that simple
+
+Occasionally we get middleware that wants to 'do something evertime'. For example logging middleware or polling middleware 
+or... So we have an interface for that as well
+
+## CommandMiddleware
 
 ```typescript
-export interface Middleware<S, Command> {
+export interface CommandMiddleware<S, Command> {
   optional: Optional<S, Command[]>
   process: ( c: Command[] ) => Promise<TransformCmd<S, any>[]>
 }
@@ -304,7 +348,7 @@ this huge state'. But with the TransformCmds we can say 'this tiny change happen
 
 Thirdly we process all the commands together because that allows us to have the option of writing more efficient middleware
 
-## What is the work flow around middleware
+## What is the work flow around command middleware
 
 A typical flow is as possible
 * A user event occurs (the run button is pressed)
@@ -328,7 +372,7 @@ It's pretty clear that we want atomic operations, but we also want to control th
 For example the event might add three actions: Change the selection state, add a command to call an api and change the state. 
 those commands added at the same time want to be atomic.
 
-Let's add a composed command. When we execute a composed command it will execute all the commands in the array. This allows
+We added a composed command. When we execute a composed command it will execute all the commands in the array. This allows
 us to leave the granularity to the caller. 
 
 

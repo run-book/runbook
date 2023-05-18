@@ -19,8 +19,8 @@ export interface ScriptAndDisplay {
   format: DisplayFormat
   outputColumns?: string[],
 }
-export type ExecuteCommonIntrumentK<I extends CommonInstrument> = ( context: string, i: I ) => KleisliWithErrors<NameAnd<Primitive>, any>
-export type ExecuteStriptInstrumentK<I extends CommonInstrument> = ( sdFn: ( i: I ) => ScriptAndDisplay ) => ExecuteCommonIntrumentK<I>
+// export type ExecuteCommonIntrumentK<I extends CommonInstrument> = ( context: string, i: I ) => KleisliWithErrors<NameAnd<Primitive>, any>
+// export type ExecuteStriptInstrumentK<I extends CommonInstrument> = ( sdFn: ( i: I ) => ScriptAndDisplay ) => ExecuteCommonIntrumentK<I>
 
 export const validateCleanInstrumentParam: NameAndValidator<CleanInstrumentParam> = composeNameAndValidators (
   validateChildString ( 'description' ),

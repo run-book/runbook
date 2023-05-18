@@ -1,7 +1,7 @@
 {
   "name": "@runbook/playground_leo",
   "description": "",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,8 +17,9 @@
     ]
   },
   "dependencies": {
-    "@runbook/koa": "0.2.9",
-    "@runbook/apistatus": "0.2.9"
+    "@runbook/koa": "0.2.10",
+    "@runbook/apistatus": "0.2.10",
+    "debug": "^4.3.4"
   },
   "devDependencies": {
     "typescript": "^5.0.4",
