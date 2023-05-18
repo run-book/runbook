@@ -8,7 +8,6 @@ import cp from 'child_process'
 
 /** This is when the script is shared on both linux and windows */
 export interface SharedScriptInstrument extends CommonScript, ScriptAndDisplay {
-
 }
 
 
@@ -55,10 +54,6 @@ function makeCmds ( context: string, sd: ScriptAndDisplay, params: NameAnd<strin
   if ( debug ) console.log ( '   cmds', cmds )
   return cmds;
 }
-interface CmdAndArgs {
-  cmd: string
-  args: string[]
-}
 
 
 export type NameAndScriptInstrument = [ string, ScriptInstrument ]
@@ -94,32 +89,16 @@ export const scriptExecutable = ( os: OS, context: string, debug?: boolean ): Ex
 });
 
 
-export function makeOutput ( debug: boolean, res: string, raw: boolean, sd: ScriptAndDisplay ) {
+export function makeOutput ( debug: boolean, exitCode: number, res: string, raw: boolean, sd: ScriptAndDisplay ) {
   if ( debug ) console.log ( '   res', JSON.stringify ( res ) )
   let lines = res.split ( '\n' ).map ( t => t.trim () ).filter ( l => l.length > 0 );
   let dispOpt: DisplayFormat = raw ? "raw" : sd.format ? sd.format : { type: "table" };
   if ( debug ) console.log ( '   lines', JSON.stringify ( lines ) )
   if ( debug ) console.log ( '   dispOpt', JSON.stringify ( dispOpt ) )
-  let result = stringToJson ( lines, dispOpt );
+  let result = stringToJson ( exitCode ) ( lines, dispOpt );
   if ( debug ) console.log ( '   result', result )
   return result;
 }
-// export const executeSharedScriptInstrument = ( opt: ExecuteOptions ): ExecuteStriptInstrumentK<ScriptInstrument> =>
-//   ( sdFn ) => ( context: string, i: ScriptInstrument, ) => async ( params ) => {
-//     let debug = opt.debug;
-//     if ( debug ) console.log ( 'executeSharedScriptInstrument', JSON.stringify ( i ) )
-//     if ( debug ) console.log ( '  opt', JSON.stringify ( opt ) )
-//     if ( i === undefined ) throw new Error ( `Instrument is undefined` )
-//     const sd = sdFn ( i )
-//     if ( debug ) console.log ( '   sd', JSON.stringify ( sd ) )
-//     const cmds = makeCmds ( context, sd, params, debug );
-//     const { cwd, showCmd, raw } = opt
-//     if ( showCmd ) return cmds.join ( '\n' )
-//     if ( debug ) console.log ( '   cmds', JSON.stringify ( cmds ) )
-//     let res = await opt.executeScripts ( cwd, cmds );
-//     let result = makeOutput ( debug, res, raw, sd );
-//     return result
-//   }
 export const findScriptAndDisplay = ( os: OS ) => ( s: ScriptInstrument ): ScriptAndDisplay => {
   function check ( s: ScriptAndDisplay ): ScriptAndDisplay {
     if ( s?.script === undefined ) throw new Error ( `OS is ${os}. No script for instrument ${s}` )
@@ -133,13 +112,6 @@ export const findScriptAndDisplay = ( os: OS ) => ( s: ScriptInstrument ): Scrip
   }
   throw new Error ( `OS is ${os}. Cannot execute instrument type${s}` )
 };
-
-// export const executeScriptInstrument = ( opt: ExecuteOptions ): ExecuteStriptInstrumentK<ScriptInstrument> =>
-//   sdFn => ( context, i, ) => {
-//     if ( i === undefined ) throw new Error ( `Instrument is undefined. Raw was ${JSON.stringify ( i, null, 2 )}` )
-//     return async ( params ) =>
-//       executeSharedScriptInstrument ( opt ) ( sdFn ) ( context, i, ) ( params );
-//   }
 
 
 const validateTableFormat: NameAndValidator<TableFormat> = composeNameAndValidators<TableFormat> (

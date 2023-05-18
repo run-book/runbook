@@ -5,12 +5,12 @@ import { addDisplayOptions, optionToDisplayFormat } from "./display";
 import { jsonToDisplay } from "@runbook/displayformat";
 import { addEditViewOptions, executeAndEditViewAndExit } from "./editView";
 import { CleanConfig } from "@runbook/config";
-import { execute, Executor } from "@runbook/executors";
+import { execute, ExecutionResult, Executor } from "@runbook/executors";
 
 export async function executeScript ( executor: Executor, os: OS, name: string, instrument: ScriptInstrument, args: any, params: NameAnd<any> ) {
   const res = execute ( executor ) ( scriptExecutable ( os, 'executeScript', args.debug ), 10000, [ name, instrument ], params )
-  await res.promise
-  const json = makeOutput ( args.debug, res.out, args.raw, findScriptAndDisplay ( os ) ( instrument ) )
+  const executionResult = await res.promise
+  const json = makeOutput ( args.debug, executionResult.code, res.out, args.raw, findScriptAndDisplay ( os ) ( instrument ) )
   return json
 }
 export function addNewInstrumentCommand ( cwd: string, homeDir: string, os: OS, command: Command, name: string, instrument: ScriptInstrument, withFromsConfig: CleanConfig, executor: Executor ) {

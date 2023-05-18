@@ -39,10 +39,12 @@ export const stringToJsonForJson = ( text: string[] ) => {
 export function stringToJsonForOneLineJson ( text: string[] ) {
   return text.map ( s => JSON.parse ( s ) )
 }
-export const stringToJson = chainOfResponsibility2<string[], DisplayFormat, any> (
+export const stringToJson = ( exitCode: number ) => chainOfResponsibility2<string[], DisplayFormat, any> (
   ( text, format ) => {throw Error ( `Unknown format: ${JSON.stringify ( format )}\n\n${text}` )},
   { isDefinedAt: f => f === 'raw', apply: t => t.join ( '\n' ) },
   { isDefinedAt: f => f === 'json', apply: stringToJsonForJson },
+  { isDefinedAt: f => f === 'exitcode', apply: () => exitCode },
+  { isDefinedAt: f => f === 'exitcode==0', apply: () => exitCode === 0 },
   { isDefinedAt: f => f === 'onelinejson', apply: stringToJsonForJson },
   { isDefinedAt: f => f === 'oneperlinejson', apply: stringToJsonForOneLineJson },
   { isDefinedAt: f => isTableFormat ( f ), apply: stringToJsonForTable } );
