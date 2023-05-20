@@ -6,16 +6,14 @@
       "params":      {"domain": { "description": "The domain name to ping"}},
       "staleness":   5000,
       "cost":        "low",
-      "format":      {"type": "table", "headers": ["file"]},
+
       "windows":     {
         "script": "ping -n 5 {domain}",
-        "format": {"type": "table", "headers": ["file"]}
+        "format":      "exitcode==0"
       },
       "linux":       {
         "script": "ping -c 5 {domain}",
-        "format": {
-          "type": "table", "headers": ["notdoneyet"]
-        }
+        "format":      "exitcode==0"
       }
     }
   }

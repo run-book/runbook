@@ -16,7 +16,7 @@ async function processCmds<State> ( store: Store<State> ): Promise<void> {
   console.log ( 'processCmds', cmds.length )
   const onError = async ( c: any, e: any ) => {notifyErrorListeners ( store, e, c )}
   const newStatePreMiddleware: State = await foldWithNotify ( cmds, fullStore.state, applyOneTransformFn, async e => {notifyErrorListeners ( store, e )} );
-  const newState: State = await foldWithNotify ( middleWare, newStatePreMiddleware, applyMiddleware ( store, onError ),
+  const newState: State = await foldWithNotify ( middleWare, newStatePreMiddleware, applyMiddleware ( store, cmds, onError ),
     async e => {notifyErrorListeners ( store, e )} );
   fullStore.state = newState
   return notifyUpdateListeners ( store );
@@ -30,9 +30,12 @@ function processing<S> ( store: Store<S> ) {
   const fullStore = checkStore ( store )
   if ( fullStore.stop ) return;
   let processNext = () => {
-    setTimeout ( () => processing ( store ), fullStore.wait );
+    setTimeout ( () => { try {processing ( store );} catch ( e: any ) {console.error ( e )} }, fullStore.wait );
   };
-  processCmds ( store ).then ( processNext, processNext )
+  processCmds ( store ).then ( processNext, err => {
+    console.error ( err );
+    processNext
+  } )
 }
 export function stopProcessing ( store: Store<any> ) {
   checkStore ( store ).stop = true

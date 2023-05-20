@@ -176,29 +176,13 @@
       },
       "staleness": 5000,
       "cost": "low",
-      "format": {
-        "type": "table",
-        "headers": [
-          "file"
-        ]
-      },
       "windows": {
-        "script": "ping -n 5 {domain}",
-        "format": {
-          "type": "table",
-          "headers": [
-            "file"
-          ]
-        }
+        "script": "ping -n 1 {domain}",
+        "format": "exitcode==0"
       },
       "linux": {
         "script": "ping -c 5 {domain}",
-        "format": {
-          "type": "table",
-          "headers": [
-            "notdoneyet"
-          ]
-        }
+        "format": "exitcode==0"
       },
       "__from": [
         "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\ping.instrument.json"

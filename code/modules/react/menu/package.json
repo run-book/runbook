@@ -1,7 +1,7 @@
 {
   "name": "@runbook/menu_react",
   "description": "",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,17 +17,15 @@
     ]
   },
   "dependencies": {
-    "@runbook/optics": "0.2.11",
-    "@runbook/runbook_state": "0.2.11",
-    "@runbook/storybook": "0.2.11",
-    "debug": "^4.3.4",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "storybook": "^7.0.11"
+    "@runbook/optics": "0.2.12",
+    "@runbook/runbook_state": "0.2.12",
+    "@runbook/storybook": "0.2.12",
+    "debug": "^4.3.4"
   },
   "devDependencies": {
     "typescript": "^5.0.4",
     "bootstrap": "^5.2.3",
+    "storybook": "^7.0.11",
     "@storybook/addon-essentials": "7.0.6",
     "@storybook/addon-interactions": "7.0.6",
     "@storybook/addon-links": "7.0.6",
@@ -76,6 +74,10 @@
     "runbook"
   ],
   "license": "MIT",
+  "peerDependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
   "repository": "git@github.com:run-book/runbook.git",
   "scripts": {
     "test": "jest --config jest.config.json",

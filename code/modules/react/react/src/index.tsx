@@ -6,10 +6,10 @@ import { CleanConfig } from "@runbook/config";
 import { createRoot } from "react-dom/client";
 import { startProcessing } from "@runbook/store";
 import { getElement } from "./react.helpers";
-import { fetchCommandsOpt, FullState, refAndDataOpt, selectionStateOpt } from "./fullState";
+import { executorStatusOpt, fetchCommandsOpt, FullState, refAndDataOpt, selectionStateOpt } from "./fullState";
 import { DisplayRsInState, makeStore } from "./makeStore";
 import { bootStrapCombine, bootstrapMenu, changeMode, findMenuAndDisplay, MenuAndDisplayFnsForRunbook, MenuDefn, MenuDefnForRunbook, SelectionState } from "@runbook/menu_react";
-import { identity, Optional } from "@runbook/optics";
+import { Optional } from "@runbook/optics";
 import { display, displayWithNewOpt, jsonMe, modeFromProps, RunbookComponent } from "@runbook/runbook_state";
 import { displayScriptInstrument } from "@runbook/instruments_react";
 import { displayView } from "@runbook/views_react";
@@ -17,17 +17,14 @@ import { DisplayMereologyContext, runbookCompAllDataFor } from "@runbook/referen
 import { BindingContext } from "@runbook/bindings";
 import { mereologyToSummary } from "@runbook/mereology";
 import { fromReferenceData } from "@runbook/referencedata";
-import { inheritsFrom, last, makeStringDag, NameAnd, prune } from "@runbook/utils";
+import { inheritsFrom, last, makeStringDag, prune } from "@runbook/utils";
 import { tableProps } from "@runbook/bindings_react";
 import { FetchCommand } from "@runbook/commands";
 import { displayExecutors } from "@runbook/executors_react";
-import { pollStore } from "@runbook/commands/dist/src/poll";
-import { StatusEndpointData } from "@runbook/executors";
+import { poll } from "@runbook/commands/dist/src/poll";
 
 
-const executorsStore = pollStore ( {},
-  window.location.href + 'executeStatus', undefined,
-  identity<NameAnd<StatusEndpointData>> (), fetch, 1000 );
+// let requestInfoForExecutorsStore = window.location.href + 'executeStatus';
 export function menuDefn<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>, display: ( name: string ) => ( path: string[] ) => RunbookComponent<S, any>, dispRefData: ( path: string[] ) => RunbookComponent<S, any> ): MenuDefn<RunbookComponent<S, any>> {
   return {
     Ontology: {
@@ -44,7 +41,7 @@ export function menuDefn<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>, disp
     Status: {
       type: 'navBarItem', path: [ 'status' ], display: display ( 'status' ),
       children: {
-        "Executors": { type: 'dropdownItem', path: [ 'status', 'executor' ], display: path => displayExecutors ( executorsStore ), },
+        "Executors": { type: 'dropdownItem', fromRoot: true,path: [ 'status', 'executor' ], display: path => displayExecutors (), },
       }
     },
   }
@@ -89,14 +86,22 @@ const loc = window.location.href
 const filename = loc + 'config'
 console.log ( 'loc: ', loc, 'filename: ', filename );
 const rootElement = getElement ( "root" );
+
+const requestInfoForExecutorsStore = 'executeStatus';
 fetch ( filename ).then ( response => response.json () ).then ( config => {
   const realConfig = prune ( config, '__from' )
-  let initial: FullState = { config: realConfig as any, selectionState: { menuPath: [ 'situation' ] }, fetchCommands: [] , status: {executor:{}}};
+  let initial: FullState = { config: realConfig as any, selectionState: { menuPath: [ 'situation' ] }, fetchCommands: [], status: { executor: {} } };
   const root = createRoot ( rootElement )
   const { store, rs } =
-          makeStore<FullState, CleanConfig> ( root, initial, refAndDataOpt, fetchCommandsOpt, displayRsForMenuDefn );
+          makeStore<FullState, CleanConfig> ( root, initial,
+            fetch,
+            refAndDataOpt,
+            fetchCommandsOpt,
+            executorStatusOpt,
+            displayRsForMenuDefn );
 
   startProcessing ( store )
+  poll ( store, requestInfoForExecutorsStore, undefined, executorStatusOpt, 1000 )
   rs.setS ( initial )
 } )
 

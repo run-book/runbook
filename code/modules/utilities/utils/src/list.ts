@@ -11,6 +11,9 @@ export function filterToType<T, T1 extends T> ( ts: T[], filter: ( t: T ) => t i
   return ts.filter ( filter ) as T1[]
 }
 
+export function collect<T, T1 extends T> ( ts: T[], fn: ( t: T ) => t is T1 ): T1[] {
+  return ts.filter ( fn ) as T1[]
+}
 export function zipAll<T1, T2, T3> ( t1s: T1[], t2s: T2[], merge: ( t1: T1, t2: T2 ) => T3 ): T3[] {
   const t1Size = t1s.length
   const t2Size = t2s.length

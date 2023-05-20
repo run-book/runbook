@@ -1,8 +1,9 @@
-import { NameAnd, RefAndData } from "@runbook/utils";
+import { NameAnd } from "@runbook/utils";
 import { MenuDefn, SelectionState } from "./menu";
 import { displayWithNewOpt, jsonMe, modeFromProps, RunbookComponent } from "@runbook/runbook_state";
 import { Optional } from "@runbook/optics";
 import { changeMode } from "./changeMode";
+import { displayExecutors } from "@runbook/executors_react";
 
 
 export function fixtureDisplayWithoutMode<S> ( typeName: string ): RunbookComponent<S, any> {
@@ -10,7 +11,7 @@ export function fixtureDisplayWithoutMode<S> ( typeName: string ): RunbookCompon
 }
 
 export const fixtureDisplayWithMode = <S extends any> ( opt: Optional<S, SelectionState> ) => ( typeName: string ) => ( path: string[] ): RunbookComponent<S, any> =>
-  st => props => <div><h1>{typeName} {path.join('.')} - {modeFromProps ( props )}</h1>
+  st => props => <div><h1>{typeName} {path.join ( '.' )} - {modeFromProps ( props )}</h1>
     {displayWithNewOpt ( st, props, opt, changeMode<S> ( 'view' ) )}
     {displayWithNewOpt ( st, props, opt, changeMode<S> ( 'edit' ) )}
     {jsonMe ( st )}</div>;
@@ -23,7 +24,8 @@ export const sampleDisplay: NameAnd<any> = {
   //Note that there is no ontology: these are at the root level
   mereology: { env: [ 'service', 'database' ] },
   reference: { env: { prod: 'production', dev: 'development' } },
-  inheritance: { animals: [ 'cat', 'dog' ] }
+  inheritance: { animals: [ 'cat', 'dog' ] },
+
 };
 
 
@@ -38,7 +40,13 @@ export function menuDefn<R> ( display: ( name: string ) => ( path: string[] ) =>
       }
     },
     Instruments: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'instruments' ], display: display ( 'instrument item' ) } },
-    Views: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'views' ], display: display ( 'view item' ) } }
+    Views: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'views' ], display: display ( 'view item' ) } },
+    Status: {
+      type: 'navBarItem', path: [ 'status' ], display: display ( 'status' ),
+      children: {
+        "Executors": { type: 'dropdownItem', path: [ 'status', 'executor' ],fromRoot:true, display: display ( 'executors' ), },
+      }
+    }
   }
 }
 

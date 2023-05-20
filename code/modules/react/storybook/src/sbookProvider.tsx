@@ -12,12 +12,17 @@ export interface SBookProps<S, C> {
   mode: string | undefined
 }
 
+//Wrong signature.
 export const subscribe = <S extends any> ( store: Store<S> ) => ( callback: ( s: S ) => void ): () => void => {
+  console.log ( 'subscribe', store, callback )
   const listener: StoreListener<S> = {
     ...emptyStoreListener,
-    updated: async s => callback ( s )
+    updated: async s => {
+      console.log('subscribe - updated', s)
+      callback ( s ); }
   }
   addListener ( store, listener )
+  console.log ( 'at end of subscribe', store, callback )
   const unsubscribe = () => removeListener ( store, listener )
   return unsubscribe
 };
@@ -29,7 +34,7 @@ export function DisplayStoryBook<S, C> ( props: SBookProps<S, C> ) {
   const [ state, setState ] = useState ( s )
   const st: RunbookState<S, C> = new RunbookState<S, C> ( state, opt, setState )
   return <div>
-    {display(st, props, children ) }
+    {display ( st, props, children )}
     <hr/>
     <h3>State</h3>
     <pre>{JSON.stringify ( st.state, null, 2 )}</pre>

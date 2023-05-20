@@ -58,4 +58,4 @@ Validation issues
     .runbook/config/ls.instrument.json.instrument.ls.script is undefined
 undefined
 
-There were errors in the runbook config file. Use 'runbook config' to see the issues
+There were errors in the runbook config file. Use 'runbook config issues' to see the issues

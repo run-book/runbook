@@ -25,7 +25,7 @@ function processCli ( cwd: string, config: CleanConfig, cleanConfig: CleanConfig
 const config = loadFileInDirectory ( process.cwd (), 'loading runbook config', runbookMarker, cachedConfigFile );
 const cleanConfig = prune ( config, '__from' ) as CleanConfig
 const errors = validateConfig () ( cachedConfigFileName ) ( cleanConfig );
-if ( errors.length > 0 ) console.error ( "There were errors in the runbook config file. Use 'runbook config' to see the issues" )
+if ( errors.length > 0 ) console.error ( "There were errors in the runbook config file. Use 'runbook config issues' to see the issues" )
 const executor = makeExecutor ()
 
 processCli ( process.cwd (), config, cleanConfig, executor, process.argv )

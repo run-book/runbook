@@ -1,19 +1,21 @@
 {
-  "name":            "${packageDetails.name}",
-  "description":     "${packageDetails.description}",
-  "version":         "${version}",
-  "license":         "${properties.license}",
-  "repository":      "${properties.repository}", "main": "dist/index",
-  "types":           "dist/index",
-  "dependencies":    {
-    "debug":     "^4.3.4",
-    "react":     "18.2.0",
-    "react-dom": "18.2.0",
-    "storybook": "^7.0.11"
+  "name":             "${packageDetails.name}",
+  "description":      "${packageDetails.description}",
+  "version":          "${version}",
+  "license":          "${properties.license}",
+  "repository":       "${properties.repository}", "main": "dist/index",
+  "types":            "dist/index",
+  "dependencies":     {
+    "debug": "^4.3.4"
   },
-  "devDependencies": {
+  "peerDependencies": {
+    "react":     "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies":  {
     "typescript":                    "^5.0.4",
     "bootstrap":                     "^5.2.3",
+    "storybook":                     "^7.0.11",
     "@storybook/addon-essentials":   "7.0.6",
     "@storybook/addon-interactions": "7.0.6",
     "@storybook/addon-links":        "7.0.6",
@@ -36,7 +38,7 @@
     "react-scripts":                 "^5.0.1",
     "ts-jest":                       "^29.1.0"
   },
-  "eslintConfig":    {
+  "eslintConfig":     {
     "extends":   [
       "react-app",
       "react-app/jest"
@@ -52,11 +54,11 @@
       }
     ]
   },
-  "keywords":        [
+  "keywords":         [
     "react",
     "runbook"
   ],
-  "scripts":         {
+  "scripts":          {
     "test":            "jest --config jest.config.json",
     "test:watch":      "npm run test -- --watch",
     "start":           "react-scripts start",

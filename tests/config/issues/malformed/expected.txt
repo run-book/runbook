@@ -27,4 +27,4 @@ or
   config.instrument.ins.script is undefined
 config.situation is undefined
 
-There were errors in the runbook config file. Use 'runbook config' to see the issues
+There were errors in the runbook config file. Use 'runbook config issues' to see the issues

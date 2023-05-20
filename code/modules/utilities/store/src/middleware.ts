@@ -1,17 +1,20 @@
-import { getOptional, Optional, setOptional, TransformCmd } from "@runbook/optics";
-import { addCmd, checkStore, Store } from "./store";
-import { notifyErrorListeners } from "./listener";
+import { getOptional, Optional, setOptional, TransformCmd, transformToString } from "@runbook/optics";
+import { addCmd, Store } from "./store";
 
 export type Middleware<S> = CommandMiddleware<S, any> | SimpleMiddleware<S>
 
 export interface SimpleMiddleware<S> {
-  process: ( s: S, onError: ( c: any, e: any ) => Promise<void> ) => Promise<TransformCmd<S, any>[]>
+  process: ( s: S, cmds: TransformCmd<S, any>[], onError: ( c: any, e: any ) => Promise<void> ) => Promise<TransformCmd<S, any>[]>
 }
 export function isSimpleMiddleware<S> ( m: Middleware<S> ): m is SimpleMiddleware<S> {
   return m !== undefined && (m as any).optional === undefined && m.process !== undefined
 }
-function applySimpleMiddleware<S> ( m: SimpleMiddleware<S>, s: S, onError: ( c: S, e: any ) => Promise<void>, store: Store<S> ): S {
-  m.process ( s, onError ).then ( transforms => transforms.forEach ( addCmd ( store ) ) )
+function applySimpleMiddleware<S> ( m: SimpleMiddleware<S>, cmds: TransformCmd<S, any>[], s: S, onError: ( c: S, e: any ) => Promise<void>, store: Store<S> ): S {
+  m.process ( s, cmds, onError ).then ( transforms => {
+    console.log ( 'applySimpleMiddleware - transforms', transforms.map ( transformToString ) )
+    transforms.forEach ( addCmd ( store ) );
+    console.log ( 'applySimpleMiddleware - store at end', store )
+  } )
   return s
 }
 
@@ -32,8 +35,9 @@ function applyCommandMiddleware<S, Command> ( m: CommandMiddleware<S, Command>, 
   m.process ( commands, onError ).then ( transforms => transforms.forEach ( addCmd ( store ) ) )
   return newState
 }
-export const applyMiddleware = <S> ( store: Store<S>, onError: ( c: any, e: any ) => Promise<void> ) => ( s: S, m: Middleware<S> ): S => {
+export const applyMiddleware = <S> ( store: Store<S>, cmds: TransformCmd<S, any>[], onError: ( c: any, e: any ) => Promise<void> ) => ( s: S, m: Middleware<S> ): S => {
+  console.log ( 'applyMiddleware', m )
   if ( isCommandMiddleware ( m ) ) return applyCommandMiddleware ( m, s, onError, store );
-  if ( isSimpleMiddleware ( m ) ) return applySimpleMiddleware ( m, s, onError, store )
+  if ( isSimpleMiddleware ( m ) ) return applySimpleMiddleware ( m, cmds, s, onError, store )
   throw new Error ( `Middleware is neither a CommandMiddleware nor a SimpleMiddleware${JSON.stringify ( m, null, 2 )}` )
 };

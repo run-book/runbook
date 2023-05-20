@@ -1,4 +1,4 @@
-import { focusOn, identity, Optional } from "@runbook/optics";
+import { focusOn, identity, Optional, optionalForRefAndData } from "@runbook/optics";
 import { Meta, StoryObj } from "@storybook/react";
 import { NameAnd, RefAndData } from "@runbook/utils";
 import { fixtureDisplayWithMode, menuDefn, sampleDisplay } from "./menu.fixture";
@@ -22,21 +22,25 @@ type Story = StoryObj<TestArgsForDisplay>;
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
 
 
-type TestStateForDisplay = RefAndData<SelectionState, NameAnd<any>>
+type TestStateForDisplay =TestArgsForDisplay
 
 interface TestArgsForDisplay {
   selection: SelectionState
   data: NameAnd<any>
+  status: {executor: NameAnd<string>}
 }
 
-const selectionL: Optional<TestStateForDisplay, SelectionState> = focusOn ( identity<TestStateForDisplay> (), 'ref' )
+type RefAndDataForDisplay = RefAndData<SelectionState, NameAnd<any>>
 
+const selectionL: Optional<TestStateForDisplay, SelectionState> = focusOn ( identity<TestStateForDisplay> (), 'selection' )
+const dataL: Optional<TestStateForDisplay, NameAnd<any>> = focusOn ( identity<TestStateForDisplay> (), 'data' )
+const refAndDataL: Optional<TestArgsForDisplay, RefAndDataForDisplay>= optionalForRefAndData(selectionL,dataL)
 
 const render = ( args: TestArgsForDisplay ) => {
-  const initial: TestStateForDisplay = { ref: args.selection, data: args.data }
+  const initial: TestStateForDisplay = args
   const menuFns: MenuAndDisplayFnsForRunbook<TestStateForDisplay, any> = bootstrapMenu<TestStateForDisplay, any> ()
   const md: MenuDefnForRunbook<TestStateForDisplay> = menuDefn ( fixtureDisplayWithMode ( selectionL ) )
-  return <div><DisplayStoryBook s={initial} opt={identity<TestStateForDisplay> ()} mode='someMode'>{
+  return <div><DisplayStoryBook s={initial} opt={refAndDataL} mode='someMode'>{
     findMenuAndDisplay<TestStateForDisplay, any> ( 'nav', menuFns, x => md, bootStrapCombine )}
   </DisplayStoryBook>
     {/*<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossOrigin="anonymous"></script>*/}
@@ -52,6 +56,7 @@ export const Navbar: Story = {
       selection: [],
       menuPath: [ 'nav', 'Ontology' ]
     },
-    data: sampleDisplay
+    data: sampleDisplay,
+    status: { executor: {a: "some status" }}
   },
 }

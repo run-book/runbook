@@ -22,7 +22,7 @@ function findReactDir ( cwd: string ) {
 
 export function addGuiCommand ( os: OS, cmd: Command, cleanConfig: CleanConfig, cwd: string, executor: Executor ) {
   cmd.command ( 'gui' ).description ( 'starts the react gui' )
-    .option ( '-p|--port <port>', 'port to run on', '3000' )
+    .option ( '-p|--port <port>', 'port to run on', '3001' )
     .option ( '---directory', 'directory to run from - for development only' )
     .action ( async ( opts ) => {
       const reactDir = opts.directory ? opts.directory : findReactDir ( cwd );

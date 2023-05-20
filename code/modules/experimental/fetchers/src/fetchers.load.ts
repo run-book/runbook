@@ -40,11 +40,11 @@ export function whichWillLoad<State> ( fs: NameAnd<Fetcher<State, any>> ): ( s: 
   } )
 }
 
-export const fetch = <State> ( state: State ) => async <C> ( w: WhyNotLoadedAndFetcher<State, C> ): Promise<WhyNotLoadedAndTransforms<State, C>> =>
+export const fetchOne = <State> ( state: State ) => async <C> ( w: WhyNotLoadedAndFetcher<State, C> ): Promise<WhyNotLoadedAndTransforms<State, C>> =>
   mapWhyNotLoadedAndK ( w, f => f.fetch ( w.whyNotLoaded ) ( state ) );
 
 export const fetchAll = async <State, C> ( ws: NameAnd<WhyNotLoadedAndFetcher<State, C>>, state: State ): Promise<NameAnd<WhyNotLoadedAndTransforms<State, C>>> =>
-  mapObjValuesK ( ws, fetch ( state ) );
+  mapObjValuesK ( ws, fetchOne ( state ) );
 
 export interface TraceFetch<State, C> {
   whyNotLoaded: WhyNotLoadedAndFetcher<State, C>
