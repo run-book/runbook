@@ -1,6 +1,7 @@
 import { CommandMiddleware } from "@runbook/store";
 import { opticsParserO, Optional } from "@runbook/optics";
 import { mapKWithNotifyOnError, parseJson } from "@runbook/utils";
+import { type } from "os";
 
 
 export interface FetchCommand {
@@ -21,7 +22,8 @@ export function fetchMiddleware<S> ( commandOpt: Optional<S, FetchCommand[]>, fe
       mapKWithNotifyOnError ( commands, async c => {
         let optional = opticsParserO<S, any> ( c.target );
         const response = await fetch ( c.requestInfo, c.requestInit )
-        const set = parseJson ( await response.json () )
+        console.log('fetchMiddleware- response', typeof response)
+        const set =  await response.json ()
         return { set, optional }
       }, onError )
   }

@@ -39,11 +39,12 @@ export function executeEndpoint<T> ( path: string, cacheOptions: CacheOptions,
     isDefinedAt: ( { context } ) => context.path === path && context.method === "POST",
     apply: async ( { context } ) => {
       const body: ExecuteBody = context.request.body;
-      console.log ( 'body', typeof body, JSON.stringify ( body ) )
+      console.log('body', typeof body, JSON.stringify(body))
       const validated = validateExecuteBody ( '' ) ( body );
       if ( validated.length > 0 ) {
         context.status = 400;
         context.body = JSON.stringify ( validated );
+        console.log('Failed validation', validated)
         return
       }
       const idToErrorsAndTAndParams: NameAnd<ErrorsAnd<TAndNameParams<T>>> = mapObjValues ( safeObject ( body.execute ), (( e, name, i ) => {
@@ -57,6 +58,7 @@ export function executeEndpoint<T> ( path: string, cacheOptions: CacheOptions,
       const allErrors = flatten ( mapObjToArray ( idToErrorsAndTAndParams, ( e, name ) => isErrors ( e ) ? e.errors : [] ) )
       if ( allErrors.length > 0 ) {
         context.status = 400
+        console.log('Failed instrument matching', idToErrorsAndTAndParams)
         context.body = JSON.stringify ( idToErrorsAndTAndParams )
         return
       }
@@ -67,9 +69,9 @@ export function executeEndpoint<T> ( path: string, cacheOptions: CacheOptions,
                 const execution: Execution<[ string, T ]> = cacheDetails.cached
                 return { id, cacheId, name, params, finished: execution.finished };
               } )
+      console.log('status', status)
       context.status = 200
       context.body = JSON.stringify ( status )
     }
-
   }
 }

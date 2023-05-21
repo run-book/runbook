@@ -1,6 +1,6 @@
 import { display, displayChild, displayWithNewOpt, isRunbookStateFor, RunbookComponent, RunbookState } from "@runbook/runbook_state";
 import { isSharedScriptInstrument, isVaryingScriptInstument, ScriptInstrument, SharedScriptInstrument, VaryingScriptInstrument } from "@runbook/scriptinstruments";
-import { AttributeValueList, displayLabeledChild, displayLabeledChildWithLabel, displayLabeledQueryChild, integerInput, Layout, optionsInput, textArea, textAreaForObj, textInput } from "@runbook/components";
+import { AttributeValueList, displayLabeledChild, displayLabeledChildWithLabel, displayLabeledQueryChild, integerInput, labelAnd, Layout, optionsInput, textArea, textAreaForObj, textInput } from "@runbook/components";
 import { CleanInstrumentParam, CommonInstrument, ScriptAndDisplay } from "@runbook/instruments";
 import { mapObjToArray, NameAnd, RefAndData, safeObject, Tuple2 } from "@runbook/utils";
 import { focusOnJustA, focusOnJustB, focusQuery, getOptional, Optional, optionalForRefAndData } from "@runbook/optics";
@@ -84,13 +84,17 @@ export function displayRunForInstrument<S> ( fetchCommandOpt: Optional<S, FetchC
   return st => ( props ) => {
     const stForInstrument = st.withOpt ( focusOnJustA ( st.opt ) )
     const stForInstrumentResult: RunbookState<S, any> = st.withOpt ( focusOnJustB ( st.opt ) )
+    const instResult = stForInstrumentResult.optGet ()
+    const cacheId = instResult?.instrument?.cacheId
     return <div>
       <h1>Run</h1>
       <h2>Params</h2>
       {display ( stForInstrument, props, displayParamsFromInstrument<S> () )}
       <button onClick={runButtonOnClick ( fetchCommandOpt, name, id, target ) ( stForInstrument )}>Run!!</button>
-      <h2>Results</h2>
-      {display( stForInstrumentResult, { ...props, mode: 'view' }, textAreaForObj ( { rows: 5 } ) )}
+      <h2>Response</h2>
+      {display ( stForInstrumentResult, { ...props, mode: 'view' }, textAreaForObj ( { rows: 5 } ) )}
+      <h2>Result</h2>
+      {display ( stForInstrumentResult, { ...props, mode: 'view' }, textAreaForObj ( { rows: 5 } ) )}
     </div>
   }
 }
@@ -118,13 +122,13 @@ export function displaySharedInstrument<S> (): RunbookComponent<S, SharedScriptI
 
 export function displayScriptInstrument<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>, name: string, id: string, target: string ): RunbookComponent<S, Tuple2<ScriptInstrument, any>> {
   return st => ( props ) => {
-    console.log('displayScriptInstrument', st)
+    console.log ( 'displayScriptInstrument', st )
     const stForInstrument = st.withOpt ( focusOnJustA ( st.opt ) )
     return <div><h1>Instrument</h1>
       <Layout layout={[ 1, 1, 1 ]} component='displayScriptInstrument'>
         {isRunbookStateFor ( stForInstrument, isSharedScriptInstrument ) && display<S, SharedScriptInstrument> ( stForInstrument, props, displaySharedInstrument<S> () )}
         {isRunbookStateFor ( stForInstrument, isVaryingScriptInstument ) && display<S, VaryingScriptInstrument> ( stForInstrument, props, displayVaryingInstrument<S> () )}
-        {display<S, Tuple2<ScriptInstrument, any>> ( st, { ...props, mode: 'run' }, displayRunForInstrument<S> ( fetchCommandOpt, name, id, target ) )}
+        {display<S, Tuple2<ScriptInstrument, any>> ( st, { ...props, mode: 'run' }, labelAnd ( 'response', displayRunForInstrument<S> ( fetchCommandOpt, name, id, target ) ) )}
       </Layout>
     </div>
   }
