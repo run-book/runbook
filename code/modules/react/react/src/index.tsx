@@ -128,7 +128,7 @@ fetch ( filename ).then ( response => response.json () ).then ( config => {
             displayRsForMenuDefn ( bc ) );
 
   startProcessing ( store )
-  // poll ( store, requestInfoForExecutorsStore, undefined, executorStatusOpt, 1000 )
+  poll ( store, requestInfoForExecutorsStore, undefined, executorStatusOpt, 1000 )
   rs.setS ( initial )
 } )
 

@@ -24,6 +24,17 @@ export const chainOfResponsibility = <From, To> ( defaultFn: ( from: From ) => T
     return defaultFn ( from )
   }
 
+export type PartialFnFromUndefined<From, To> = ( from: From | undefined ) => To | undefined
+export const chainFromDoItOrUndefined = <From, To> ( defaultFn: ( from: From ) => To, ...fns: PartialFnFromUndefined<From, To>[] ) =>
+  ( from: From ): To => {
+    for ( let fn of fns ) {
+      let to = fn ( from );
+      if ( to !== undefined ) return to
+    }
+    return defaultFn ( from )
+  }
+
+
 export const partial = ( isDefinedAt: ( from: any ) => boolean ) => ( apply: ( from: any ) => any ): PartialFunction<any, any> => ({ isDefinedAt, apply });
 
 // export const chainOfResponsibility2 = <Options, From, To> ( defaultFn: ( from: From ) => To,
