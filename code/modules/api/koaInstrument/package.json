@@ -1,7 +1,7 @@
 {
   "name": "@runbook/koa_instrument",
   "description": "",
-  "version": "0.2.14",
+  "version": "0.3.0",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,9 +17,9 @@
     ]
   },
   "dependencies": {
-    "@runbook/koa": "0.2.14",
-    "@runbook/executors": "0.2.14",
-    "@runbook/cache": "0.2.14",
+    "@runbook/koa": "0.3.0",
+    "@runbook/executors": "0.3.0",
+    "@runbook/cache": "0.3.0",
     "debug": "^4.3.4"
   },
   "devDependencies": {

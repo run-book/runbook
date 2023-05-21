@@ -1,7 +1,7 @@
 {
   "name": "@runbook/mereology",
   "description": "",
-  "version": "0.2.14",
+  "version": "0.3.0",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "@runbook/fixtures": "0.2.14",
+    "@runbook/fixtures": "0.3.0",
     "debug": "^4.3.4"
   },
   "devDependencies": {
