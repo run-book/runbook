@@ -17,4 +17,5 @@ export const fetchCommandsOpt = focusQuery ( idOpt, 'fetchCommands' )
 export const executorStatusOpt = focusQuery ( focusQuery ( idOpt, 'status' ), 'executor' )
 const configOpt = focusQuery ( idOpt, 'config' )
 export const selectionStateOpt = focusQuery ( idOpt, 'selectionState' )
+export const situationOpt = focusQuery ( configOpt, 'situation' )
 export const refAndDataOpt: Optional<FullState, RefAndData<SelectionState, CleanConfig>> = optionalForRefAndData ( selectionStateOpt, configOpt );

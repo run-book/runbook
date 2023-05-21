@@ -6,7 +6,7 @@
     "dependencies":    {},
     "devDependencies": {}
   },
-  "links":       ["@runbook/views", "@runbook/fixtures", "@runbook/storybook"],
+  "links":       ["@runbook/views", "@runbook/fixtures", "@runbook/storybook", "@runbook/bindings"],
   "guards":      {
     "compile":   true,
     "publish":   false,

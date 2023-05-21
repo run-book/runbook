@@ -3,6 +3,7 @@
   "name":        "@runbook/instruments_react",
   "description": "",
   "packageJson": {
+    "proxy": "http://localhost:3001",
     "dependencies":    {},
     "devDependencies": {}
   },

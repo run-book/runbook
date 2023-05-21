@@ -13,6 +13,10 @@ export interface SelectionState {
   rememberedMode?: RememberedMode
   showDropdowns?: boolean
 }
+export function currentSelectionMode ( selectionState: SelectionState | undefined ): string {
+  if ( !selectionState ) return 'view'
+  return selectionState.rememberedMode?.[ selectionState.menuPath.join ( '.' ) ] ?? 'view'
+}
 
 
 export type MenuFn<R> = ( menuPath: string[], path: string[] | undefined, name: string, children?: R[] ) => R
@@ -36,12 +40,13 @@ export type MenuDefnType = keyof MenuDefnFns<any>
 export interface CommonMenuDefn<R> {
   type: MenuDefnType
   display?: ( path: string[] ) => R
-  fromRoot?: boolean
+  optional?: ( rootOpt: Optional<any, any>, path: string[] ) => Optional<any, any>
 }
 
 interface FromDefn<R> {
   path: string[],
   display: ( path: string[] ) => R,
+  optional?: ( rootOpt: Optional<any, any>, path: string[]) => Optional<any, any>
   type: MenuDefnType
 }
 export interface FromNameAndDataMenuDefn<R> extends CommonMenuDefn<R> {
@@ -106,18 +111,19 @@ export const applyMenuDefn = <R, Config> ( prefix: string, fns: MenuDefnFns<R>, 
 
 
 function getRsForPath<S> ( m: MenuDefnItem<RunbookComponent<S, any>> | undefined, rsForConfig: RunbookState<S, any>, pathFromFound: string[] ) {
-  let opt: Optional<any, any> = parsePath ( pathFromFound );
-  let result = m?.fromRoot ? rsForConfig.withOpt ( opt ) : rsForConfig.chainOpt ( opt );
-  console.log ( 'getRsForPath', m, m?.fromRoot, pathFromFound, result )
-  return result;
+  if ( m?.optional ) {
+    const result = rsForConfig.withOpt ( m.optional (  rsForConfig.opt,pathFromFound ) )
+    return result
+  } else {
+    let result = rsForConfig.chainOpt ( parsePath ( pathFromFound ) );
+    return result;
+  }
 }
 export const findDisplay = <S, Config> ( fns: MenuAndDisplayFnsForRunbook<S, Config>, mdFn: ( cleanConfig: Config ) => MenuDefnForRunbook<S> ): RunbookComponent<S, RefAndData<SelectionState, Config>> => {
   return rs => ( props ) => {
     const rsForConfig: RunbookState<S, any> = rs.withOpt ( focusOnJustData ( rs.opt ) )
     const { focusedOn } = props
-    debugMenuSelected ( 'findDisplay', focusedOn )
     let selectionState = focusedOn?.ref;
-    debugMenuSelected ( 'findDisplay - selection state', selectionState )
     const config: Config | undefined = focusedOn?.data
     if ( config === undefined ) throw Error ( `No config in ${JSON.stringify ( focusedOn )}` )
 
@@ -132,33 +138,22 @@ export const findDisplay = <S, Config> ( fns: MenuAndDisplayFnsForRunbook<S, Con
         debugMenuSelected ( 'not found ' )
         let parentPath = displayPath.slice ( 0, -1 );
         const parentFound: MenuDefnItem<RunbookComponent<S, any>> | undefined = findInMd ( menuDefn, parentPath )
-        debugMenuSelected ( 'parentPath/found', parentPath, parentFound, isFromNameAndDataMenuDefn ( parentFound ) )
         if ( parentFound && isFromNameAndDataMenuDefn ( parentFound ) ) {
           debugMenuSelected ( 'parentPath  && isFromNameAndDataMenuDefn' )
           let lastPath: string = displayPath?.[ displayPath?.length - 1 ];
           debugMenuSelected ( 'lastPath is ', lastPath )
           let pathFromFound = [ ...parentFound.from.path, lastPath ];
-          const rsForPath: RunbookState<S, any> = getRsForPath ( parentFound, rsForConfig, pathFromFound )
-          debugMenuSelected ( 'isFromNameAndDataMenuDefn/rsForPath', rsForPath )
-          debugMenuSelected ( 'isFromNameAndDataMenuDefn/optGet', rsForPath.optGet () )
-          debugMenuSelected ( 'isFromNameAndDataMenuDefn/parentFound', parentFound )
-          debugMenuSelected ( 'isFromNameAndDataMenuDefn/parentFound.from.display', parentFound.from.display )
+          const rsForPath: RunbookState<S, any> = getRsForPath ( parentFound.from, rsForConfig, pathFromFound )
           let foundDisplay = parentFound.from.display?. ( pathFromFound );
-          debugMenuSelected ( 'isFromNameAndDataMenuDefn/foundDisplay', foundDisplay )
           if ( foundDisplay ) return display ( rsForPath, props, foundDisplay )
         }
       }
       path = isFromSingleDataMenuDefn ( found ) ? found.path : displayPath
       const rsForPath = getRsForPath ( found, rsForConfig, path )
-      debugMenuSelected ( 'findDisplay - path', path )
-      debugMenuSelected ( 'findDisplay - found', found )
-      debugMenuSelected ( 'findDisplay - rs', rsForPath )
       if ( found?.display ) {
         let disp = found.display ( path );
         debugMenuSelected ( 'findDisplay - disp', disp )
-        let result = display ( rsForPath, props, disp );
-        debugMenuSelected ( 'findDisplay - result', result )
-        return result
+        return display ( rsForPath, props, disp )
       }
       return display ( rsForPath, props, fns.defaultDisplay ( path ) )
     }

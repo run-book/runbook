@@ -6,13 +6,13 @@ import { CleanConfig } from "@runbook/config";
 import { createRoot } from "react-dom/client";
 import { startProcessing } from "@runbook/store";
 import { getElement } from "./react.helpers";
-import { executorStatusOpt, fetchCommandsOpt, FullState, refAndDataOpt, selectionStateOpt } from "./fullState";
+import { executorStatusOpt, fetchCommandsOpt, FullState, refAndDataOpt, selectionStateOpt, situationOpt } from "./fullState";
 import { DisplayRsInState, makeStore } from "./makeStore";
 import { bootStrapCombine, bootstrapMenu, changeMode, findMenuAndDisplay, MenuAndDisplayFnsForRunbook, MenuDefn, MenuDefnForRunbook, SelectionState } from "@runbook/menu_react";
-import { Optional } from "@runbook/optics";
+import { Optional, parsePath } from "@runbook/optics";
 import { display, displayWithNewOpt, jsonMe, modeFromProps, RunbookComponent } from "@runbook/runbook_state";
 import { displayScriptInstrument } from "@runbook/instruments_react";
-import { displayView } from "@runbook/views_react";
+import { displayViewTabs, optForViewTab } from "@runbook/views_react";
 import { DisplayMereologyContext, runbookCompAllDataFor } from "@runbook/referencedata_react";
 import { BindingContext } from "@runbook/bindings";
 import { mereologyToSummary } from "@runbook/mereology";
@@ -22,10 +22,16 @@ import { tableProps } from "@runbook/bindings_react";
 import { FetchCommand } from "@runbook/commands";
 import { displayExecutors } from "@runbook/executors_react";
 import { poll } from "@runbook/commands/dist/src/poll";
+import { inheritance } from "@runbook/fixtures";
 
 
 // let requestInfoForExecutorsStore = window.location.href + 'executeStatus';
-export function menuDefn<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>, display: ( name: string ) => ( path: string[] ) => RunbookComponent<S, any>, dispRefData: ( path: string[] ) => RunbookComponent<S, any> ): MenuDefn<RunbookComponent<S, any>> {
+export function menuDefn<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>,
+                              selectionStateOpt: Optional<S, SelectionState>,
+                              situationOpt: Optional<S, any>,
+                              bc: BindingContext,
+                              display: ( name: string ) => ( path: string[] ) => RunbookComponent<S, any>,
+                              dispRefData: ( path: string[] ) => RunbookComponent<S, any> ): MenuDefn<RunbookComponent<S, any>> {
   return {
     Ontology: {
       type: 'navBarItem', path: [], display: display ( 'ontology' ),
@@ -37,11 +43,23 @@ export function menuDefn<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>, disp
     },
     ReferenceData: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'reference' ], display: dispRefData } },
     Instruments: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'instrument' ], display: path => displayScriptInstrument<S> ( fetchCommandOpt, last ( path ) ) } },
-    Views: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'view' ], display: path => displayView<S> ( path[ path.length - 1 ] ) } },
+    Views: {
+      type: 'navBarItem', from: {
+        type: 'dropdownItem',
+        path: [ 'view' ],
+        optional: optForViewTab ( selectionStateOpt, situationOpt ),
+        display: path => displayViewTabs<S> ( bc )
+      }
+    },
     Status: {
       type: 'navBarItem', path: [ 'status' ], display: display ( 'status' ),
       children: {
-        "Executors": { type: 'dropdownItem', fromRoot: true,path: [ 'status', 'executor' ], display: path => displayExecutors (), },
+        "Executors": {
+          type: 'dropdownItem',
+          optional: ( root, path ) => parsePath ( path ),
+          path: [ 'status', 'executor' ],
+          display: path => displayExecutors (),
+        },
       }
     },
   }
@@ -72,14 +90,16 @@ function dispMContext ( config: CleanConfig ): DisplayMereologyContext {
 }
 
 
-const md = ( config: CleanConfig ): MenuDefnForRunbook<FullState> =>
-  menuDefn ( fetchCommandsOpt, fixtureDisplayWithMode<FullState> ( selectionStateOpt ), runbookCompAllDataFor ( dispMContext ( config ) ) )
+const md = ( bc: BindingContext ) => ( config: CleanConfig, ): MenuDefnForRunbook<FullState> =>
+  menuDefn ( fetchCommandsOpt, selectionStateOpt, situationOpt, bc,
+    fixtureDisplayWithMode<FullState> ( selectionStateOpt ),
+    runbookCompAllDataFor ( dispMContext ( config ) ) )
 
 
-export const displayRsForMenuDefn: DisplayRsInState<FullState, CleanConfig> =
-               rs => {
-                 return <div>{display ( rs, { mode: 'view' }, findMenuAndDisplay<FullState, CleanConfig> ( 'nav', menuFns, md, bootStrapCombine ) )}</div>;
-               }
+export const displayRsForMenuDefn = ( bc: BindingContext ): DisplayRsInState<FullState, CleanConfig> =>
+  rs => {
+    return <div>{display ( rs, { mode: 'view' }, findMenuAndDisplay<FullState, CleanConfig> ( 'nav', menuFns, md ( bc ), bootStrapCombine ) )}</div>;
+  }
 
 
 const loc = window.location.href
@@ -89,19 +109,26 @@ const rootElement = getElement ( "root" );
 
 const requestInfoForExecutorsStore = 'executeStatus';
 fetch ( filename ).then ( response => response.json () ).then ( config => {
-  const realConfig = prune ( config, '__from' )
-  let initial: FullState = { config: realConfig as any, selectionState: { menuPath: [ 'situation' ] }, fetchCommands: [], status: { executor: {} } };
+  const realConfig: CleanConfig = prune ( config, '__from' )
+  let initial: FullState = { config: realConfig, selectionState: { menuPath: [ 'situation' ] }, fetchCommands: [], status: { executor: {} } };
   const root = createRoot ( rootElement )
+  const bc: BindingContext = {
+    debug: false,
+    mereology: mereologyToSummary ( realConfig.mereology ),
+    refDataFn: fromReferenceData ( realConfig.reference ),
+    inheritsFrom: inheritsFrom ( makeStringDag ( realConfig.inheritance ) )
+  }
+
   const { store, rs } =
           makeStore<FullState, CleanConfig> ( root, initial,
             fetch,
             refAndDataOpt,
             fetchCommandsOpt,
             executorStatusOpt,
-            displayRsForMenuDefn );
+            displayRsForMenuDefn ( bc ) );
 
   startProcessing ( store )
-  poll ( store, requestInfoForExecutorsStore, undefined, executorStatusOpt, 1000 )
+  // poll ( store, requestInfoForExecutorsStore, undefined, executorStatusOpt, 1000 )
   rs.setS ( initial )
 } )
 

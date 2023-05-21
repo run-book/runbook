@@ -3,16 +3,16 @@ import { Meta, StoryObj } from "@storybook/react";
 import { DisplayStoryBook } from "@runbook/storybook";
 import { fixtureView } from "@runbook/fixtures";
 import { View } from "@runbook/views";
-import { displayView } from "./view.react";
+import { displayView } from "./view.details.react";
 
 //exists to just finesse Storybook
-const ViewComponent = <S extends any> (): JSX.Element => <div></div>;
+const ViewDetailsComponent = <S extends any> (): JSX.Element => <div></div>;
 
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-const meta: Meta<typeof ViewComponent> = {
-  title: 'View',
-  component: ViewComponent,
+const meta: Meta<typeof ViewDetailsComponent> = {
+  title: 'ViewDetails',
+  component: ViewDetailsComponent,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };

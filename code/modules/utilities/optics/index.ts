@@ -9,5 +9,6 @@ export * from './src/refAndData.optics'
 export * from './src/setter'
 export * from './src/traversal'
 export * from './src/transformation'
+export * from './src/tuple.optics'
 
 

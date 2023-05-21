@@ -371,27 +371,27 @@
     ]
   },
   "situation": {
-    "leo:service": {
+    "leo": {
       "__from": [
         "C:\\git\\runbook\\runbook\\.runbook\\config\\situation\\situation.json"
       ]
     },
-    "npx:service": {
+    "npx": {
       "__from": [
         "C:\\git\\runbook\\runbook\\.runbook\\config\\situation\\situation.json"
       ]
     },
-    "dev:environment": {
+    "dev": {
       "__from": [
         "C:\\git\\runbook\\runbook\\.runbook\\config\\situation\\situation.json"
       ]
     },
-    "local:environment": {
+    "local": {
       "__from": [
         "C:\\git\\runbook\\runbook\\.runbook\\config\\situation\\situation.json"
       ]
     },
-    "test:environment": {
+    "test": {
       "__from": [
         "C:\\git\\runbook\\runbook\\.runbook\\config\\situation\\situation.json"
       ]

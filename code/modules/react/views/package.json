@@ -20,6 +20,7 @@
     "@runbook/views": "0.2.12",
     "@runbook/fixtures": "0.2.12",
     "@runbook/storybook": "0.2.12",
+    "@runbook/bindings": "0.2.12",
     "debug": "^4.3.4"
   },
   "devDependencies": {

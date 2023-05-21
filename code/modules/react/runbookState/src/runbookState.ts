@@ -20,7 +20,8 @@ export function displayWithNewOpt<S, C> ( st: RunbookState<S, any>, props: Runbo
   return r ( runbookState ) ( { ...props, focusedOn: runbookState.optGet () } );
 }
 export function display<S, C> ( st: RunbookState<S, C>, props: RunbookProps<any>, r: RunbookComponent<S, C> ): JSX.Element { //the props is any because we don't care. We overwrite the only type things in it anyway
-  return r ( st ) ( { ...props, focusedOn: st.optGet () } );
+  const focusedOn = st.optGet ();
+  return r ( st ) ( { ...props, focusedOn: focusedOn } );
 }
 
 export function displayChild<S, C, K extends keyof C> ( st: RunbookState<S, C>, props: RunbookProps<any>, k: K, r: RunbookComponent<S, C[K]> ): JSX.Element {

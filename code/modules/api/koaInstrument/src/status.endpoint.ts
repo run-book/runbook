@@ -8,7 +8,6 @@ export function executeStatusEndpoint<T> ( path: string, cache: Cache<Execution<
   return {
     isDefinedAt: ( { context } ) => {
       let result = context.path === path && context.method === "GET";
-      console.log ( 'executeStatusEndpoint', result )
       return result;
     },
     apply: async ( { context } ) => {

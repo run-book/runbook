@@ -4,6 +4,7 @@
   "description": "",
   "packageJson": {
     "files":           ["build/"],
+    "proxy": "http://localhost:3001",
     "dependencies":    {},
     "devDependencies": {"react-scripts": "^5.0.1"},
     "scripts":         {"start": "react-scripts start"}

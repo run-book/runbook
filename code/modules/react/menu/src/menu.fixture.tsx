@@ -1,9 +1,8 @@
 import { NameAnd } from "@runbook/utils";
 import { MenuDefn, SelectionState } from "./menu";
 import { displayWithNewOpt, jsonMe, modeFromProps, RunbookComponent } from "@runbook/runbook_state";
-import { Optional } from "@runbook/optics";
+import { Optional, parsePath } from "@runbook/optics";
 import { changeMode } from "./changeMode";
-import { displayExecutors } from "@runbook/executors_react";
 
 
 export function fixtureDisplayWithoutMode<S> ( typeName: string ): RunbookComponent<S, any> {
@@ -28,7 +27,6 @@ export const sampleDisplay: NameAnd<any> = {
 
 };
 
-
 export function menuDefn<R> ( display: ( name: string ) => ( path: string[] ) => R ): MenuDefn<R> {
   return {
     Ontology: {
@@ -44,7 +42,7 @@ export function menuDefn<R> ( display: ( name: string ) => ( path: string[] ) =>
     Status: {
       type: 'navBarItem', path: [ 'status' ], display: display ( 'status' ),
       children: {
-        "Executors": { type: 'dropdownItem', path: [ 'status', 'executor' ],fromRoot:true, display: display ( 'executors' ), },
+        "Executors": { type: 'dropdownItem', path: [ 'status', 'executor' ], optional: ( root, path ) => parsePath ( path ), display: display ( 'executors' ), },
       }
     }
   }
