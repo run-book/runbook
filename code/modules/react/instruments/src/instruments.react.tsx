@@ -2,8 +2,8 @@ import { display, displayChild, displayWithNewOpt, isRunbookStateFor, RunbookCom
 import { isSharedScriptInstrument, isVaryingScriptInstument, ScriptInstrument, SharedScriptInstrument, VaryingScriptInstrument } from "@runbook/scriptinstruments";
 import { AttributeValueList, displayLabeledChild, displayLabeledChildWithLabel, displayLabeledQueryChild, integerInput, Layout, optionsInput, textArea, textAreaForObj, textInput } from "@runbook/components";
 import { CleanInstrumentParam, CommonInstrument, ScriptAndDisplay } from "@runbook/instruments";
-import { mapObjToArray, NameAnd, RefAndData, safeObject } from "@runbook/utils";
-import { focusQuery, getOptional, Optional, optionalForRefAndData } from "@runbook/optics";
+import { mapObjToArray, NameAnd, RefAndData, safeObject, Tuple2 } from "@runbook/utils";
+import { focusOnJustA, focusOnJustB, focusQuery, getOptional, Optional, optionalForRefAndData } from "@runbook/optics";
 import { FetchCommand } from "@runbook/commands";
 
 
@@ -65,27 +65,32 @@ export function displayParamsFromInstrument<S> (): RunbookComponent<S, ScriptIns
   }
 }
 
-const runButtonOnClick = <S extends any> ( fetchCommandOpt: Optional<S, FetchCommand[]>, name: string ) => ( st: RunbookState<S, ScriptInstrument> ) => {
+const runButtonOnClick = <S extends any> ( fetchCommandOpt: Optional<S, FetchCommand[]>, name: string, id: string, target: string ) => ( st: RunbookState<S, ScriptInstrument> ) => {
   const dataOpt = paramDataOptional ( st );
   const params = getOptional ( dataOpt, st.state )
   const instrument = st.optGet ()
   return async () => {
     let url = window.location.href + 'execute';
-    const body = { execute: [ { name, params } ] }
-    const cmd: FetchCommand = { requestInfo: url, requestInit: { method: 'POST', body: JSON.stringify ( body ), headers: { "Content-Type": "application/json" } }, target: 'instrumentResult' }
+    const body = { execute: { [ id ]: { name, params } } }
+    const cmd: FetchCommand = {
+      requestInfo: url, requestInit: { method: 'POST', body: JSON.stringify ( body ), headers: { "Content-Type": "application/json" } },
+      target
+    }
     console.log ( 'runButtonOnClick', cmd )
     st.withOpt ( fetchCommandOpt ).set ( [ cmd ] )
   }
 };
-export function displayRunForInstrument<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>, name: string ): RunbookComponent<S, ScriptInstrument> {
+export function displayRunForInstrument<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>, name: string, id: string, target: string ): RunbookComponent<S, Tuple2<ScriptInstrument, any>> {
   return st => ( props ) => {
+    const stForInstrument = st.withOpt ( focusOnJustA ( st.opt ) )
+    const stForInstrumentResult: RunbookState<S, any> = st.withOpt ( focusOnJustB ( st.opt ) )
     return <div>
       <h1>Run</h1>
       <h2>Params</h2>
-      {display ( st, props, displayParamsFromInstrument<S> () )}
-      <button onClick={runButtonOnClick ( fetchCommandOpt, name ) ( st )}>Run!!</button>
+      {display ( stForInstrument, props, displayParamsFromInstrument<S> () )}
+      <button onClick={runButtonOnClick ( fetchCommandOpt, name, id, target ) ( stForInstrument )}>Run!!</button>
       <h2>Results</h2>
-      {displayLabeledChild ( st, { ...props, mode: 'view' }, textArea ( { rows: 5 } ), 'result' as any )}
+      {display( stForInstrumentResult, { ...props, mode: 'view' }, textAreaForObj ( { rows: 5 } ) )}
     </div>
   }
 }
@@ -111,13 +116,15 @@ export function displaySharedInstrument<S> (): RunbookComponent<S, SharedScriptI
     </AttributeValueList>
 }
 
-export function displayScriptInstrument<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>, name: string ): RunbookComponent<S, ScriptInstrument> {
+export function displayScriptInstrument<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>, name: string, id: string, target: string ): RunbookComponent<S, Tuple2<ScriptInstrument, any>> {
   return st => ( props ) => {
+    console.log('displayScriptInstrument', st)
+    const stForInstrument = st.withOpt ( focusOnJustA ( st.opt ) )
     return <div><h1>Instrument</h1>
       <Layout layout={[ 1, 1, 1 ]} component='displayScriptInstrument'>
-        {isRunbookStateFor ( st, isSharedScriptInstrument ) && display<S, SharedScriptInstrument> ( st, props, displaySharedInstrument<S> () )}
-        {isRunbookStateFor ( st, isVaryingScriptInstument ) && display<S, VaryingScriptInstrument> ( st, props, displayVaryingInstrument<S> () )}
-        {display<S, ScriptInstrument> ( st, { ...props, mode: 'run' }, displayRunForInstrument<S> ( fetchCommandOpt, name ) )}
+        {isRunbookStateFor ( stForInstrument, isSharedScriptInstrument ) && display<S, SharedScriptInstrument> ( stForInstrument, props, displaySharedInstrument<S> () )}
+        {isRunbookStateFor ( stForInstrument, isVaryingScriptInstument ) && display<S, VaryingScriptInstrument> ( stForInstrument, props, displayVaryingInstrument<S> () )}
+        {display<S, Tuple2<ScriptInstrument, any>> ( st, { ...props, mode: 'run' }, displayRunForInstrument<S> ( fetchCommandOpt, name, id, target ) )}
       </Layout>
     </div>
   }

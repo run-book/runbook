@@ -6,10 +6,10 @@ import { CleanConfig } from "@runbook/config";
 import { createRoot } from "react-dom/client";
 import { startProcessing } from "@runbook/store";
 import { getElement } from "./react.helpers";
-import { executorStatusOpt, fetchCommandsOpt, FullState, refAndDataOpt, selectionStateOpt, situationOpt } from "./fullState";
+import { executorStatusOpt, fetchCommandsOpt, FullState, instrumentResultOpt, refAndDataOpt, selectionStateOpt, situationOpt } from "./fullState";
 import { DisplayRsInState, makeStore } from "./makeStore";
 import { bootStrapCombine, bootstrapMenu, changeMode, findMenuAndDisplay, MenuAndDisplayFnsForRunbook, MenuDefn, MenuDefnForRunbook, SelectionState } from "@runbook/menu_react";
-import { Optional, parsePath } from "@runbook/optics";
+import { composeOptional, Optional, optionalForTuple, parsePath } from "@runbook/optics";
 import { display, displayWithNewOpt, jsonMe, modeFromProps, RunbookComponent } from "@runbook/runbook_state";
 import { displayScriptInstrument } from "@runbook/instruments_react";
 import { displayViewTabs, optForViewTab } from "@runbook/views_react";
@@ -29,6 +29,7 @@ import { inheritance } from "@runbook/fixtures";
 export function menuDefn<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>,
                               selectionStateOpt: Optional<S, SelectionState>,
                               situationOpt: Optional<S, any>,
+                              targetOpt: Optional<S, any>,
                               bc: BindingContext,
                               display: ( name: string ) => ( path: string[] ) => RunbookComponent<S, any>,
                               dispRefData: ( path: string[] ) => RunbookComponent<S, any> ): MenuDefn<RunbookComponent<S, any>> {
@@ -42,7 +43,13 @@ export function menuDefn<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>,
       }
     },
     ReferenceData: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'reference' ], display: dispRefData } },
-    Instruments: { type: 'navBarItem', from: { type: 'dropdownItem', path: [ 'instrument' ], display: path => displayScriptInstrument<S> ( fetchCommandOpt, last ( path ) ) } },
+    Instruments: {
+      type: 'navBarItem', from: {
+        type: 'dropdownItem', path: [ 'instrument' ],
+        optional: ( rootOpt, path ) => optionalForTuple ( composeOptional ( rootOpt, parsePath ( path ) ), targetOpt ),
+        display: path => displayScriptInstrument<S> ( fetchCommandOpt, last ( path ), 'instrument', 'instrumentResult' )
+      }
+    },
     Views: {
       type: 'navBarItem', from: {
         type: 'dropdownItem',
@@ -91,7 +98,7 @@ function dispMContext ( config: CleanConfig ): DisplayMereologyContext {
 
 
 const md = ( bc: BindingContext ) => ( config: CleanConfig, ): MenuDefnForRunbook<FullState> =>
-  menuDefn ( fetchCommandsOpt, selectionStateOpt, situationOpt, bc,
+  menuDefn ( fetchCommandsOpt, selectionStateOpt, situationOpt, instrumentResultOpt, bc,
     fixtureDisplayWithMode<FullState> ( selectionStateOpt ),
     runbookCompAllDataFor ( dispMContext ( config ) ) )
 
@@ -128,7 +135,7 @@ fetch ( filename ).then ( response => response.json () ).then ( config => {
             displayRsForMenuDefn ( bc ) );
 
   startProcessing ( store )
-  poll ( store, requestInfoForExecutorsStore, undefined, executorStatusOpt, 1000 )
+  poll ( store, requestInfoForExecutorsStore, undefined, executorStatusOpt, 10000 )
   rs.setS ( initial )
 } )
 

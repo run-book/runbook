@@ -18,19 +18,19 @@ export function makeCacheOptions (): CacheOptions {
   return { timeFn: () => Date.now (), hash: ( p ) => JSON.stringify ( p ).replace ( /"/g, "'" ) }
 }
 export interface CacheDetails<T> {
-  id: string
+  cacheId: string
   cacheDetails: CacheData<T>
 }
 export const cacheGet = <T> ( cacheOps: CacheOptions, cache: Cache<T> ) => ( params: Params, staleness: number, fn: ( p: Params ) => T ): CacheDetails<T> => {
-  const id = cacheOps.hash ( params )
-  const cached = cache[ id ]
+  const cacheId = cacheOps.hash ( params )
+  const cached = cache[ cacheId ]
   let now = cacheOps.timeFn ();
   if ( cached === undefined || now >= cached.lastUpdated + staleness ) {
     let t = fn ( params );
     const count = cached === undefined ? 1 : cached.count + 1
     let cacheDetails = { cached: t, lastUpdated: now, count };
-    cache[ id ] = cacheDetails
-    return { cacheDetails, id }
+    cache[ cacheId ] = cacheDetails
+    return { cacheDetails, cacheId }
   }
-  return { cacheDetails: cached, id }
+  return { cacheDetails: cached, cacheId }
 }

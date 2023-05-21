@@ -1,9 +1,9 @@
-import { focusOn, identity, Optional } from "@runbook/optics";
+import { focusOn, identity, Optional, optionalForTuple } from "@runbook/optics";
 import { Meta, StoryObj } from "@storybook/react";
 import { DisplayStoryBook } from "@runbook/storybook";
 import { gitScriptInstrument, lsScriptInstrument } from "@runbook/fixtures";
 import { displayRunForInstrument } from "./instruments.react";
-import { NameAnd } from "@runbook/utils";
+import { NameAnd, Tuple2 } from "@runbook/utils";
 import { ScriptInstrument } from "@runbook/scriptinstruments";
 import { FetchCommand } from "@runbook/commands";
 
@@ -27,6 +27,7 @@ type ScriptIntrumentWithParamAndResult = ScriptInstrument & { paramData?: NameAn
 interface TestStateForParams {
   instrument: ScriptIntrumentWithParamAndResult
   fetchCommands: FetchCommand[]
+  target?: any
 }
 interface TestArgsForParams {
   instrument: ScriptIntrumentWithParamAndResult
@@ -38,10 +39,12 @@ interface TestArgsForParams {
 
 const instrumentL: Optional<TestStateForParams, ScriptInstrument> = focusOn ( identity<TestStateForParams> (), 'instrument' )
 const fetchCommandsL: Optional<TestStateForParams, FetchCommand[]> = focusOn ( identity<TestStateForParams> (), 'fetchCommands' )
+const targetL: Optional<TestStateForParams, any> = focusOn ( identity<TestStateForParams> (), 'target' )
+const instrumentAndTargetL: Optional<TestStateForParams, Tuple2<ScriptInstrument, any>> = optionalForTuple ( instrumentL, targetL )
 
 const render = ( args: TestArgsForParams ) => {
   return <DisplayStoryBook s={{ instrument: { ...args.instrument, paramData: args.params, result: args.result }, fetchCommands: [] }}
-                           opt={instrumentL} mode={args.mode}>{displayRunForInstrument<TestStateForParams> ( fetchCommandsL, args.name )}</DisplayStoryBook>
+                           opt={instrumentAndTargetL} mode={args.mode}>{displayRunForInstrument<TestStateForParams> ( fetchCommandsL, args.name, 'someId', 'target' )}</DisplayStoryBook>
 };
 export const LS: Story = {
   render,

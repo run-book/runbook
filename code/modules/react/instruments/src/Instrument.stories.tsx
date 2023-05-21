@@ -1,4 +1,4 @@
-import { focusOn, focusQuery, identity, Optional } from "@runbook/optics";
+import { focusOn, focusQuery, identity, Optional, optionalForTuple } from "@runbook/optics";
 import { Meta, StoryObj } from "@storybook/react";
 import { RunbookComponent } from "@runbook/runbook_state";
 import { DisplayStoryBook } from "@runbook/storybook";
@@ -6,6 +6,7 @@ import { echoScriptInstrument, gitScriptInstrument, lsScriptInstrument } from "@
 import { displayScriptInstrument } from "./instruments.react";
 import { ScriptInstrument } from "@runbook/scriptinstruments";
 import { FetchCommand } from "@runbook/commands";
+import { Tuple2 } from "@runbook/utils";
 
 //exists to just finesse Storybook
 const Instrument = <S extends any> (): JSX.Element => <div></div>;
@@ -26,6 +27,7 @@ type Story = StoryObj<TestArgsForInstrument>;
 interface TestStateForInstrument {
   instrument: ScriptInstrument
   fetchCommands: FetchCommand[]
+  target?: any
 }
 interface TestArgsForInstrument {
   name: string
@@ -34,12 +36,15 @@ interface TestArgsForInstrument {
 }
 
 const instrumentL: Optional<TestStateForInstrument, ScriptInstrument> = focusOn ( identity<TestStateForInstrument> (), 'instrument' )
+const targetL: Optional<TestStateForInstrument, any> = focusOn ( identity<TestStateForInstrument> (), 'target' )
+const instrumentAndTargetL: Optional<TestStateForInstrument, Tuple2<ScriptInstrument, any>> = optionalForTuple ( instrumentL, targetL )
 const fetchCommandOpt: Optional<TestStateForInstrument, FetchCommand[]> = focusQuery ( identity<TestStateForInstrument> (), 'fetchCommands' )
-function scriptInstrument ( mode: string, name: string ): RunbookComponent<TestStateForInstrument, ScriptInstrument> {
-  return displayScriptInstrument<TestStateForInstrument> ( fetchCommandOpt, name )
+function scriptInstrument ( mode: string, name: string, id: string, target: string ): RunbookComponent<TestStateForInstrument, Tuple2<ScriptInstrument, any>> {
+  return displayScriptInstrument<TestStateForInstrument> ( fetchCommandOpt, name, id, target )
 }
 const render = ( args: TestArgsForInstrument ) => {
-  return <DisplayStoryBook s={{ instrument: args.instrument, fetchCommands: [] }} opt={instrumentL} mode={args.mode}>{scriptInstrument ( args.mode, args.name )}</DisplayStoryBook>
+  return <DisplayStoryBook s={{ instrument: args.instrument, fetchCommands: [] }} opt={instrumentAndTargetL} mode={args.mode}>
+    {scriptInstrument ( args.mode, args.name, 'someId', 'target' )}</DisplayStoryBook>
 };
 export const EchoView: Story = {
   render,

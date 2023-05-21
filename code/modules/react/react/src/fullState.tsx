@@ -10,9 +10,10 @@ export interface FullState {
   selectionState: SelectionState
   fetchCommands: FetchCommand[]
   status: { 'executor': NameAnd<StatusEndpointData> }
-
+  instrumentResult?: any
 }
 export const idOpt = identity<FullState> ()
+export const instrumentResultOpt = focusQuery ( idOpt, 'instrumentResult' )
 export const fetchCommandsOpt = focusQuery ( idOpt, 'fetchCommands' )
 export const executorStatusOpt = focusQuery ( focusQuery ( idOpt, 'status' ), 'executor' )
 const configOpt = focusQuery ( idOpt, 'config' )

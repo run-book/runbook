@@ -12,7 +12,7 @@ export interface SharedScriptInstrument extends CommonScript, ScriptAndDisplay {
 
 
 export function isSharedScriptInstrument ( instrument: CommonInstrument ): instrument is SharedScriptInstrument {
-  return (instrument as any).script !== undefined
+  return (instrument as any)?.script !== undefined
 }
 
 
@@ -21,7 +21,7 @@ export interface VaryingScriptInstrument extends CommonScript {
   linux: ScriptAndDisplay,
 }
 export function isVaryingScriptInstument ( instrument: CommonInstrument ): instrument is VaryingScriptInstrument {
-  return (instrument as any).windows !== undefined
+  return (instrument as any)?.windows !== undefined
 }
 export type ScriptInstrument = VaryingScriptInstrument | SharedScriptInstrument
 export function isScript ( instrument: CommonInstrument ): instrument is ScriptInstrument {
