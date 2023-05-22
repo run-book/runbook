@@ -1,7 +1,7 @@
 {
   "name": "@runbook/views",
   "description": "",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,11 +17,11 @@
     ]
   },
   "dependencies": {
-    "@runbook/utils": "0.3.1",
-    "@runbook/fixtures": "0.3.1",
-    "@runbook/bindings": "0.3.1",
-    "@runbook/mereology": "0.3.1",
-    "@runbook/variables": "0.3.1",
+    "@runbook/utils": "0.3.2",
+    "@runbook/fixtures": "0.3.2",
+    "@runbook/bindings": "0.3.2",
+    "@runbook/mereology": "0.3.2",
+    "@runbook/variables": "0.3.2",
     "debug": "^4.3.4"
   },
   "devDependencies": {
