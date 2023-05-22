@@ -1,7 +1,7 @@
 {
   "name": "@runbook/runbook",
   "description": "",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "main": "dist/index",
   "types": "dist/index",
   "bin": {
@@ -21,13 +21,13 @@
   },
   "dependencies": {
     "commander": "^10.0.0",
-    "@runbook/config": "0.3.0",
-    "@runbook/utils": "0.3.0",
-    "@runbook/files": "0.3.0",
-    "@runbook/variables": "0.3.0",
-    "@runbook/scripts": "0.3.0",
-    "@runbook/koa": "0.3.0",
-    "@runbook/koa_instrument": "0.3.0",
+    "@runbook/config": "0.3.1",
+    "@runbook/utils": "0.3.1",
+    "@runbook/files": "0.3.1",
+    "@runbook/variables": "0.3.1",
+    "@runbook/scripts": "0.3.1",
+    "@runbook/koa": "0.3.1",
+    "@runbook/koa_instrument": "0.3.1",
     "debug": "^4.3.4"
   },
   "devDependencies": {
