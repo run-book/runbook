@@ -1,4 +1,4 @@
-import { focusOn, focusQuery, identity, Optional, optionalForTuple } from "@runbook/optics";
+import { focusOn, focusQuery, identity, Optional, optionalForTuple3 } from "@runbook/optics";
 import { Meta, StoryObj } from "@storybook/react";
 import { RunbookComponent } from "@runbook/runbook_state";
 import { DisplayStoryBook } from "@runbook/storybook";
@@ -6,7 +6,8 @@ import { echoScriptInstrument, gitScriptInstrument, lsScriptInstrument } from "@
 import { displayScriptInstrument } from "./instruments.react";
 import { ScriptInstrument } from "@runbook/scriptinstruments";
 import { FetchCommand } from "@runbook/commands";
-import { Tuple2 } from "@runbook/utils";
+import { NameAnd, Tuple3 } from "@runbook/utils";
+import { StatusEndpointData } from "@runbook/executors";
 
 //exists to just finesse Storybook
 const Instrument = <S extends any> (): JSX.Element => <div></div>;
@@ -28,6 +29,7 @@ interface TestStateForInstrument {
   instrument: ScriptInstrument
   fetchCommands: FetchCommand[]
   target?: any
+  status: NameAnd<StatusEndpointData>
 }
 interface TestArgsForInstrument {
   name: string
@@ -37,13 +39,15 @@ interface TestArgsForInstrument {
 
 const instrumentL: Optional<TestStateForInstrument, ScriptInstrument> = focusOn ( identity<TestStateForInstrument> (), 'instrument' )
 const targetL: Optional<TestStateForInstrument, any> = focusOn ( identity<TestStateForInstrument> (), 'target' )
-const instrumentAndTargetL: Optional<TestStateForInstrument, Tuple2<ScriptInstrument, any>> = optionalForTuple ( instrumentL, targetL )
+const statusL: Optional<TestStateForInstrument, NameAnd<StatusEndpointData>> = focusQuery ( identity<TestStateForInstrument> (), 'status' )
+const instrumentAndTargetL: Optional<TestStateForInstrument, Tuple3<ScriptInstrument, any, NameAnd<StatusEndpointData>>> =
+        optionalForTuple3 ( instrumentL, targetL, statusL )
 const fetchCommandOpt: Optional<TestStateForInstrument, FetchCommand[]> = focusQuery ( identity<TestStateForInstrument> (), 'fetchCommands' )
-function scriptInstrument ( mode: string, name: string, id: string, target: string ): RunbookComponent<TestStateForInstrument, Tuple2<ScriptInstrument, any>> {
+function scriptInstrument ( mode: string, name: string, id: string, target: string ): RunbookComponent<TestStateForInstrument, Tuple3<ScriptInstrument, any, NameAnd<StatusEndpointData>>> {
   return displayScriptInstrument<TestStateForInstrument> ( fetchCommandOpt, name, id, target )
 }
 const render = ( args: TestArgsForInstrument ) => {
-  return <DisplayStoryBook s={{ instrument: args.instrument, fetchCommands: [] }} opt={instrumentAndTargetL} mode={args.mode}>
+  return <DisplayStoryBook s={{ instrument: args.instrument, fetchCommands: [], status:{} }} opt={instrumentAndTargetL} mode={args.mode}>
     {scriptInstrument ( args.mode, args.name, 'someId', 'target' )}</DisplayStoryBook>
 };
 export const EchoView: Story = {

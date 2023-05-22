@@ -9,7 +9,7 @@ import { getElement } from "./react.helpers";
 import { executorStatusOpt, fetchCommandsOpt, FullState, instrumentResultOpt, refAndDataOpt, selectionStateOpt, situationOpt } from "./fullState";
 import { DisplayRsInState, makeStore } from "./makeStore";
 import { bootStrapCombine, bootstrapMenu, changeMode, findMenuAndDisplay, MenuAndDisplayFnsForRunbook, MenuDefn, MenuDefnForRunbook, SelectionState } from "@runbook/menu_react";
-import { composeOptional, Optional, optionalForTuple, parsePath } from "@runbook/optics";
+import { composeOptional, Optional, optionalForTuple3, parsePath } from "@runbook/optics";
 import { display, displayWithNewOpt, jsonMe, modeFromProps, RunbookComponent } from "@runbook/runbook_state";
 import { displayScriptInstrument } from "@runbook/instruments_react";
 import { displayViewTabs, optForViewTab } from "@runbook/views_react";
@@ -17,19 +17,23 @@ import { DisplayMereologyContext, runbookCompAllDataFor } from "@runbook/referen
 import { BindingContext } from "@runbook/bindings";
 import { mereologyToSummary } from "@runbook/mereology";
 import { fromReferenceData } from "@runbook/referencedata";
-import { inheritsFrom, last, makeStringDag, prune } from "@runbook/utils";
+import { inheritsFrom, last, makeStringDag, NameAnd, prune } from "@runbook/utils";
 import { tableProps } from "@runbook/bindings_react";
 import { FetchCommand } from "@runbook/commands";
 import { displayExecutors } from "@runbook/executors_react";
 import { poll } from "@runbook/commands/dist/src/poll";
 import { inheritance } from "@runbook/fixtures";
+import { StatusEndpointData } from "@runbook/executors";
 
 
 // let requestInfoForExecutorsStore = window.location.href + 'executeStatus';
+
+//This still isn't right: look at the way we have two ways of definng the executorStatusOpt... Need to see how to make it nicer
 export function menuDefn<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>,
                               selectionStateOpt: Optional<S, SelectionState>,
                               situationOpt: Optional<S, any>,
                               targetOpt: Optional<S, any>,
+                              executorStatusOpt: Optional<S, NameAnd<StatusEndpointData>>,
                               bc: BindingContext,
                               display: ( name: string ) => ( path: string[] ) => RunbookComponent<S, any>,
                               dispRefData: ( path: string[] ) => RunbookComponent<S, any> ): MenuDefn<RunbookComponent<S, any>> {
@@ -46,7 +50,7 @@ export function menuDefn<S> ( fetchCommandOpt: Optional<S, FetchCommand[]>,
     Instruments: {
       type: 'navBarItem', from: {
         type: 'dropdownItem', path: [ 'instrument' ],
-        optional: ( rootOpt, path ) => optionalForTuple ( composeOptional ( rootOpt, parsePath ( path ) ), targetOpt ),
+        optional: ( rootOpt, path ) => optionalForTuple3 ( composeOptional ( rootOpt, parsePath ( path ) ), targetOpt, executorStatusOpt ),
         display: path => displayScriptInstrument<S> ( fetchCommandOpt, last ( path ), 'instrument', 'instrumentResult' )
       }
     },
@@ -98,7 +102,7 @@ function dispMContext ( config: CleanConfig ): DisplayMereologyContext {
 
 
 const md = ( bc: BindingContext ) => ( config: CleanConfig, ): MenuDefnForRunbook<FullState> =>
-  menuDefn ( fetchCommandsOpt, selectionStateOpt, situationOpt, instrumentResultOpt, bc,
+  menuDefn ( fetchCommandsOpt, selectionStateOpt, situationOpt, instrumentResultOpt, executorStatusOpt, bc,
     fixtureDisplayWithMode<FullState> ( selectionStateOpt ),
     runbookCompAllDataFor ( dispMContext ( config ) ) )
 

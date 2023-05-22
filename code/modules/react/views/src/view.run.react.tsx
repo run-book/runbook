@@ -2,7 +2,7 @@ import { display, displayWithNewOpt, RunbookComponent } from "@runbook/runbook_s
 import { evaluateViewConditions, View } from "@runbook/views";
 import { labelAnd, Layout, textAreaForObj } from "@runbook/components";
 import { Binding, BindingContext } from "@runbook/bindings";
-import { focusOnJustB } from "@runbook/optics";
+import { focusOnJustB2 } from "@runbook/optics";
 import { mapObjToArray, Tuple2 } from "@runbook/utils";
 
 export function displaySituations<S> (): RunbookComponent<S, any> {
@@ -65,7 +65,7 @@ export function runView<S> ( name: string, bc: BindingContext ): RunbookComponen
     return <div>
       <h1>{name}</h1>
       <Layout layout={[ [ 1, 1 ] ]} component='runView'>
-        {displayWithNewOpt ( st, props, focusOnJustB ( st.opt ), displaySituations () )}
+        {displayWithNewOpt ( st, props, focusOnJustB2 ( st.opt ), displaySituations () )}
         {display ( st, props, displayBindings ( name, bc ) )}
       </Layout>
     </div>

@@ -1,4 +1,4 @@
-import { focusOn, identity, Optional, optionalForTuple } from "@runbook/optics";
+import { focusOn, identity, Optional, optionalForTuple2 } from "@runbook/optics";
 import { Meta, StoryObj } from "@storybook/react";
 import { DisplayStoryBook } from "@runbook/storybook";
 import { fixtureView } from "@runbook/fixtures";
@@ -35,7 +35,7 @@ interface TestArgsForView {
 
 const viewL: Optional<TestStateForView, View> = focusOn ( identity<TestStateForView> (), 'view' )
 const situationL: Optional<TestStateForView, any> = focusOn ( identity<TestStateForView> (), 'situation' )
-const viewAndSituationL = optionalForTuple ( viewL, situationL )
+const viewAndSituationL = optionalForTuple2 ( viewL, situationL )
 
 
 const render = ( args: TestArgsForView ) => {
