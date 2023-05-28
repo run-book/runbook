@@ -1,5 +1,5 @@
 import { IfTrue, IfTrueBound, View } from "./views";
-import { mapObjValues, NameAnd, Primitive, safeArray } from "@runbook/utils";
+import { flatten, fromEntries, mapObjToArray, mapObjValues, NameAnd, NameAndParams, Primitive, safeArray } from "@runbook/utils";
 import { Binding, BindingContext, evaluate } from "@runbook/bindings";
 import { bracesVarDefn, derefence } from "@runbook/variables";
 
@@ -42,3 +42,12 @@ export const evaluateViewConditions = ( bc: BindingContext, fixtureView: View ):
     return result
   };
 };
+
+export function makeExecuteFrom ( results: NameAnd<EvaluateViewConditionResult> ) {
+  let l: [ string, NameAndParams ][][] = mapObjToArray<EvaluateViewConditionResult, [ string, NameAndParams ][]> ( results, ( result, name ) =>
+    result.bindings.map ( ( binding, i ) => {
+      const id = `${name}${i}`
+      return [ id, { name: result.instrumentName, params: mapObjValues ( binding, b => b.value ) } ]
+    } ) );
+  return fromEntries ( flatten<[ string, NameAndParams ]> ( l ));
+}

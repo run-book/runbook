@@ -1,9 +1,9 @@
 import { display, displayWithNewOpt, RunbookComponent } from "@runbook/runbook_state";
-import { EvaluateViewConditionResult, evaluateViewConditions, View } from "@runbook/views";
+import { EvaluateViewConditionResult, evaluateViewConditions, makeExecuteFrom, View } from "@runbook/views";
 import { labelAnd, Layout, textAreaForObj } from "@runbook/components";
 import { Binding, BindingContext } from "@runbook/bindings";
 import { focusOnJustB2 } from "@runbook/optics";
-import { flatten, mapObjToArray, NameAnd, Tuple2 } from "@runbook/utils";
+import { flatten, mapObjToArray, mapObjValues, NameAnd, Tuple2 } from "@runbook/utils";
 import { ScriptInstrument } from "@runbook/scriptinstruments";
 
 export function displaySituations<S> (): RunbookComponent<S, any> {
@@ -60,16 +60,13 @@ export function displayResults<S> ( name: string, results: NameAnd<EvaluateViewC
   };
 }
 
+
 export function showWillSendToServer<S> ( results: NameAnd<EvaluateViewConditionResult>, name2Instrument: ( name: string ) => ScriptInstrument ): RunbookComponent<S, Tuple2<View, any>> {
   return ( st ) => ( props ) => {
     const { focusedOn } = props;
     const view = focusedOn?.a
     if ( !view ) return <div>Cannot execute</div>
-    const willSend = flatten ( mapObjToArray ( results, ( result, name ) =>
-      result.bindings.map ( ( binding, i ) => {
-        const id = `${name}${i}`
-        return { id, name: result.instrumentName, params: binding }
-      } ) ) )
+    const willSend = makeExecuteFrom ( results );
     return <div>
       <pre>{JSON.stringify ( willSend, null, 2 )}</pre>
     </div>

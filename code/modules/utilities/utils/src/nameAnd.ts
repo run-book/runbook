@@ -1,8 +1,13 @@
 import { ErrorsAnd, isErrors } from "./errors";
 import { flatMap } from "./list";
+import { Primitive } from "./types";
+
 
 export type NameAnd<T> = { [ name: string ]: T }
-
+export interface NameAndParams {
+  name: string
+  params: NameAnd<Primitive>
+}
 export function mapObjValues<T, T1> ( obj: NameAnd<T>, fn: ( t: T, name: string, i: number ) => T1 ): NameAnd<T1> {
   const result: NameAnd<T1> = {}
   let i = 0

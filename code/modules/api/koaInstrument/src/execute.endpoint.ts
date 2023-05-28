@@ -2,13 +2,11 @@ import { KoaPartialFunction } from "@runbook/koa";
 import { Execution } from "@runbook/executors";
 import { Cache, CacheDetails, cacheGet, CacheOptions } from "@runbook/cache";
 import { Params } from "@runbook/loaders";
-import { composeNameAndValidators, ErrorsAnd, flatten, isErrors, mapObjToArray, mapObjValues, NameAnd, NameAndValidator, safeObject, validateChild, validateNameAnd, validatePrimitive, validateString } from "@runbook/utils";
+import { composeNameAndValidators, ErrorsAnd, flatten, isErrors, mapObjToArray, mapObjValues, NameAnd, NameAndParams, NameAndValidator, safeObject, validateChild, validateNameAnd, validatePrimitive, validateString } from "@runbook/utils";
 
-interface NameAndParams {
-  name: string
-  params: Params
-}
+
 export interface ExecuteBody {
+  //id => instrument name and params
   execute: NameAnd<NameAndParams>
 }
 
@@ -17,7 +15,6 @@ const validateExecuteBody: NameAndValidator<ExecuteBody> =
           validateNameAnd ( composeNameAndValidators (
             validateChild ( "name", validateString () ),
             validateChild ( 'params', validateNameAnd ( validatePrimitive () ) ) ) ) )
-
 interface TAndNameParams<T> {
   t: T
   name: string
