@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { CleanConfig } from "@runbook/config";
-import { applyTrueConditions, evaluateViewConditions, View } from "@runbook/views";
+import { applyTrueConditions, EvaluateViewConditionResult, evaluateViewConditions, IfTrue, IfTrueBound, View } from "@runbook/views";
 import { inheritsFrom, makeStringDag, mapObjValues, NameAnd, OS, Primitive, safeArray, toArray } from "@runbook/utils";
 import { BindingContext } from "@runbook/bindings";
 import { jsonToDisplay } from "@runbook/displayformat";
@@ -36,16 +36,17 @@ export function addViewCommand ( command: Command, cwd: string, viewName: string
       refDataFn: fromReferenceData ( config.reference ),
       inheritsFrom: inheritsFrom ( makeStringDag ( config.inheritance ) )
     }
-    const bindings = evaluateViewConditions ( bc, view ) ( config.situation )
+    const results: NameAnd<EvaluateViewConditionResult> = evaluateViewConditions ( bc, view ) ( config.situation )
     if ( opts.bindings ) {
       console.log ( 'Bindings for view', viewName )
-      mapObjValues ( bindings, ( bs, name ) => {
+      mapObjValues ( results, ( evcr, name ) => {
+        const { instrumentName, bindings } = evcr
         console.log ( name )
-        if ( bs?.length === 0 ) console.log ( '  nothing' )
-        bs.forEach ( b => console.log ( '  ' + JSON.stringify ( b ) ) )
+        if ( bindings?.length === 0 ) console.log ( '  nothing' )
+        bindings.forEach ( b => console.log ( '  ' + JSON.stringify ( b ) ) )
       } )
     }
-    const trueConditions = applyTrueConditions ( view ) ( bindings )
+    const trueConditions: NameAnd<IfTrueBound[]> = applyTrueConditions ( view ) ( results )
     if ( opts.instruments ) {
       mapObjValues ( trueConditions, ( ifTrues, name ) => {
         console.log ( name )

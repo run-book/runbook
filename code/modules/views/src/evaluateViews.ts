@@ -12,10 +12,10 @@ function makeParams ( ifTrue: IfTrue, context: string, binding: Binding ) {
     ? params
     : mapObjValues ( params, param => derefence ( context, bindingsToDictionary ( binding ), param, { variableDefn: bracesVarDefn } ) );
 }
-export const applyTrueConditions = ( fixtureView: View ) => ( bindings: NameAnd<Binding[]> ): NameAnd<IfTrueBound[]> => {
+export const applyTrueConditions = ( fixtureView: View ) => ( results: NameAnd<EvaluateViewConditionResult> ): NameAnd<IfTrueBound[]> => {
   const ifTrues = mapObjValues ( fixtureView.fetchers, fetcher => fetcher.ifTrue )
   let result: NameAnd<IfTrueBound[]> = mapObjValues ( ifTrues, ( ifTrue, name ) => {
-    const trueBindings = safeArray ( bindings[ name ] )
+    const trueBindings = safeArray ( results[ name ].bindings )
     const context = `Applying true condition ${name}`
     return trueBindings.map ( binding => ({
       ...ifTrue, binding, params: makeParams ( ifTrue, context, binding )
@@ -27,8 +27,16 @@ export function bindingsToDictionary ( binding: Binding ): NameAnd<Primitive> {
   const res: NameAnd<Primitive> = mapObjValues ( binding, ( binding, name ) => binding.value )
   return res
 }
-export const evaluateViewConditions = ( bc: BindingContext, fixtureView: View ): ( situation: any ) => NameAnd<Binding[]> => {
-  const evaluators: NameAnd<( situation: any ) => Binding[]> = mapObjValues ( fixtureView.fetchers, fetcher => evaluate ( bc, fetcher.condition ) )
+
+export interface EvaluateViewConditionResult {
+  bindings: Binding[],
+  instrumentName: string
+}
+export const evaluateViewConditions = ( bc: BindingContext, fixtureView: View ): ( situation: any ) => NameAnd<EvaluateViewConditionResult> => {
+  const evaluators: NameAnd<( situation: any ) => EvaluateViewConditionResult> =
+          mapObjValues ( fixtureView.fetchers, fetcher => {
+            return sit => ({ bindings: evaluate ( bc, fetcher.condition ) ( sit ), instrumentName: fetcher.ifTrue.name })
+          } )
   return ( situation: any ) => {
     const result = mapObjValues ( evaluators, evaluator => evaluator ( situation ) )
     return result

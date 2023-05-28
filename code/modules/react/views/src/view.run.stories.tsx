@@ -5,6 +5,7 @@ import { fixtureView } from "@runbook/fixtures";
 import { View } from "@runbook/views";
 import { runView } from "./view.run.react";
 import { bc } from "@runbook/bindings/dist/src/binding.fixture";
+import { name2Instrument } from "@runbook/views/dist/src/views.fixture";
 
 //exists to just finesse Storybook
 const ViewRunComponent = <S extends any> (): JSX.Element => <div></div>;
@@ -39,7 +40,7 @@ const viewAndSituationL = optionalForTuple2 ( viewL, situationL )
 
 
 const render = ( args: TestArgsForView ) => {
-  return <DisplayStoryBook s={{ view: args.view, situation: args.situation }} opt={viewAndSituationL} mode={args.mode}>{runView ( args.name, bc )}</DisplayStoryBook>
+  return <DisplayStoryBook s={{ view: args.view, situation: args.situation }} opt={viewAndSituationL} mode={args.mode}>{runView ( args.name, bc ,name2Instrument)}</DisplayStoryBook>
 };
 
 const situation = {

@@ -8,7 +8,7 @@ interface TestState {
 const fetchOpt = focusQuery ( identity<TestState> (), 'fetchCommands' )
 function setUp () {
   const fetch = async ( info: RequestInfo, init?: RequestInit ) =>
-    ({ json: async () => `{"res":"${info} ${init?.method}"}` })
+    ({ json: async () => ({ res: `${info} ${init?.method}` }) })
   const middleware = fetchMiddleware ( fetchOpt, fetch )
   return middleware
 }
@@ -21,8 +21,8 @@ describe ( "fetchMiddleware", () => {
     let onError = jest.fn ();
     const commands = await middleware.process ( state.fetchCommands, onError )
     expect ( onError ).not.toHaveBeenCalled ()
-    expect ( commands.map ( transformToString ) ).toEqual ([
+    expect ( commands.map ( transformToString ) ).toEqual ( [
       "tx:set(a, {\"res\":\"someUrl get\"})"
-    ])
+    ] )
   } )
 } )

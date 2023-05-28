@@ -2,7 +2,7 @@ import { fixtureView, inheritance, mereology, ref } from "@runbook/fixtures";
 import { inheritsFrom, mapObjValues } from "@runbook/utils";
 import { BindingContext } from "@runbook/bindings";
 import { applyTrueConditions, bindingsToDictionary, evaluateViewConditions } from "./evaluateViews";
-import { bindings1, bindings2, situation1, situation2 } from "./views.fixture";
+import { evcr1, evcr2, situation1, situation2 } from "./views.fixture";
 import { validateView } from "./views";
 import { fromReferenceData } from "@runbook/referencedata";
 import { mereologyToSummary } from "@runbook/mereology";
@@ -10,7 +10,7 @@ import { mereologyToSummary } from "@runbook/mereology";
 
 export const bc: BindingContext = {
   debug: false,
-  mereology: mereologyToSummary(mereology as any),
+  mereology: mereologyToSummary ( mereology as any ),
   refDataFn: fromReferenceData ( ref ),
   inheritsFrom: inheritsFrom ( inheritance )
 }
@@ -19,16 +19,16 @@ export const bc: BindingContext = {
 describe ( "evaluateViews", () => {
   describe ( "evaluateViewConditions", () => {
     it ( "should work out which instruments to load, and their arguments - situation 1", () => {
-      expect ( evaluateViewConditions ( bc, fixtureView ) ( situation1 ) ).toEqual ( bindings1 )
+      expect ( evaluateViewConditions ( bc, fixtureView ) ( situation1 ) ).toEqual ( evcr1 )
     } )
     it ( "should work out which instruments to load, and their arguments - situation 1", () => {
-      expect ( evaluateViewConditions ( bc, fixtureView ) ( situation2 ) ).toEqual ( bindings2 )
+      expect ( evaluateViewConditions ( bc, fixtureView ) ( situation2 ) ).toEqual ( evcr2 )
     } )
   } )
 
   describe ( "bindingsToDictionary", () => {
     it ( "should make a nameand that is just name => value", () => {
-      expect ( mapObjValues ( bindings1, bs => bs.map ( bindingsToDictionary ) ) ).toEqual ( {
+      expect ( mapObjValues ( evcr1, results => results.bindings.map ( bindingsToDictionary ) ) ).toEqual ( {
         "findDiffs": [],
         "getRepo": [
           { "repoUrl": "leo.git.url", "ser": "leo" },
@@ -39,7 +39,7 @@ describe ( "evaluateViews", () => {
   } )
   describe ( "applyTrueConditions", () => {
     it ( "should work out which instruments are to fire, and what the arguments are -sit1", () => {
-      expect ( applyTrueConditions ( fixtureView ) ( bindings1 ) ).toEqual ( {
+      expect ( applyTrueConditions ( fixtureView ) ( evcr1 ) ).toEqual ( {
         "findDiffs": [],
         "getRepo": [
           {
@@ -64,7 +64,7 @@ describe ( "evaluateViews", () => {
       } )
     } )
     it ( "should work out which instruments are to fire, and what the arguments are -sit2", () => {
-      let actual = applyTrueConditions ( fixtureView ) ( bindings2 );
+      let actual = applyTrueConditions ( fixtureView ) ( evcr2 );
       const withoutBindings = mapObjValues ( actual, bs => bs.map ( b => ({ ...b, binding: undefined }) ) )
       expect ( withoutBindings ).toEqual ( {
         "findDiffs": [

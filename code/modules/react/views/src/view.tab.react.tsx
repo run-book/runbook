@@ -6,6 +6,7 @@ import { runView } from "./view.run.react";
 import { BindingContext } from "@runbook/bindings";
 import { composeOptional, focusOnJustA2, focusOnJustB2, focusOnJustData, focusOnJustRef, focusQuery, Optional, optionalForRefAndData, optionalForTuple2, parsePath } from "@runbook/optics";
 import { displayView } from "./view.details.react";
+import { name2Instrument } from "@runbook/views/dist/src/views.fixture";
 
 export const optForViewTab = <S extends any> ( selectionStateOpt: Optional<S, SelectionState>, sitOpt: Optional<S, any> ) => ( rootOptional: Optional<S, any>, viewPath: string[] ): Optional<S, RefAndData<SelectionState, Tuple2<View, any>>> =>
   optionalForRefAndData ( selectionStateOpt, optionalForTuple2 ( composeOptional ( rootOptional, parsePath ( viewPath ) ), sitOpt ) );
@@ -17,7 +18,7 @@ function displaySelectedTab<S> ( st: RunbookState<S, RefAndData<SelectionState, 
   const name = last ( safeArray ( selection?.displayPath ) )
   if ( props.mode === 'run' ) {
     const opt = optionalForTuple2 ( focusOnJustData ( st.opt ), situationOpt )
-    return displayWithNewOpt ( st, props, focusOnJustData ( st.opt ), runView ( name, bc ) )
+    return displayWithNewOpt ( st, props, focusOnJustData ( st.opt ), runView ( name, bc, name2Instrument ) )
   } else
     return displayWithNewOpt ( st, props, focusOnJustA2 ( focusOnJustData ( st.opt ) ), displayView ( name ) )
 }

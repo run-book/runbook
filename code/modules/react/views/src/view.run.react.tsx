@@ -1,9 +1,10 @@
 import { display, displayWithNewOpt, RunbookComponent } from "@runbook/runbook_state";
-import { evaluateViewConditions, View } from "@runbook/views";
+import { EvaluateViewConditionResult, evaluateViewConditions, View } from "@runbook/views";
 import { labelAnd, Layout, textAreaForObj } from "@runbook/components";
 import { Binding, BindingContext } from "@runbook/bindings";
 import { focusOnJustB2 } from "@runbook/optics";
-import { mapObjToArray, Tuple2 } from "@runbook/utils";
+import { flatten, mapObjToArray, NameAnd, Tuple2 } from "@runbook/utils";
+import { ScriptInstrument } from "@runbook/scriptinstruments";
 
 export function displaySituations<S> (): RunbookComponent<S, any> {
   return ( st ) => ( props ) => {
@@ -46,27 +47,47 @@ export function BindingTable ( { name, bindings }: BindingsProps ) {
   </>
 }
 
-export function displayBindings<S> ( name: string, bc: BindingContext ): RunbookComponent<S, Tuple2<View, any>> {
+export function displayResults<S> ( name: string, results: NameAnd<EvaluateViewConditionResult> ): RunbookComponent<S, Tuple2<View, any>> {
   return ( st ) => ( props ) => {
     const { focusedOn } = props;
     const view = focusedOn?.a
     const situation = focusedOn?.b
     if ( view && situation ) {
-      const bindings = evaluateViewConditions ( bc, view ) ( situation )
-      return <>{mapObjToArray ( bindings, ( binding, name ) =>
-        <BindingTable key={name} name={name} bindings={binding}/> )
+      return <>{mapObjToArray ( results, ( result, name ) =>
+        <BindingTable key={name} name={name} bindings={result.bindings}/> )
       }</>
     } else return <div>Cannot execute</div>
   };
 }
 
-export function runView<S> ( name: string, bc: BindingContext ): RunbookComponent<S, Tuple2<View, any>> {
+export function showWillSendToServer<S> ( results: NameAnd<EvaluateViewConditionResult>, name2Instrument: ( name: string ) => ScriptInstrument ): RunbookComponent<S, Tuple2<View, any>> {
   return ( st ) => ( props ) => {
+    const { focusedOn } = props;
+    const view = focusedOn?.a
+    if ( !view ) return <div>Cannot execute</div>
+    const willSend = flatten ( mapObjToArray ( results, ( result, name ) =>
+      result.bindings.map ( ( binding, i ) => {
+        const id = `${name}${i}`
+        return { id, name: result.instrumentName, params: binding }
+      } ) ) )
+    return <div>
+      <pre>{JSON.stringify ( willSend, null, 2 )}</pre>
+    </div>
+  };
+}
+
+export function runView<S> ( name: string, bc: BindingContext, name2Instrument: ( s: string ) => ScriptInstrument ): RunbookComponent<S, Tuple2<View, any>> {
+  return ( st ) => ( props ) => {
+    const { focusedOn } = props;
+    const view = focusedOn?.a
+    const situation = focusedOn?.b
+    const results: NameAnd<EvaluateViewConditionResult> = view && situation ? evaluateViewConditions ( bc, view ) ( situation ) : {}
     return <div>
       <h1>{name}</h1>
-      <Layout layout={[ [ 1, 1 ] ]} component='runView'>
+      <Layout layout={[ [ 1, 1, 1 ] ]} component='runView'>
         {displayWithNewOpt ( st, props, focusOnJustB2 ( st.opt ), displaySituations () )}
-        {display ( st, props, displayBindings ( name, bc ) )}
+        {display ( st, props, displayResults ( name, results ) )}
+        {display ( st, props, showWillSendToServer ( results, name2Instrument ) )}
       </Layout>
     </div>
 
