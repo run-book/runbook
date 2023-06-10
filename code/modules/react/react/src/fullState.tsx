@@ -4,13 +4,15 @@ import { CleanConfig } from "@runbook/config";
 import { SelectionState } from "@runbook/menu_react";
 import { FetchCommand } from "@runbook/commands";
 import { StatusEndpointData } from "@runbook/executors";
+import { RunbookDebug } from "@runbook/debug";
 
 export interface FullState {
   config: CleanConfig
   selectionState: SelectionState
   fetchCommands: FetchCommand[]
   status: { 'executor': NameAnd<StatusEndpointData> }
-  instrumentResult?: any
+  instrumentResult?: any,
+  debug?: RunbookDebug
 }
 export const idOpt = identity<FullState> ()
 export const instrumentResultOpt = focusQuery ( idOpt, 'instrumentResult' )

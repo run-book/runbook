@@ -4,20 +4,21 @@
   "description": "",
   "packageJson": {
     "files":           ["build/"],
-    "proxy": "http://localhost:3001",
+    "proxy":           "http://localhost:3001",
     "dependencies":    {},
     "devDependencies": {"react-scripts": "^5.0.1"},
     "scripts":         {"start": "react-scripts start"}
   },
   "links":       [
-    "@runbook/instruments_react",
+    "@runbook/debug",
     "@runbook/executors_react",
     "@runbook/fixtures",
-    "@runbook/store",
-    "@runbook/views_react",
+    "@runbook/instruments_react",
     "@runbook/menu_react",
     "@runbook/referencedata_react",
-    "@runbook/storybook"
+    "@runbook/store",
+    "@runbook/storybook",
+    "@runbook/views_react"
   ],
   "guards":      {
     "compile": true,

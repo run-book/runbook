@@ -1,0 +1,16 @@
+{
+  "template":    "react",
+  "name":        "@runbook/debug",
+  "description": "",
+  "packageJson": {
+    "dependencies":    {},
+    "devDependencies": {}
+  },
+  "links":       ["@runbook/optics", "@runbook/runbook_state", "@runbook/storybook"],
+  "guards":      {
+    "compile": true,
+    "publish": false,
+    "test":    false,
+    "storybook": 6009
+  }
+}

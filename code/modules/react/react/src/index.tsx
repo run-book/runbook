@@ -9,21 +9,23 @@ import { getElement } from "./react.helpers";
 import { executorStatusOpt, fetchCommandsOpt, FullState, instrumentResultOpt, refAndDataOpt, selectionStateOpt, situationOpt } from "./fullState";
 import { DisplayRsInState, makeStore } from "./makeStore";
 import { bootStrapCombine, bootstrapMenu, changeMode, findMenuAndDisplay, MenuAndDisplayFnsForRunbook, MenuDefn, MenuDefnForRunbook, SelectionState } from "@runbook/menu_react";
-import { composeOptional, Optional, optionalForTuple3, parsePath } from "@runbook/optics";
-import { display, displayWithNewOpt, jsonMe, modeFromProps, RunbookComponent } from "@runbook/runbook_state";
+import { composeOptional, focusOnJustData, Optional, optionalForTuple3, parsePath } from "@runbook/optics";
+import { display, displayWithNewOpt, jsonMe, modeFromProps, RunbookComponent, RunbookState } from "@runbook/runbook_state";
 import { displayScriptInstrument } from "@runbook/instruments_react";
 import { displayViewTabs, optForViewTab } from "@runbook/views_react";
 import { DisplayMereologyContext, runbookCompAllDataFor } from "@runbook/referencedata_react";
 import { BindingContext } from "@runbook/bindings";
 import { mereologyToSummary } from "@runbook/mereology";
 import { fromReferenceData } from "@runbook/referencedata";
-import { inheritsFrom, last, makeStringDag, NameAnd, prune } from "@runbook/utils";
+import { inheritsFrom, last, makeStringDag, NameAnd, prune, RefAndData } from "@runbook/utils";
 import { tableProps } from "@runbook/bindings_react";
 import { FetchCommand } from "@runbook/commands";
 import { displayExecutors } from "@runbook/executors_react";
 import { poll } from "@runbook/commands/dist/src/poll";
 import { inheritance } from "@runbook/fixtures";
 import { StatusEndpointData } from "@runbook/executors";
+import { toggleButton } from "@runbook/components";
+import { showDebug } from "@runbook/debug";
 
 
 // let requestInfoForExecutorsStore = window.location.href + 'executeStatus';
@@ -118,6 +120,21 @@ const filename = loc + 'config'
 console.log ( 'loc: ', loc, 'filename: ', filename );
 const rootElement = getElement ( "root" );
 
+function mainDisplay ( bc: BindingContext ): DisplayRsInState<FullState, CleanConfig> {
+  // const debugL: Optional<FullState, RunbookDebug>  = focusQuery ( identity<FullState> (), "debug" ) as any;
+  const showDebugL: Optional<CleanConfig, boolean> = parsePath ( [ 'debug' , 'showDebug'] )
+  return ( newRs: RunbookState<FullState, RefAndData<SelectionState, CleanConfig>> ) => {
+    let justData: Optional<FullState, CleanConfig> = focusOnJustData<FullState, SelectionState, CleanConfig> ( newRs.opt );
+    const rsForData: RunbookState<FullState, boolean> = newRs.withOpt ( composeOptional ( justData, showDebugL ) )
+    return <>
+      {displayRsForMenuDefn ( bc ) ( newRs )}
+      <hr/>
+      {display<FullState, boolean> ( rsForData, {}, toggleButton ('Hide Debug', 'Show Debug') )}
+      {display ( rsForData, {}, showDebug () )}
+    </>;
+  }
+
+}
 const requestInfoForExecutorsStore = 'executeStatus';
 fetch ( filename ).then ( response => response.json () ).then ( config => {
   const realConfig: CleanConfig = prune ( config, '__from' )
@@ -136,7 +153,7 @@ fetch ( filename ).then ( response => response.json () ).then ( config => {
             refAndDataOpt,
             fetchCommandsOpt,
             executorStatusOpt,
-            displayRsForMenuDefn ( bc ) );
+            mainDisplay ( bc ) );
 
   startProcessing ( store )
   poll ( store, requestInfoForExecutorsStore, undefined, executorStatusOpt, 10000 )
