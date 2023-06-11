@@ -7,8 +7,8 @@
       "local"
     ],
     "__from": [
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\inheritance\\environment.inheritance.json",
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\inheritance\\service.inheritance.json"
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\inheritance\\environment.inheritance.json",
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\inheritance\\service.inheritance.json"
     ],
     "service": [
       "leo",
@@ -16,217 +16,18 @@
     ]
   },
   "__from": [
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\inheritance\\environment.inheritance.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\inheritance\\service.inheritance.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\cat.instrument.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\echo.instrument.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\git\\cloneOrFetch.instrument.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\ls.instrument.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\ping.instrument.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\timout.instrument.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\mereology\\main.mereology.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\reference\\reference.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\situation\\situation.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\views\\debug\\displayGit.view.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\views\\debug\\domain.cat.view.json",
-    "C:\\git\\runbook\\runbook\\.runbook\\config\\views\\debug\\domain.view.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\inheritance\\environment.inheritance.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\inheritance\\service.inheritance.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\displayGit.view.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\domain.cat.view.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\domain.view.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\package.json",
     "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\echo.instrument.json",
     "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\ls.instrument.json"
   ],
-  "instrument": {
-    "catCsv": {
-      "type": "script",
-      "description": "A demo instrument that displays a csv file",
-      "params": {
-        "file": {
-          "description": "The file to display"
-        }
-      },
-      "staleness": 5000,
-      "cost": "low",
-      "windows": {
-        "script": "type {file}",
-        "format": {
-          "type": "table",
-          "hideHeader": 1
-        }
-      },
-      "linux": {
-        "script": "cat {file}",
-        "format": {
-          "type": "table",
-          "hideHeader": 1
-        }
-      },
-      "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\cat.instrument.json"
-      ]
-    },
-    "__from": [
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\cat.instrument.json",
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\echo.instrument.json",
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\git\\cloneOrFetch.instrument.json",
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\ls.instrument.json",
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\ping.instrument.json",
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\timout.instrument.json",
-      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\echo.instrument.json",
-      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\ls.instrument.json"
-    ],
-    "echo": {
-      "type": "script",
-      "description": "An instrument that sends its arguments to standard output",
-      "params": "*",
-      "staleness": 5000,
-      "cost": "low",
-      "script": [
-        "echo {argsNames}",
-        "echo {allArgs}",
-        "echo {argsNames}",
-        "echo {allArgs}"
-      ],
-      "format": {
-        "type": "table",
-        "hideHeader": 1
-      },
-      "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\echo.instrument.json",
-        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\echo.instrument.json"
-      ]
-    },
-    "getRepo": {
-      "type": "script",
-      "description": "This will (when working) go get or update the repo",
-      "params": {
-        "gitDir": {
-          "description": "directory that holds all the git reports",
-          "default": "c:\\git"
-        },
-        "service": {
-          "description": "The service for the repo",
-          "default": "leo"
-        },
-        "repoUrl": {
-          "description": "The url holding the git repo",
-          "default": "leo.git.url"
-        }
-      },
-      "staleness": 5000,
-      "cost": "low",
-      "script": [
-        "mkdir {gitDir}",
-        "echo git clone {repoUrl} {gitDir}/{service}"
-      ],
-      "format": {
-        "type": "table",
-        "hideHeader": 1
-      },
-      "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\git\\cloneOrFetch.instrument.json"
-      ]
-    },
-    "ls": {
-      "type": "script",
-      "description": "A demo instrument that displays the directory contents",
-      "params": {
-        "dir": {
-          "default": ".",
-          "description": "The directory to display"
-        }
-      },
-      "staleness": 5000,
-      "cost": "low",
-      "format": {
-        "type": "table",
-        "headers": [
-          "file"
-        ]
-      },
-      "windows": {
-        "script": "dir /b {dir}",
-        "format": {
-          "type": "table",
-          "headers": [
-            "file",
-            "file"
-          ]
-        }
-      },
-      "linux": {
-        "script": "ls -l {dir}",
-        "format": {
-          "type": "table",
-          "headers": [
-            "notdoneyet",
-            "notdoneyet"
-          ]
-        }
-      },
-      "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\ls.instrument.json",
-        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\ls.instrument.json"
-      ]
-    },
-    "ping": {
-      "type": "script",
-      "description": "pings a server",
-      "params": {
-        "domain": {
-          "description": "The domain name to ping"
-        }
-      },
-      "staleness": 5000,
-      "cost": "low",
-      "windows": {
-        "script": "ping -n 1 {domain}",
-        "format": "exitcode==0"
-      },
-      "linux": {
-        "script": "ping -c 5 {domain}",
-        "format": "exitcode==0"
-      },
-      "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\ping.instrument.json"
-      ]
-    },
-    "delay": {
-      "type": "script",
-      "description": "Delay for a number of seconds",
-      "params": {
-        "delay": {
-          "description": "How many seconds to delay "
-        }
-      },
-      "staleness": 5000,
-      "cost": "low",
-      "format": {
-        "type": "table",
-        "headers": [
-          "file"
-        ]
-      },
-      "windows": {
-        "script": "ping 127.0.0.1 -n {delay}",
-        "format": {
-          "type": "table",
-          "headers": [
-            "file"
-          ]
-        }
-      },
-      "linux": {
-        "script": "sleep 5s",
-        "format": {
-          "type": "table",
-          "headers": [
-            "notdoneyet"
-          ]
-        }
-      },
-      "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\instruments\\timout.instrument.json"
-      ]
-    }
-  },
   "mereology": {
     "environment": {
       "children": {
@@ -250,7 +51,7 @@
         }
       },
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\mereology\\main.mereology.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json"
       ]
     },
     "fields": {
@@ -258,11 +59,11 @@
         "description": "The tag that will be in each service's git repo for the code that is in this environment"
       },
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\mereology\\main.mereology.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json"
       ]
     },
     "__from": [
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\mereology\\main.mereology.json"
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json"
     ]
   },
   "service": {
@@ -271,7 +72,7 @@
         "description": "A one line summary of what this service does"
       },
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\mereology\\main.mereology.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json"
       ]
     },
     "children": {
@@ -281,11 +82,11 @@
         }
       },
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\mereology\\main.mereology.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json"
       ]
     },
     "__from": [
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\mereology\\main.mereology.json"
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json"
     ]
   },
   "reference": {
@@ -301,7 +102,7 @@
       },
       "gitTag": "dev",
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\reference\\reference.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
       ]
     },
     "test:environment": {
@@ -316,7 +117,7 @@
       },
       "gitTag": "test",
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\reference\\reference.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
       ]
     },
     "prod:environment": {
@@ -331,21 +132,21 @@
       },
       "gitTag": "prod",
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\reference\\reference.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
       ]
     },
     "ngprod:database": {
       "url": "ngprod.url",
       "type": "oracle",
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\reference\\reference.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
       ]
     },
     "ngtest:database": {
       "url": "ngtest.url",
       "type": "oracle",
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\reference\\reference.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
       ]
     },
     "leo:service": {
@@ -354,7 +155,7 @@
       },
       "summary": "CRUD for vehicle orders",
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\reference\\reference.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
       ]
     },
     "npx:service": {
@@ -363,41 +164,41 @@
       },
       "summary": "Invoice generation",
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\reference\\reference.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
       ]
     },
     "__from": [
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\reference\\reference.json"
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
     ]
   },
   "situation": {
     "leo": {
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\situation\\situation.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json"
       ]
     },
     "npx": {
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\situation\\situation.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json"
       ]
     },
     "dev": {
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\situation\\situation.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json"
       ]
     },
     "local": {
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\situation\\situation.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json"
       ]
     },
     "test": {
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\situation\\situation.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json"
       ]
     },
     "__from": [
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\situation\\situation.json"
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json"
     ]
   },
   "view": {
@@ -421,8 +222,7 @@
             },
             "{ser:service}": {
               "git": {
-                "url": "{url}",
-                "directory": "{dir}"
+                "url": "{url}"
               }
             }
           },
@@ -435,13 +235,13 @@
         }
       },
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\views\\debug\\displayGit.view.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\displayGit.view.json"
       ]
     },
     "__from": [
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\views\\debug\\displayGit.view.json",
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\views\\debug\\domain.cat.view.json",
-      "C:\\git\\runbook\\runbook\\.runbook\\config\\views\\debug\\domain.view.json"
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\displayGit.view.json",
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\domain.cat.view.json",
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\domain.view.json"
     ],
     "domainCat": {
       "type": "view",
@@ -472,7 +272,7 @@
         }
       },
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\views\\debug\\domain.cat.view.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\domain.cat.view.json"
       ]
     },
     "domain": {
@@ -503,7 +303,71 @@
         }
       },
       "__from": [
-        "C:\\git\\runbook\\runbook\\.runbook\\config\\views\\debug\\domain.view.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\domain.view.json"
+      ]
+    }
+  },
+  "name": "runbookTestConfig",
+  "version": "1.0.0",
+  "dependencies": {
+    "__from": [
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\package.json"
+    ]
+  },
+  "instrument": {
+    "echo": {
+      "type": "script",
+      "description": "An instrument that sends its arguments to standard output",
+      "params": "*",
+      "staleness": 5000,
+      "cost": "low",
+      "script": [
+        "echo {argsNames}",
+        "echo {allArgs}"
+      ],
+      "format": {
+        "type": "table",
+        "hideHeader": 1
+      },
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\echo.instrument.json"
+      ]
+    },
+    "__from": [
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\echo.instrument.json",
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\ls.instrument.json"
+    ],
+    "ls": {
+      "type": "script",
+      "description": "A demo instrument that displays the directory contents",
+      "params": {
+        "dir": {
+          "default": ".",
+          "description": "The directory to display"
+        }
+      },
+      "staleness": 5000,
+      "cost": "low",
+      "windows": {
+        "script": "dir /b {dir}",
+        "format": {
+          "type": "table",
+          "headers": [
+            "file"
+          ]
+        }
+      },
+      "linux": {
+        "script": "ls -l {dir}",
+        "format": {
+          "type": "table",
+          "headers": [
+            "notdoneyet"
+          ]
+        }
+      },
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\ls.instrument.json"
       ]
     }
   }

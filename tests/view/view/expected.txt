@@ -8,5 +8,6 @@ Options:
 
 Commands:
   displayGit [options]  Lists the git properties of the services
+  domainCat [options]   Display a csv file for each dmain in each environment
   domain [options]      Lists the domain and port of the services
   help [command]        display help for command

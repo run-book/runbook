@@ -1,9 +1,9 @@
 import { Command } from "commander";
-import { CleanConfig, cachedConfigFile, cachedConfigFileName, configSubDir, findRunbookDirectoryOrThrow, validateConfig, validationConfigPartial, runbookConfigFile } from "@runbook/config";
-import { addFromMutator, consoleLogValidationAndShouldExit, defaultMergeAccept, displayFilesAndResultsForValidation, DisplayValidation, loadAndParseFile, loadAndParseFileOrDefaultIfNoFile, mergeJsonDirs, mergeJsonFiles, validateJsonDirs, validateJsonFiles } from "@runbook/files";
+import { cachedConfigFile, CleanConfig, configSubDir, configSubDirFromRoot, findRunbookDirectoryOrThrow, runbookConfigFile, validateConfig } from "@runbook/config";
+import { addFromMutator, consoleLogValidationAndShouldExit, defaultMergeAccept, displayFilesAndResultsForValidation, DisplayValidation, loadAndParseFileOrDefaultIfNoFile, mergeJsonDirs, validateJsonDirs } from "@runbook/files";
 import { ErrorsAnd, flatten, isErrors, mapArrayErrorsK, safeArray } from "@runbook/utils";
 import fs from "fs";
-import { defaultCloneGitRepoAndparentsIfNeeded, DefaultParents, makeGitOps, ParentsFn } from "@runbook/git";
+import { defaultCloneGitRepoAndparentsIfNeeded, DefaultParents, makeGitOps } from "@runbook/git";
 import * as os from "os";
 
 export interface ComposeOptions {
@@ -24,7 +24,7 @@ async function loadParentsAndFindAllDirsToBeComposed ( cwd: string, options: Com
   const x = await mapArrayErrorsK ( parents, defaultCloneGitRepoAndparentsIfNeeded ( gitOps ) )
   if ( isErrors ( x ) ) throw new Error ( x.errors.join ( '\n' ) )
   const repoDirs = flatten ( x ).map ( gitOps.gitDir )
-  const allDirs = [ configSubDir ( dir ), ...repoDirs ]
+  const allDirs = [ configSubDir ( dir ), ...repoDirs.map ( configSubDirFromRoot ) ]
   return allDirs;
 }
 async function validateBeforeCompose ( options: ComposeOptions, cwd: string ) {

@@ -23,8 +23,10 @@
     "<root>/config/situation/situation.json",
     "<root>/config/views/debug/displayGit.view.json",
     "<root>/config/views/debug/domain.view.json",
+    "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/cat.instrument.json",
     "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/echo.instrument.json",
-    "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/ls.instrument.json"
+    "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/ls.instrument.json",
+    "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/ping.instrument.json"
   ],
   "mereology": {
     "environment": {
@@ -265,6 +267,40 @@
     }
   },
   "instrument": {
+    "catCsv": {
+      "type": "script",
+      "description": "A demo instrument that displays a csv file",
+      "params": {
+        "file": {
+          "description": "The file to display"
+        }
+      },
+      "staleness": 5000,
+      "cost": "low",
+      "windows": {
+        "script": "type {file}",
+        "format": {
+          "type": "table",
+          "hideHeader": 1
+        }
+      },
+      "linux": {
+        "script": "cat {file}",
+        "format": {
+          "type": "table",
+          "hideHeader": 1
+        }
+      },
+      "__from": [
+        "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/cat.instrument.json"
+      ]
+    },
+    "__from": [
+      "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/cat.instrument.json",
+      "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/echo.instrument.json",
+      "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/ls.instrument.json",
+      "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/ping.instrument.json"
+    ],
     "echo": {
       "type": "script",
       "description": "An instrument that sends its arguments to standard output",
@@ -283,10 +319,6 @@
         "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/echo.instrument.json"
       ]
     },
-    "__from": [
-      "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/echo.instrument.json",
-      "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/ls.instrument.json"
-    ],
     "ls": {
       "type": "script",
       "description": "A demo instrument that displays the directory contents",
@@ -318,6 +350,28 @@
       },
       "__from": [
         "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/ls.instrument.json"
+      ]
+    },
+    "ping": {
+      "type": "script",
+      "description": "pings a server",
+      "params": {
+        "domain": {
+          "description": "The domain name to ping"
+        }
+      },
+      "staleness": 10000,
+      "cost": "low",
+      "windows": {
+        "script": "ping -n 1 {domain}",
+        "format": "exitcode==0"
+      },
+      "linux": {
+        "script": "ping -c 1 {domain}",
+        "format": "exitcode==0"
+      },
+      "__from": [
+        "<home>/.runbook/git/https_github_com_run-book_instruments_git/.runbook/config/ping.instrument.json"
       ]
     }
   }

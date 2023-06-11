@@ -1,61 +1,61 @@
 Validation issues
-.runbook/config/echo.instrument.json
-  .runbook/config/echo.instrument.json.instrument.echo Ìsn't a valid script. Either
-    .runbook/config/echo.instrument.json.instrument.echo.description is undefined
-    .runbook/config/echo.instrument.json.instrument.echo.params is undefined
-    .runbook/config/echo.instrument.json.instrument.echo.windows is undefined
-    .runbook/config/echo.instrument.json.instrument.echo.linux is undefined
+echo.instrument.json
+  echo.instrument.json.instrument.echo Ìsn't a valid script. Either
+    echo.instrument.json.instrument.echo.description is undefined
+    echo.instrument.json.instrument.echo.params is undefined
+    echo.instrument.json.instrument.echo.windows is undefined
+    echo.instrument.json.instrument.echo.linux is undefined
   or
-    .runbook/config/echo.instrument.json.instrument.echo.description is undefined
-    .runbook/config/echo.instrument.json.instrument.echo.params is undefined
-    .runbook/config/echo.instrument.json.instrument.echo.script is undefined
-  .runbook/config/echo.instrument.json.instrument.echo Ìsn't a valid script. Either
-    .runbook/config/echo.instrument.json.instrument.echo.description is undefined
-    .runbook/config/echo.instrument.json.instrument.echo.params is undefined
-    .runbook/config/echo.instrument.json.instrument.echo.windows is undefined
-    .runbook/config/echo.instrument.json.instrument.echo.linux is undefined
+    echo.instrument.json.instrument.echo.description is undefined
+    echo.instrument.json.instrument.echo.params is undefined
+    echo.instrument.json.instrument.echo.script is undefined
+  echo.instrument.json.instrument.echo Ìsn't a valid script. Either
+    echo.instrument.json.instrument.echo.description is undefined
+    echo.instrument.json.instrument.echo.params is undefined
+    echo.instrument.json.instrument.echo.windows is undefined
+    echo.instrument.json.instrument.echo.linux is undefined
   or
-    .runbook/config/echo.instrument.json.instrument.echo.description is undefined
-    .runbook/config/echo.instrument.json.instrument.echo.params is undefined
-    .runbook/config/echo.instrument.json.instrument.echo.script is undefined
-.runbook/config/gitclone.json
-  .runbook/config/gitclone.json.instrument.git/cloneOrPull Ìsn't a valid script. Either
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.description is undefined
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.params is undefined
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.windows is undefined
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.linux is undefined
+    echo.instrument.json.instrument.echo.description is undefined
+    echo.instrument.json.instrument.echo.params is undefined
+    echo.instrument.json.instrument.echo.script is undefined
+gitclone.json
+  gitclone.json.instrument.git/cloneOrPull Ìsn't a valid script. Either
+    gitclone.json.instrument.git/cloneOrPull.description is undefined
+    gitclone.json.instrument.git/cloneOrPull.params is undefined
+    gitclone.json.instrument.git/cloneOrPull.windows is undefined
+    gitclone.json.instrument.git/cloneOrPull.linux is undefined
   or
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.description is undefined
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.params is undefined
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.script is undefined
-  .runbook/config/gitclone.json.instrument.git/cloneOrPull Ìsn't a valid script. Either
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.description is undefined
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.params is undefined
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.windows is undefined
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.linux is undefined
+    gitclone.json.instrument.git/cloneOrPull.description is undefined
+    gitclone.json.instrument.git/cloneOrPull.params is undefined
+    gitclone.json.instrument.git/cloneOrPull.script is undefined
+  gitclone.json.instrument.git/cloneOrPull Ìsn't a valid script. Either
+    gitclone.json.instrument.git/cloneOrPull.description is undefined
+    gitclone.json.instrument.git/cloneOrPull.params is undefined
+    gitclone.json.instrument.git/cloneOrPull.windows is undefined
+    gitclone.json.instrument.git/cloneOrPull.linux is undefined
   or
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.description is undefined
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.params is undefined
-    .runbook/config/gitclone.json.instrument.git/cloneOrPull.script is undefined
-.runbook/config/ls.instrument.json
-  .runbook/config/ls.instrument.json.instrument.ls Ìsn't a valid script. Either
-    .runbook/config/ls.instrument.json.instrument.ls.description is undefined
-    .runbook/config/ls.instrument.json.instrument.ls.params is undefined
-    .runbook/config/ls.instrument.json.instrument.ls.windows is undefined
-    .runbook/config/ls.instrument.json.instrument.ls.linux is undefined
+    gitclone.json.instrument.git/cloneOrPull.description is undefined
+    gitclone.json.instrument.git/cloneOrPull.params is undefined
+    gitclone.json.instrument.git/cloneOrPull.script is undefined
+ls.instrument.json
+  ls.instrument.json.instrument.ls Ìsn't a valid script. Either
+    ls.instrument.json.instrument.ls.description is undefined
+    ls.instrument.json.instrument.ls.params is undefined
+    ls.instrument.json.instrument.ls.windows is undefined
+    ls.instrument.json.instrument.ls.linux is undefined
   or
-    .runbook/config/ls.instrument.json.instrument.ls.description is undefined
-    .runbook/config/ls.instrument.json.instrument.ls.params is undefined
-    .runbook/config/ls.instrument.json.instrument.ls.script is undefined
-  .runbook/config/ls.instrument.json.instrument.ls Ìsn't a valid script. Either
-    .runbook/config/ls.instrument.json.instrument.ls.description is undefined
-    .runbook/config/ls.instrument.json.instrument.ls.params is undefined
-    .runbook/config/ls.instrument.json.instrument.ls.windows is undefined
-    .runbook/config/ls.instrument.json.instrument.ls.linux is undefined
+    ls.instrument.json.instrument.ls.description is undefined
+    ls.instrument.json.instrument.ls.params is undefined
+    ls.instrument.json.instrument.ls.script is undefined
+  ls.instrument.json.instrument.ls Ìsn't a valid script. Either
+    ls.instrument.json.instrument.ls.description is undefined
+    ls.instrument.json.instrument.ls.params is undefined
+    ls.instrument.json.instrument.ls.windows is undefined
+    ls.instrument.json.instrument.ls.linux is undefined
   or
-    .runbook/config/ls.instrument.json.instrument.ls.description is undefined
-    .runbook/config/ls.instrument.json.instrument.ls.params is undefined
-    .runbook/config/ls.instrument.json.instrument.ls.script is undefined
+    ls.instrument.json.instrument.ls.description is undefined
+    ls.instrument.json.instrument.ls.params is undefined
+    ls.instrument.json.instrument.ls.script is undefined
 undefined
 
 There were errors in the runbook config file. Use 'runbook config issues' to see the issues

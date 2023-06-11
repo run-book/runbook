@@ -2,7 +2,8 @@
   "leo:service": {
     "git": {
       "url": "leo.git.url"
-    }
+    },
+    "summary": "CRUD for vehicle orders"
   },
   "dev:environment": {
     "leo:service": {

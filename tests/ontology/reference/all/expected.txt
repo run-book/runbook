@@ -46,11 +46,13 @@
   "leo:service": {
     "git": {
       "url": "leo.git.url"
-    }
+    },
+    "summary": "CRUD for vehicle orders"
   },
   "npx:service": {
     "git": {
       "url": "npx.git.url"
-    }
+    },
+    "summary": "Invoice generation"
   }
 }

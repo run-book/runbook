@@ -7,8 +7,8 @@
       "local"
     ],
     "__from": [
-      "inheritance\\environment.inheritance.json",
-      "inheritance\\service.inheritance.json"
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\inheritance\\environment.inheritance.json",
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\inheritance\\service.inheritance.json"
     ],
     "service": [
       "leo",
@@ -16,18 +16,334 @@
     ]
   },
   "__from": [
-    "inheritance\\environment.inheritance.json",
-    "inheritance\\service.inheritance.json",
-    "instruments\\echo.instrument.json",
-    "instruments\\git\\cloneOrFetch.instrument.json",
-    "instruments\\ls.instrument.json",
-    "mereology\\main.mereology.json",
-    "reference\\reference.json",
-    "situation\\situation.json",
-    "views\\debug\\displayGit.view.json",
-    "views\\debug\\domain.view.json"
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\inheritance\\environment.inheritance.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\inheritance\\service.inheritance.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\displayGit.view.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\domain.cat.view.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\domain.view.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\cat.instrument.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\echo.instrument.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\ls.instrument.json",
+    "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\ping.instrument.json"
   ],
+  "mereology": {
+    "environment": {
+      "children": {
+        "service": {
+          "fields": {
+            "protocol": {
+              "description": "The protocol that this service will use in this environment"
+            },
+            "domain": {
+              "description": "The domain name for this service in this environment"
+            },
+            "port": {
+              "description": "The port that this service will listen on in this environment"
+            }
+          }
+        },
+        "database": {
+          "name": {
+            "description": "The name of the database in this environment"
+          }
+        }
+      },
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json"
+      ]
+    },
+    "fields": {
+      "gittag": {
+        "description": "The tag that will be in each service's git repo for the code that is in this environment"
+      },
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json"
+      ]
+    },
+    "__from": [
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json"
+    ]
+  },
+  "service": {
+    "fields": {
+      "summary": {
+        "description": "A one line summary of what this service does"
+      },
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json"
+      ]
+    },
+    "children": {
+      "git": {
+        "url": {
+          "description": "The git repo for this service"
+        }
+      },
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json"
+      ]
+    },
+    "__from": [
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\mereology\\main.mereology.json"
+    ]
+  },
+  "reference": {
+    "dev:environment": {
+      "ngtest:database": {},
+      "leo:service": {
+        "domain": "dev.leo",
+        "port": 80
+      },
+      "npx:service": {
+        "domain": "dev.npx",
+        "port": 80
+      },
+      "gitTag": "dev",
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
+      ]
+    },
+    "test:environment": {
+      "ngtest:database": {},
+      "leo:service": {
+        "domain": "test.leo",
+        "port": 80
+      },
+      "npx:service": {
+        "domain": "test.npx",
+        "port": 80
+      },
+      "gitTag": "test",
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
+      ]
+    },
+    "prod:environment": {
+      "ngprod:database": {},
+      "leo:service": {
+        "domain": "prod.leo",
+        "port": 80
+      },
+      "npx:service": {
+        "domain": "prod.npx",
+        "port": 80
+      },
+      "gitTag": "prod",
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
+      ]
+    },
+    "ngprod:database": {
+      "url": "ngprod.url",
+      "type": "oracle",
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
+      ]
+    },
+    "ngtest:database": {
+      "url": "ngtest.url",
+      "type": "oracle",
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
+      ]
+    },
+    "leo:service": {
+      "git": {
+        "url": "leo.git.url"
+      },
+      "summary": "CRUD for vehicle orders",
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
+      ]
+    },
+    "npx:service": {
+      "git": {
+        "url": "npx.git.url"
+      },
+      "summary": "Invoice generation",
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
+      ]
+    },
+    "__from": [
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\reference\\reference.json"
+    ]
+  },
+  "situation": {
+    "leo": {
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json"
+      ]
+    },
+    "local": {
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json"
+      ]
+    },
+    "npx": {
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json"
+      ]
+    },
+    "test": {
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json"
+      ]
+    },
+    "dev": {
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json"
+      ]
+    },
+    "__from": [
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\situation\\situation.json"
+    ]
+  },
+  "view": {
+    "displayGit": {
+      "type": "view",
+      "description": "Lists the git properties of the services",
+      "usage": [
+        "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
+      ],
+      "preconditions": [
+        "The environments and services need to be in the ontology",
+        "The domain and port need to be in the reference data"
+      ],
+      "fetchers": {
+        "gitClone": {
+          "condition": {
+            "{env:environment}": {
+              "git": {
+                "gittag": "{tag}"
+              }
+            },
+            "{ser:service}": {
+              "git": {
+                "url": "{url}",
+                "directory": "{dir}"
+              }
+            }
+          },
+          "ifTrue": {
+            "type": "instrument",
+            "name": "echo",
+            "params": "*",
+            "addTo": "ser"
+          }
+        }
+      },
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\displayGit.view.json"
+      ]
+    },
+    "__from": [
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\displayGit.view.json",
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\domain.cat.view.json",
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\domain.view.json"
+    ],
+    "domainCat": {
+      "type": "view",
+      "description": "Display a csv file for each dmain in each environment",
+      "usage": [
+        "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
+      ],
+      "preconditions": [
+        "The environments and services need to be in the ontology",
+        "The domain and port need to be in the reference data"
+      ],
+      "fetchers": {
+        "displayTheStuff": {
+          "condition": {
+            "{env:environment}": {},
+            "{ser:service}": {
+              "domain": "{domain}"
+            }
+          },
+          "ifTrue": {
+            "type": "instrument",
+            "name": "catCsv",
+            "params": {
+              "file": "{env}.{domain}.csv"
+            },
+            "addTo": "ser"
+          }
+        }
+      },
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\domain.cat.view.json"
+      ]
+    },
+    "domain": {
+      "type": "view",
+      "description": "Lists the domain and port of the services",
+      "usage": [
+        "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
+      ],
+      "preconditions": [
+        "The environments and services need to be in the ontology",
+        "The domain and port need to be in the reference data"
+      ],
+      "fetchers": {
+        "domainAndPort": {
+          "condition": {
+            "{env:environment}": {},
+            "{ser:service}": {
+              "domain": "{domain}",
+              "port": "{port}"
+            }
+          },
+          "ifTrue": {
+            "type": "instrument",
+            "name": "echo",
+            "params": "*",
+            "addTo": "ser"
+          }
+        }
+      },
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_runbookTestConfig_git\\.runbook\\config\\views\\debug\\domain.view.json"
+      ]
+    }
+  },
   "instrument": {
+    "catCsv": {
+      "type": "script",
+      "description": "A demo instrument that displays a csv file",
+      "params": {
+        "file": {
+          "description": "The file to display"
+        }
+      },
+      "staleness": 5000,
+      "cost": "low",
+      "windows": {
+        "script": "type {file}",
+        "format": {
+          "type": "table",
+          "hideHeader": 1
+        }
+      },
+      "linux": {
+        "script": "cat {file}",
+        "format": {
+          "type": "table",
+          "hideHeader": 1
+        }
+      },
+      "__from": [
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\cat.instrument.json"
+      ]
+    },
+    "__from": [
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\cat.instrument.json",
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\echo.instrument.json",
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\ls.instrument.json",
+      "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\ping.instrument.json"
+    ],
     "echo": {
       "type": "script",
       "description": "An instrument that sends its arguments to standard output",
@@ -43,39 +359,7 @@
         "hideHeader": 1
       },
       "__from": [
-        "instruments\\echo.instrument.json"
-      ]
-    },
-    "__from": [
-      "instruments\\echo.instrument.json",
-      "instruments\\git\\cloneOrFetch.instrument.json",
-      "instruments\\ls.instrument.json"
-    ],
-    "getRepo": {
-      "type": "script",
-      "description": "This will (when working) go get or update the repo",
-      "params": {
-        "service": {
-          "description": "The service for the repo",
-          "default": "leo"
-        },
-        "repoUrl": {
-          "description": "The url holding the git repo",
-          "default": "leo.git.url"
-        }
-      },
-      "staleness": 5000,
-      "cost": "low",
-      "script": [
-        "echo {argsNames}",
-        "echo {allArgs}"
-      ],
-      "format": {
-        "type": "table",
-        "hideHeader": 1
-      },
-      "__from": [
-        "instruments\\git\\cloneOrFetch.instrument.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\echo.instrument.json"
       ]
     },
     "ls": {
@@ -108,242 +392,29 @@
         }
       },
       "__from": [
-        "instruments\\ls.instrument.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\ls.instrument.json"
       ]
-    }
-  },
-  "mereology": {
-    "environment": {
-      "children": {
-        "service": {
-          "fields": {
-            "protocol": {
-              "description": "The protocol that this service will use in this environment"
-            },
-            "domain": {
-              "description": "The domain name for this service in this environment"
-            },
-            "port": {
-              "description": "The port that this service will listen on in this environment"
-            }
-          }
-        },
-        "database": {
-          "name": {
-            "description": "The name of the database in this environment"
-          }
+    },
+    "ping": {
+      "type": "script",
+      "description": "pings a server",
+      "params": {
+        "domain": {
+          "description": "The domain name to ping"
         }
       },
-      "__from": [
-        "mereology\\main.mereology.json"
-      ]
-    },
-    "fields": {
-      "gittag": {
-        "description": "The tag that will be in each service's git repo for the code that is in this environment"
+      "staleness": 10000,
+      "cost": "low",
+      "windows": {
+        "script": "ping -n 1 {domain}",
+        "format": "exitcode==0"
+      },
+      "linux": {
+        "script": "ping -c 1 {domain}",
+        "format": "exitcode==0"
       },
       "__from": [
-        "mereology\\main.mereology.json"
-      ]
-    },
-    "__from": [
-      "mereology\\main.mereology.json"
-    ]
-  },
-  "service": {
-    "fields": {
-      "summary": {
-        "description": "A one line summary of what this service does"
-      },
-      "gitrepo": {
-        "description": "The git repo for this service"
-      },
-      "__from": [
-        "mereology\\main.mereology.json"
-      ]
-    },
-    "__from": [
-      "mereology\\main.mereology.json"
-    ]
-  },
-  "reference": {
-    "dev:environment": {
-      "ngtest:database": {},
-      "leo:service": {
-        "domain": "dev.leo",
-        "port": 80
-      },
-      "npx:service": {
-        "domain": "dev.npx",
-        "port": 80
-      },
-      "gitTag": "dev",
-      "__from": [
-        "reference\\reference.json"
-      ]
-    },
-    "test:environment": {
-      "ngtest:database": {},
-      "leo:service": {
-        "domain": "test.leo",
-        "port": 80
-      },
-      "npx:service": {
-        "domain": "test.npx",
-        "port": 80
-      },
-      "gitTag": "test",
-      "__from": [
-        "reference\\reference.json"
-      ]
-    },
-    "prod:environment": {
-      "ngprod:database": {},
-      "leo:service": {
-        "domain": "prod.leo",
-        "port": 80
-      },
-      "npx:service": {
-        "domain": "prod.npx",
-        "port": 80
-      },
-      "gitTag": "prod",
-      "__from": [
-        "reference\\reference.json"
-      ]
-    },
-    "ngprod:database": {
-      "url": "ngprod.url",
-      "type": "oracle",
-      "__from": [
-        "reference\\reference.json"
-      ]
-    },
-    "ngtest:database": {
-      "url": "ngtest.url",
-      "type": "oracle",
-      "__from": [
-        "reference\\reference.json"
-      ]
-    },
-    "leo:service": {
-      "git": {
-        "url": "leo.git.url"
-      },
-      "__from": [
-        "reference\\reference.json"
-      ]
-    },
-    "npx:service": {
-      "git": {
-        "url": "npx.git.url"
-      },
-      "__from": [
-        "reference\\reference.json"
-      ]
-    },
-    "__from": [
-      "reference\\reference.json"
-    ]
-  },
-  "situation": {
-    "leo": {
-      "__from": [
-        "situation\\situation.json"
-      ]
-    },
-    "local": {
-      "__from": [
-        "situation\\situation.json"
-      ]
-    },
-    "npx": {
-      "__from": [
-        "situation\\situation.json"
-      ]
-    },
-    "test": {
-      "__from": [
-        "situation\\situation.json"
-      ]
-    },
-    "dev": {
-      "__from": [
-        "situation\\situation.json"
-      ]
-    },
-    "__from": [
-      "situation\\situation.json"
-    ]
-  },
-  "view": {
-    "displayGit": {
-      "type": "view",
-      "description": "Lists the git properties of the services",
-      "usage": [
-        "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
-      ],
-      "preconditions": [
-        "The environments and services need to be in the ontology",
-        "The domain and port need to be in the reference data"
-      ],
-      "fetchers": {
-        "gitClone": {
-          "condition": {
-            "{env:environment}": {
-              "gitTag": "{tag}"
-            },
-            "{ser:service}": {
-              "git": {
-                "url": "{url}"
-              }
-            }
-          },
-          "ifTrue": {
-            "type": "instrument",
-            "name": "echo",
-            "params": "*",
-            "addTo": "ser"
-          }
-        }
-      },
-      "__from": [
-        "views\\debug\\displayGit.view.json"
-      ]
-    },
-    "__from": [
-      "views\\debug\\displayGit.view.json",
-      "views\\debug\\domain.view.json"
-    ],
-    "domain": {
-      "type": "view",
-      "description": "Lists the domain and port of the services",
-      "usage": [
-        "Just add the names of the environments and the services to the situation. For example {'prod', 'uat', 'servicename1', 'servicename2}"
-      ],
-      "preconditions": [
-        "The environments and services need to be in the ontology",
-        "The domain and port need to be in the reference data"
-      ],
-      "fetchers": {
-        "domainAndPort": {
-          "condition": {
-            "{env:environment}": {},
-            "{ser:service}": {
-              "domain": "{domain}",
-              "port": "{port}"
-            }
-          },
-          "ifTrue": {
-            "type": "instrument",
-            "name": "echo",
-            "params": "*",
-            "addTo": "ser"
-          }
-        }
-      },
-      "__from": [
-        "views\\debug\\domain.view.json"
+        "C:\\Users\\philr\\.runbook\\git\\https_github_com_run-book_instruments_git\\.runbook\\config\\ping.instrument.json"
       ]
     }
   }

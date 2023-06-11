@@ -4,10 +4,11 @@ Usage: run-book instrument [options] [command]
 Instruments are the raw tools that find things out
 
 Options:
-  -h, --help         display help for command
+  -h, --help        display help for command
 
 Commands:
-  echo [options]     An instrument that sends its arguments to standard output
-  getRepo [options]  This will (when working) go get or update the repo
-  ls [options]       A demo instrument that displays the directory contents
-  help [command]     display help for command
+  catCsv [options]  A demo instrument that displays a csv file
+  echo [options]    An instrument that sends its arguments to standard output
+  ls [options]      A demo instrument that displays the directory contents
+  ping [options]    pings a server
+  help [command]    display help for command

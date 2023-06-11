@@ -20,7 +20,9 @@ export function findRunbookDirectoryOrThrow ( cwd: string ) {
 export function configSubDir ( runbookDir: string ) {
   return path.join ( runbookDir, configSubDirName )
 }
-
+export function configSubDirFromRoot ( runbookDir: string ) {
+  return path.join ( runbookDir, runbookMarker,configSubDirName )
+}
 export function cachedConfigFile ( runbookDir: string ) {
   return path.join ( runbookDir, cachedConfigFileName )
 }
