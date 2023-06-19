@@ -15,7 +15,6 @@ export function parseBracketedString ( path: string[], s: string ): VarNameAndIn
 const isVariable = ( condK: string ) => typeof condK === 'string' && condK.startsWith ( '{' ) && condK.endsWith ( '}' );
 
 
-
 export type Binding = NameAnd<PathAndValue>
 
 export interface PathAndValue extends NameSpaceAndValue {
@@ -23,7 +22,17 @@ export interface PathAndValue extends NameSpaceAndValue {
   value: Primitive
   path: string[]
 }
+
+export interface WhyFailedToMatch {
+  lookingForStringToMatchVariable ( condPath: string[], cond: string, sitPath: string[], sit: any )
+  doesntMatchInheritance ( condPath: string[], cond: string, sitPath: string[], sit: any )
+  doesntMatchPrimitive ( condPath: string[], cond: Primitive, sitPath: string[], sit: any )
+  situationUndefined ( condPath: string[], cond: Primitive, sitPath: string[], sit: any )
+  notInMereology ( condPath: string[], cond: Primitive, sitPath: string[], sit: any )
+}
+
 export interface BindingContext {
+  whyFailedToMatch?: WhyFailedToMatch
   inheritsFrom: InheritsFromFn
   mereology: NameAnd<string[]>
   refDataFn: FromReferenceDataFn
@@ -67,9 +76,10 @@ const matchVariable = ( bc: BindingContext, condition: string, condPath: string[
   const { varName, inheritsFrom } = varNameAndInheritsFrom
   return ( path: string[], situation: Primitive, binding: Binding ) => {
     if ( inheritsFrom.length > 0 ) {
-      if ( typeof situation !== 'string' ) return undefined;
+      if ( typeof situation !== 'string' )
+        return bc.whyFailedToMatch?.lookingForStringToMatchVariable ( condPath, condition, path, situation )
       const inherits = bc.inheritsFrom ( situation, inheritsFrom );
-      if ( !inherits ) return undefined;
+      if ( !inherits ) return bc?.whyFailedToMatch?.doesntMatchInheritance ( condPath, condition, path, situation );
     }
     const newBinding: Binding = { ...binding }
     newBinding[ varName ] = { path, value: valueFrom ( situation ), namespace: (inheritsFrom?.length > 0 ? inheritsFrom : undefined) }
@@ -80,7 +90,7 @@ const matchPrimitiveAndAddBindingIfNeeded = ( bc: BindingContext, condition: Pri
   return typeof condition === 'string' && condition.startsWith ( '{' ) && condition.endsWith ( '}' )
     ? matchVariable ( bc, condition, condPath )
     : ( path: string[], situation: Primitive, binding: Binding ): MatchsPrimitive | undefined =>
-      condition === situation ? { binding } : undefined
+      condition === situation ? { binding } : bc?.whyFailedToMatch?.doesntMatchPrimitive ( condPath, condition, path, situation );
 };
 
 type OnFoundFn = ( b: Binding[], thisBinding: Binding ) => Binding[]
@@ -102,6 +112,7 @@ const checkSituationMatchesCondition = ( bc: BindingContext, condK: string, cond
                   newBinding[ optParsedCondV.varName ] = { path, value: undefined, namespace: (optParsedCondV.inheritsFrom?.length > 0 ? optParsedCondV.inheritsFrom : undefined) }
                   return continuation ( bindings, newBinding )
                 }
+                bc.whyFailedToMatch?.situationUndefined ( condPath, condV, path, sitV )
                 return bindings;
               }
               const matchsPrimitive: MatchsPrimitive | undefined = matchPrim ( path, sitK, thisBinding )
@@ -110,7 +121,10 @@ const checkSituationMatchesCondition = ( bc: BindingContext, condK: string, cond
               if ( result && result.length === bindings.length && matchsPrimitive.varNameAndInheritsFrom ) {//OK we didn't match in the situation. Maybe we can match in the mereology?
                 const { inheritsFrom } = matchsPrimitive.varNameAndInheritsFrom
                 const inMere = bc.refDataFn ( Object.values ( thisBinding ), inheritsFrom, sitK )
-                if ( inMere === undefined ) return bindings
+                if ( inMere === undefined ) {
+                  bc.whyFailedToMatch?.notInMereology ( condPath, condV, path, sitV )
+                  return bindings
+                }
                 const mereologyResult = matchAndContinueWithContinuation ( path, inMere ) ( bindings, matchsPrimitive.binding )
                 return mereologyResult === undefined ? bindings : mereologyResult;
               }

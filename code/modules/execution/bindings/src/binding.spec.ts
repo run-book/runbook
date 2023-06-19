@@ -1,10 +1,7 @@
 import { evaluate, makeCount, makeVarNameAndInheritsFromCount } from "./binding";
-import { bc, s1, s2, situation } from "./binding.fixture";
+import { bc, bind, s1, s2, situation } from "./binding.fixture";
 
 
-function bind ( path: string | string[], value: string | number ) {
-  return { path, value }
-}
 
 describe ( 'another way of doing conditions', () => {
   it ( "should detect prod", () => {

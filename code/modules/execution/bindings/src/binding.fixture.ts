@@ -19,5 +19,10 @@ export const situation = {
   test: { some: "data", leo: { domain: "testLeo", port: 8080 } },
   dev: { some: 'otherdata', leo: { domain: 'devLeo', port: 80 } }, "junk": "other"
 };
+
+export function bind ( path: string | string[], value: string | number ) {
+  return { path, value }
+}
+
 export const s1 = { s: 1, a: 1, b: 2 }
 export const s2 = { s: 2, a: 1, b: 2 }
