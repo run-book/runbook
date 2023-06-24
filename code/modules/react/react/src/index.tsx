@@ -88,7 +88,6 @@ export const fixtureDisplayWithMode = <S extends any> ( opt: Optional<S, Selecti
 const menuFns: MenuAndDisplayFnsForRunbook<FullState, any> = bootstrapMenu<FullState, any> ()
 function dispMContext ( config: CleanConfig ): DisplayMereologyContext {
   const bc: BindingContext = {
-    debug: false,
     mereology: mereologyToSummary ( config.mereology ),
     refDataFn: fromReferenceData ( config.reference ),
     inheritsFrom: inheritsFrom ( makeStringDag ( config.inheritance ) )
@@ -141,7 +140,6 @@ fetch ( filename ).then ( response => response.json () ).then ( config => {
   let initial: FullState = { config: realConfig, selectionState: { menuPath: [ 'situation' ] }, fetchCommands: [], status: { executor: {} } };
   const root = createRoot ( rootElement )
   const bc: BindingContext = {
-    debug: false,
     mereology: mereologyToSummary ( realConfig.mereology ),
     refDataFn: fromReferenceData ( realConfig.reference ),
     inheritsFrom: inheritsFrom ( makeStringDag ( realConfig.inheritance ) )

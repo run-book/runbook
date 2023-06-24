@@ -9,7 +9,6 @@ import { mereologyToSummary } from "@runbook/mereology";
 
 
 export const bc: BindingContext = {
-  debug: false,
   mereology: mereologyToSummary ( mereology as any ),
   refDataFn: fromReferenceData ( ref ),
   inheritsFrom: inheritsFrom ( inheritance )

@@ -8,7 +8,6 @@ import { DisplayBindingProps, tableProps } from "@runbook/bindings_react";
 import { DisplayMereologyContext, DisplayMereologyProps } from "./ref.react";
 
 export const bc: BindingContext = {
-  debug: false,
   mereology: mereologyToSummary ( mereology as any ),
   refDataFn: fromReferenceData ( ref ),
   inheritsFrom: inheritsFrom ( inheritance )

@@ -6,6 +6,7 @@ import { jsonToDisplay } from "@runbook/displayformat";
 import { addEditViewOptions, executeAndEditViewAndExit } from "./editView";
 import { CleanConfig } from "@runbook/config";
 import { execute, ExecutionResult, Executor } from "@runbook/executors";
+import { addDebug } from "./debug";
 
 export async function executeScript ( executor: Executor, os: OS, name: string, instrument: ScriptInstrument, args: any, params: NameAnd<any> ) {
   const res = execute ( executor ) ( scriptExecutable ( os, 'executeScript', args.debug ), 10000, [ name, instrument ], params )
@@ -23,11 +24,12 @@ export function addNewInstrumentCommand ( cwd: string, homeDir: string, os: OS, 
     command.option ( `--${name} <${name}>`, value.description, value.default ) )
 
   addEditViewOptions ( 'instrument', addDisplayOptions ( command ) )
-    .option ( "--debug", "include debug info" )
+    .option ( "--debug [debug...]", "include debug info" )
     .option ( '--config', "Show the json representing the command in the config" );
 
   command.action ( async (): Promise<void> => {
     const args: any = command.optsWithGlobals ()
+    addDebug(args.debug)
     await executeAndEditViewAndExit ( cwd, args, withFromsConfig.instrument?. [ name ], instrument )
     if ( args.config ) return console.log ( JSON.stringify ( instrument, null, 2 ) )
     const params = instrument.params === '*' ? nameValueToNameAndString ( safeArray ( args.params ) ) : args

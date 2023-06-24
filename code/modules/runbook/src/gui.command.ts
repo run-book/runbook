@@ -10,6 +10,7 @@ import { execute, Execution, Executor } from "@runbook/executors";
 import { executeEndpoint, executeStatusEndpoint } from "@runbook/koa_instrument";
 import { Cache, makeCacheOptions } from "@runbook/cache";
 import { Params } from "@runbook/loaders";
+import { addDebug } from "./debug";
 
 function findReactDir ( cwd: string ) {
   const configDir = findDirectoryHoldingFileOrError ( cwd, runbookMarker )
@@ -19,12 +20,12 @@ function findReactDir ( cwd: string ) {
 }
 
 
-
 export function addGuiCommand ( os: OS, cmd: Command, cleanConfig: CleanConfig, cwd: string, executor: Executor ) {
   cmd.command ( 'gui' ).description ( 'starts the react gui' )
     .option ( '-p|--port <port>', 'port to run on', '3001' )
     .option ( '---directory', 'directory to run from - for development only' )
     .action ( async ( opts ) => {
+      addDebug ( opts.debug )
       const reactDir = opts.directory ? opts.directory : findReactDir ( cwd );
       if ( isErrors ( reactDir ) ) return reactDir.errors.forEach ( e => console.log ( e ) )
       const port = Number.parseInt ( opts.port )

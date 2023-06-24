@@ -10,7 +10,6 @@ export const castMereology: Mereology = mereology as any
 export const checkRef: ReferenceData = ref
 
 export const bc: BindingContext = {
-  debug: false,
   mereology: mereologyToSummary ( castMereology ),
   refDataFn: fromReferenceData ( ref ),
   inheritsFrom: inheritsFrom ( inheritance )
