@@ -1,0 +1,5 @@
+{
+  "connectionString": "${env.connection string}",
+  "otherSettings":    "other settings",
+  "jmxMetrics":       ["preJmxMetrics"]
+}

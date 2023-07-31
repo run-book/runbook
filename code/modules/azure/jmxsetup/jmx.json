@@ -5,6 +5,11 @@
       "nameFormat": "db_{name}",
       "attributes": ["att1", "att2"],
       "names":      ["name1", "name2"]
+    },
+    "thread": {
+      "nameFormat": "thread{name}",
+      "attributes": ["att1", "att2"],
+      "names":      ["thread1", "thread2"]
     }
   }
 }

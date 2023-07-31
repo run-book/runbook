@@ -1,7 +1,7 @@
 {
   "name": "@runbook/referencedata_react",
   "description": "",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,9 +17,9 @@
     ]
   },
   "dependencies": {
-    "@runbook/bindings_react": "0.3.7",
-    "@runbook/fixtures": "0.3.7",
-    "@runbook/storybook": "0.3.7",
+    "@runbook/bindings_react": "0.3.8",
+    "@runbook/fixtures": "0.3.8",
+    "@runbook/storybook": "0.3.8",
     "debug": "^4.3.4"
   },
   "devDependencies": {

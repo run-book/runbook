@@ -1,7 +1,7 @@
 {
   "name": "tagless",
   "description": "",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "@runbook/bindings": "0.3.7",
+    "@runbook/bindings": "0.3.8",
     "debug": "^4.3.4"
   },
   "devDependencies": {

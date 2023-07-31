@@ -1,0 +1,4 @@
+{
+  "connectionString": "${env.connection string}",
+  "otherSettings":    "other settings"
+}

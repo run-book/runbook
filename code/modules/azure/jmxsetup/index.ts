@@ -2,7 +2,7 @@
 
 import { Command } from "commander";
 import * as fs from "fs";
-import { flatMap, mapObjValues } from "@runbook/utils";
+import { deepCombineTwoObjects, flatMap, flatMapEntries } from "@runbook/utils";
 import { bracesVarDefn, derefence, dollarsBracesVarDefn } from "@runbook/variables";
 
 export function findVersion () {
@@ -42,56 +42,73 @@ export function processProgram ( program: Command, args: string[] ): Command {
 }
 
 let program = setupProgram ();
-program.option ( "<file> file", 'the file that holds the data', 'jmx.json' )
+program.argument ( "<files...>", 'the files that holds the data' )
+  .action ( ( files, options, cmd ) => {
+    const fileContents = files.map ( loadFile ).map ( processFile )
+    const merged = fileContents.reduce ( ( acc, cur ) => deepCombineTwoObjects(acc, cur), {} )
+    console.log ( JSON.stringify ( merged, null, 2 ) )
+  } )
 
 const parsed = processProgram ( program, process.argv )
-const file = parsed.opts ().file
-console.log ( "file", parsed.opts (), file )
-if ( !fs.existsSync ( file ) ) {
-  console.error ( `file ${file} does not exist` )
+
+
+function mergeAction ( files: string[], options: any ) {
+
+}
+const files = parsed.args
+if ( !Array.isArray ( files ) ) {
+  console.error ( `files is not an array` )
   process.exit ( 1 )
 }
-let rawConfig = fs.readFileSync ( file ).toString ( 'utf-8' );
-let dereferenced = derefence ( 'jmxsetup', { env: process.env }, rawConfig, { variableDefn: dollarsBracesVarDefn } )
-console.log ( 'dereferenced', dereferenced )
-const config = JSON.parse ( dereferenced )
-const jmx = config?.jmx
-if ( !jmx ) {
-  console.error ( `file ${file} does not have a jmx section` )
+if ( files.length === 0 ) {
+  console.error ( `no files specified` )
   process.exit ( 1 )
 }
-function get ( name: string, attr: string ) {
-  const data = jmx?.[ name ]?.[ attr ]
-  if ( !data ) {
-    console.log ( `jmx ${name} does not have ${attr}` )
-    process.exit ( 1 );
-  }
-  return data;
-}
-function getArray ( name: string, attr: string ) {
-  const data = get ( name, attr )
-  if ( !Array.isArray ( data ) ) {
-    console.log ( `jmx ${name} ${attr} is not an array` )
-    process.exit ( 1 );
-  }
-  return data;
-}
-const template = config.template || {}
-for ( const theType in jmx ) {
-  const nameFormat = get ( theType, 'nameFormat' )
-  const attributes = getArray ( theType, 'attributes' )
-  const names = getArray ( theType, 'names' )
 
-  const jmxMetrics = flatMap ( names, name =>
-    attributes.map ( attribute => {
-      let context = `jmx ${theType} ${name} ${attribute}`;
-      return ({
-        name: context,
-        objectName: derefence ( context, { name, attribute, env: process.env }, nameFormat, { variableDefn: bracesVarDefn } ),
-        attribute
-      });
-    } ) )
-  template.jmxMetrics = jmxMetrics
-  console.log ( template )
-}
+function loadFile ( file: string ) {
+  if ( !fs.existsSync ( file ) ) {
+    console.error ( `file ${file} does not exist` )
+    process.exit ( 1 )
+  }
+  let rawConfig = fs.readFileSync ( file ).toString ( 'utf-8' );
+  let dereferenced = derefence ( `Loading file ${file}`, { env: process.env }, rawConfig, { variableDefn: dollarsBracesVarDefn } )
 
+  return JSON.parse ( dereferenced )
+}
+function processFile ( fileContents: any ) {
+  if ( fileContents.jmx ) {
+    const jmx = fileContents.jmx
+    function get ( name: string, attr: string ) {
+      const data = jmx?.[ name ]?.[ attr ]
+      if ( !data ) {
+        console.log ( `jmx ${name} does not have ${attr}` )
+        process.exit ( 1 );
+      }
+      return data;
+    }
+    function getArray ( name: string, attr: string ) {
+      const data = get ( name, attr )
+      if ( !Array.isArray ( data ) ) {
+        console.log ( `jmx ${name} ${attr} is not an array` )
+        process.exit ( 1 );
+      }
+      return data;
+    }
+
+    const jmxMetrics = flatMapEntries ( jmx, ( _, theType ) => {
+      const nameFormat = get ( theType, 'nameFormat' )
+      const names = getArray ( theType, 'names' )
+      const attributes = getArray ( theType, 'attributes' )
+      return flatMap ( names, name => attributes.map ( attribute => {
+        let context = `jmx ${theType} ${name} ${attribute}`;
+        return ({
+          name: context,
+          objectName: derefence ( context, { name, attribute, env: process.env }, nameFormat, { variableDefn: bracesVarDefn } ),
+          attribute
+        });
+      } ) );
+    } )
+    return { jmxMetrics }
+  }
+  return fileContents
+}
