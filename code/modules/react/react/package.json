@@ -1,7 +1,7 @@
 {
   "name": "@runbook/react",
   "description": "",
-  "version": "0.3.3",
+  "version": "0.3.7",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,15 +17,15 @@
     ]
   },
   "dependencies": {
-    "@runbook/debug": "0.3.3",
-    "@runbook/executors_react": "0.3.3",
-    "@runbook/fixtures": "0.3.3",
-    "@runbook/instruments_react": "0.3.3",
-    "@runbook/menu_react": "0.3.3",
-    "@runbook/referencedata_react": "0.3.3",
-    "@runbook/store": "0.3.3",
-    "@runbook/storybook": "0.3.3",
-    "@runbook/views_react": "0.3.3",
+    "@runbook/debug": "0.3.7",
+    "@runbook/executors_react": "0.3.7",
+    "@runbook/fixtures": "0.3.7",
+    "@runbook/instruments_react": "0.3.7",
+    "@runbook/menu_react": "0.3.7",
+    "@runbook/referencedata_react": "0.3.7",
+    "@runbook/store": "0.3.7",
+    "@runbook/storybook": "0.3.7",
+    "@runbook/views_react": "0.3.7",
     "debug": "^4.3.4"
   },
   "devDependencies": {

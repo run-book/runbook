@@ -1,7 +1,7 @@
 {
   "name": "@runbook/scriptinstruments",
   "description": "",
-  "version": "0.3.3",
+  "version": "0.3.7",
   "main": "dist/index",
   "types": "dist/index",
   "browser": {
@@ -21,10 +21,10 @@
   },
   "dependencies": {
     "node": "16.20.0",
-    "@runbook/instruments": "0.3.3",
-    "@runbook/displayformat": "0.3.3",
-    "@runbook/fixtures": "0.3.3",
-    "@runbook/executors": "0.3.3",
+    "@runbook/instruments": "0.3.7",
+    "@runbook/displayformat": "0.3.7",
+    "@runbook/fixtures": "0.3.7",
+    "@runbook/executors": "0.3.7",
     "debug": "^4.3.4"
   },
   "devDependencies": {

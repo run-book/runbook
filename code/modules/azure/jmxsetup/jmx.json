@@ -1,0 +1,10 @@
+{
+  "template": {"connectionString": "${env.connection string}"},
+  "jmx":      {
+    "db": {
+      "nameFormat": "db_{name}",
+      "attributes": ["att1", "att2"],
+      "names":      ["name1", "name2"]
+    }
+  }
+}

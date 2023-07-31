@@ -1,7 +1,7 @@
 {
   "name": "@runbook/bindings",
   "description": "",
-  "version": "0.3.3",
+  "version": "0.3.7",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,8 +17,8 @@
     ]
   },
   "dependencies": {
-    "@runbook/mereology": "0.3.3",
-    "@runbook/referencedata": "0.3.3",
+    "@runbook/mereology": "0.3.7",
+    "@runbook/referencedata": "0.3.7",
     "debug": "^4.3.4"
   },
   "devDependencies": {

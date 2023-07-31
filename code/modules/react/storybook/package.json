@@ -1,7 +1,7 @@
 {
   "name": "@runbook/storybook",
   "description": "",
-  "version": "0.3.3",
+  "version": "0.3.7",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "storybook": "^7.0.6",
-    "@runbook/optics": "0.3.3",
+    "@runbook/optics": "0.3.7",
     "debug": "^4.3.4"
   },
   "devDependencies": {

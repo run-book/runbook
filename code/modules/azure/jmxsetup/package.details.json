@@ -1,0 +1,20 @@
+{
+  "template":    "typescript",
+  "name":        "@runbook/azurejms",
+  "description": "",
+  "packageJson": {
+    "bin":             {
+      "azurejms": "dist/index.js"
+    },
+    "dependencies":    {"commander": "^10.0.0"},
+    "devDependencies": {}
+  },
+  "links":       [
+    "@runbook/utils", "@runbook/files", "@runbook/variables"
+  ],
+  "guards":      {
+    "compile": true,
+    "publish": true,
+    "test":    true
+  }
+}
