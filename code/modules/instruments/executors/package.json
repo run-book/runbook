@@ -1,7 +1,7 @@
 {
   "name": "@runbook/executors",
   "description": "Instruments may take a long time, so we need to be able to monitor their progress and cancel them if necessary. This package provides a set of executors that can be used to run instruments.",
-  "version": "0.3.8",
+  "version": "0.3.10",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "@runbook/instruments": "0.3.8",
+    "@runbook/instruments": "0.3.10",
     "debug": "^4.3.4"
   },
   "devDependencies": {

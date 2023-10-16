@@ -1,7 +1,7 @@
 {
   "name": "@runbook/fetchers",
   "description": "",
-  "version": "0.3.8",
+  "version": "0.3.10",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "@runbook/loaders": "0.3.8",
+    "@runbook/loaders": "0.3.10",
     "debug": "^4.3.4"
   },
   "devDependencies": {

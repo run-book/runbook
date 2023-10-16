@@ -1,7 +1,7 @@
 {
   "name": "@runbook/views_react",
   "description": "",
-  "version": "0.3.8",
+  "version": "0.3.10",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,10 +17,10 @@
     ]
   },
   "dependencies": {
-    "@runbook/views": "0.3.8",
-    "@runbook/fixtures": "0.3.8",
-    "@runbook/storybook": "0.3.8",
-    "@runbook/bindings": "0.3.8",
+    "@runbook/views": "0.3.10",
+    "@runbook/fixtures": "0.3.10",
+    "@runbook/storybook": "0.3.10",
+    "@runbook/bindings": "0.3.10",
     "debug": "^4.3.4"
   },
   "devDependencies": {

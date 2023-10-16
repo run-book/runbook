@@ -1,7 +1,7 @@
 {
   "name": "@runbook/referencedata",
   "description": "",
-  "version": "0.3.8",
+  "version": "0.3.10",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,8 +17,8 @@
     ]
   },
   "dependencies": {
-    "@runbook/fixtures": "0.3.8",
-    "@runbook/mereology": "0.3.8",
+    "@runbook/fixtures": "0.3.10",
+    "@runbook/mereology": "0.3.10",
     "debug": "^4.3.4"
   },
   "devDependencies": {
