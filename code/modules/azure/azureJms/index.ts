@@ -78,12 +78,17 @@ function loadFile ( file: string ) {
 function processFile ( fileContents: any ) {
   if ( fileContents.jmx ) {
     const jmx = fileContents.jmx
+    function getOrDefault ( name: string, attr: string, defaultValue: ()=>string ) {
+      let result = jmx?.[ name ]?.[ attr ]
+      if (result === undefined) return defaultValue()
+      return result
+
+    }
     function get ( name: string, attr: string ) {
-      const data = jmx?.[ name ]?.[ attr ]
-      if ( !data ) {
+      const data = getOrDefault(name, attr, () =>{
         console.log ( `jmx ${name} does not have ${attr}` )
         process.exit ( 1 );
-      }
+      })
       return data;
     }
     function getArray ( name: string, attr: string ) {
@@ -99,11 +104,15 @@ function processFile ( fileContents: any ) {
       const nameFormat = get ( theType, 'nameFormat' )
       const names = getArray ( theType, 'names' )
       const attributes = getArray ( theType, 'attributes' )
+      const azureNamePattern = getOrDefault ( theType, 'azureNameFormat' , () =>'jmx {type} {name} {attribute}')
       return flatMap ( names, name => attributes.map ( attribute => {
         let context = `jmx ${theType} ${name} ${attribute}`;
+        let dictionary ={ type: theType,name, attribute, env: process.env }
+        let objectName =  derefence ( context+ "-objectName", dictionary, nameFormat, { variableDefn: bracesVarDefn } ) ;
+        let azureName =  derefence ( context+ "-azureName", dictionary, azureNamePattern, { variableDefn: bracesVarDefn } ) ;
         return ({
-          name: context,
-          objectName: derefence ( context, { name, attribute, env: process.env }, nameFormat, { variableDefn: bracesVarDefn } ),
+          name:azureName,
+          objectName,
           attribute
         });
       } ) );

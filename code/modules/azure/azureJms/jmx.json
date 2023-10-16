@@ -7,6 +7,7 @@
       "names":      ["name1", "name2"]
     },
     "thread": {
+      "azureNameFormat": "{attribute} for {name} which is a {type}",
       "nameFormat": "thread{name}",
       "attributes": ["att1", "att2"],
       "names":      ["thread1", "thread2"]
