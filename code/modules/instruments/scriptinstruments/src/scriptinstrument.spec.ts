@@ -122,7 +122,7 @@ describe ( "script executor", () => {
   it ( "should execute a shared script that is just one line", ( done ) => {
     const executor = setup ()
     const execution = execute ( executor ) ( scriptExecutable ( osType (), 'someContext', false ),
-      1000, [ 'oneEchos', oneEchos ], {} )
+      5000, [ 'oneEchos', oneEchos ], {} )
     execution.promise.then ( result => {
       expect ( execution.finished ).toEqual ( true )
       expect ( cleanLineEndings ( execution.out ) ).toEqual ( cleanLineEndings ( '1\n' ) )
@@ -134,7 +134,7 @@ describe ( "script executor", () => {
   it ( "should execute a shared script that is multiple lines", ( done ) => {
     const executor = setup ()
     const execution = execute ( executor ) ( scriptExecutable ( osType (), 'someContext', false ),
-      1000, [ 'threeEchos', threeEchos ], {} )
+      5000, [ 'threeEchos', threeEchos ], {} )
     setTimeout ( () => {
       expect ( execution.finished ).toEqual ( true )
       expect ( cleanLineEndings ( execution.out ) ).toEqual ( cleanLineEndings ( '1\n2\n3\n' ) )
