@@ -17,7 +17,7 @@ export function focusOn<M, C, K extends keyof C> ( lens: Lens<M, C>, key: K ): L
   }, lens, () => key.toString () )
 }
 
-export function focusQuery<M, C, K extends keyof C> ( o: Optional<M, C>, key: K ): Optional<M, C[K]> {
+export function focusQuery<M, C, K extends keyof C> ( o: Optional<M, C>, key: K ): Optional<M, NonNullable<C[K]>> {
   if (key === undefined) throw new Error ( 'key is undefined' )
   const getOptional = getOptionalFn ( o );
   const setOptional = setOptionalFn ( o );

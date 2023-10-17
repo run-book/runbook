@@ -1,6 +1,5 @@
 import { ErrorsAnd, isErrors } from "@runbook/utils";
 import { RunbookProps, RunbookState } from "@runbook/runbook_state";
-import { InputProps } from "./textInput";
 
 export interface InputComponentConfig<C, Props> {
   printer: ( t: C | undefined ) => string
@@ -10,7 +9,7 @@ export interface InputComponentConfig<C, Props> {
   valueProps: ( t: C | undefined, printer: ( t: C | undefined ) => string ) => Props
   modeProps: ( mode: string | undefined ) => Props
   extraProps?: Props
-  setProps: <S>( st: RunbookState<S, C>, parser: ( s: string ) => ErrorsAnd<C> ) => Props
+  setProps: <S>( st: RunbookState<S, NonNullable<C>>, parser: ( s: string ) => ErrorsAnd<C> ) => Props
 
 }
 
@@ -45,7 +44,7 @@ export const commonIntegerInputComponentConfig = {
   printer: ( s: number | undefined ) => s?.toString () || ''
 }
 
-export function propsFrom<S, C, Props> ( st: RunbookState<S, C>, props: RunbookProps<C>, config: InputComponentConfig<C, Props>, extraProps?: Props ) {
+export function propsFrom<S, C, Props> ( st: RunbookState<S, NonNullable<C>>, props: RunbookProps<C>, config: InputComponentConfig<C, Props>, extraProps?: Props ) {
   return {
     id: props.id, ...config.valueProps ( props.focusedOn, config.printer ),
     ...config.modeProps ( props.mode ),

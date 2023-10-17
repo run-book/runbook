@@ -8,18 +8,18 @@ export interface RunbookProps<C> {
 }
 export function modeFromProps<C> ( props: RunbookProps<C> ) {return props.mode ?? 'view'}
 
-export type RunbookComponent<S, C> = ( st: RunbookState<S, C> ) => ( props: RunbookProps<C> ) => JSX.Element
+export type RunbookComponent<S, C> = ( st: RunbookState<S, NonNullable<C>> ) => ( props: RunbookProps<C> ) => JSX.Element
 export type RunbookComponentWithProps<C, Props extends RunbookProps<C>> = <S> ( st: RunbookState<S, C> ) => ( props: Props ) => JSX.Element
 export interface RunbookPropsWithChildren<C> extends RunbookProps<C> {
   children: React.ReactNode
 }
 
 /** When we have a new optional we need to make sure that we call focusedon correctly so that react will detect changes */
-export function displayWithNewOpt<S, C> ( st: RunbookState<S, any>, props: RunbookProps<any>, opt: Optional<S, C>, r: RunbookComponent<S, C> ): JSX.Element {
+export function displayWithNewOpt<S, C> ( st: RunbookState<S, any>, props: RunbookProps<any>, opt: Optional<S, NonNullable<C>>, r: RunbookComponent<S, C> ): JSX.Element {
   let runbookState = st.withOpt ( opt );
   return r ( runbookState ) ( { ...props, focusedOn: runbookState.optGet () } );
 }
-export function display<S, C> ( st: RunbookState<S, C>, props: RunbookProps<any>, r: RunbookComponent<S, C> ): JSX.Element { //the props is any because we don't care. We overwrite the only type things in it anyway
+export function display<S, C> ( st: RunbookState<S, NonNullable<C>>, props: RunbookProps<any>, r: RunbookComponent<S, C> ): JSX.Element { //the props is any because we don't care. We overwrite the only type things in it anyway
   const focusedOn = st.optGet ();
   return r ( st ) ( { ...props, focusedOn: focusedOn } );
 }
@@ -42,7 +42,7 @@ export class RunbookState<S, C> {
   }
   static clone<S, C> ( r: RunbookState<S, C> ) {return new RunbookState ( r.state, r.opt, r.setS )}
   focusQuery<K extends keyof C> ( k: K ): RunbookState<S, C[K]> {
-    const newOpt: Optional<S, C[K]> = focusQuery ( this.opt, k );
+    const newOpt= focusQuery ( this.opt, k );
     return new RunbookState ( this.state, newOpt, this.setS ) as any;
   }
   set = ( c: C ) => this.setS ( setOptional ( this.opt, this.state, c )! );

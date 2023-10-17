@@ -7,7 +7,7 @@ import { useState, useSyncExternalStore } from "react";
 export interface SBookProps<S, C> {
   s: S,
   id?: string,
-  opt: Optional<S, C>,
+  opt: Optional<S, NonNullable<C>>,
   children: RunbookComponent<S, C>
   mode: string | undefined
 }
@@ -32,7 +32,7 @@ export function DisplayStoryBook<S, C> ( props: SBookProps<S, C> ) {
   const { s, id, opt, children, mode } = props
   console.log ( `display storybook: ${id} ${mode}`, s )
   const [ state, setState ] = useState ( s )
-  const st: RunbookState<S, C> = new RunbookState<S, C> ( state, opt, setState )
+  const st = new RunbookState<S, NonNullable<C>> ( state, opt, setState )
   return <div>
     {display ( st, props, children )}
     <hr/>
