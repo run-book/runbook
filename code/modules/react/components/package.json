@@ -1,7 +1,7 @@
 {
   "name": "@runbook/components",
   "description": "",
-  "version": "0.3.10",
+  "version": "0.3.14",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,9 +17,9 @@
     ]
   },
   "dependencies": {
-    "@runbook/optics": "0.3.10",
-    "@runbook/runbook_state": "0.3.10",
-    "@runbook/storybook": "0.3.10",
+    "@runbook/optics": "0.3.14",
+    "@runbook/runbook_state": "0.3.14",
+    "@runbook/storybook": "0.3.14",
     "debug": "^4.3.4"
   },
   "devDependencies": {

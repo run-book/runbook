@@ -7,27 +7,31 @@ import { Context } from "koa";
 
 export const defaultFiles = new Set ( [ 'index.html', 'default.html' ] );
 export interface ContextAndStats {
+  debug: boolean
   reqPath: string
   reqPathNoTrailing: string
   context: Context
   stats: Stats
 }
-export async function contextAndStats ( context: Context, root: string ): Promise<ContextAndStats> {
+export async function contextAndStats ( context: Context, root: string, debug: boolean ): Promise<ContextAndStats> {
   let reqPath = path.join ( root, context.request.path );
   let reqPathNoTrailing = reqPath.replace ( /\/$/, '' );
   const stats = await fs.stat ( reqPathNoTrailing ).catch ( () => null );
-  // console.log ( 'reqPathNoTrailing', reqPathNoTrailing, 'stats', stats, 'isFile:', stats?.isFile (), 'isDirectory:', stats?.isDirectory () );
-  return { reqPath, context, stats, reqPathNoTrailing }
+  if ( debug ) console.log ( 'reqPathNoTrailing', reqPathNoTrailing, 'stats', stats, 'isFile:', stats?.isFile (), 'isDirectory:', stats?.isDirectory () );
+  return { reqPath, context, stats, reqPathNoTrailing, debug }
 }
 
 export type KoaPartialFunction = PartialFunction<ContextAndStats, Promise<void>>
 export const handleFile: KoaPartialFunction = {
-  isDefinedAt: ( { stats }: ContextAndStats ) => stats?.isFile (),
+  isDefinedAt: ( { stats, debug }: ContextAndStats ) => {
+    if ( debug ) console.log ( `file ${stats?.isFile ()}` );
+    return stats?.isFile ();
+  },
   apply: async ( { context, reqPathNoTrailing }: ContextAndStats ) =>
     serveStatic ( context, reqPathNoTrailing )
 }
 export const notFoundIs404: KoaPartialFunction = {
-  isDefinedAt: ( { stats }: ContextAndStats ) => !stats || !(stats.isDirectory () || stats.isFile ()),
+  isDefinedAt: ( { stats }: ContextAndStats ) => stats === undefined || !stats?.isFile (),
   apply: async ( { context }: ContextAndStats ) => {
     context.status = 404;
   }

@@ -13,7 +13,7 @@ const TextArea = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof TextArea> = {
   title: 'TextArea',
-  component: TextArea,
+  component: TextArea as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -45,7 +45,7 @@ const renderTextAreaAsObj = ( args: TestArgsForTextArea ) => {
 };
 
 export const TextArea_View: Story = {
-  render: renderTextArea,
+  render: renderTextArea as any,
   args: {
     label: "Text area in view mode",
     mode: 'view',
@@ -54,7 +54,7 @@ export const TextArea_View: Story = {
   },
 }
 export const TextArea_Edit: Story = {
-  render: renderTextArea,
+  render: renderTextArea as any,
   args: {
     label: "Text area in edit mode",
     mode: 'edit',
@@ -64,7 +64,7 @@ export const TextArea_Edit: Story = {
 }
 
 export const TextAreaForObj_View: Story = {
-  render: renderTextAreaAsObj,
+  render: renderTextAreaAsObj as any,
   args: {
     label: "Text area for obj in view mode",
     mode: 'view',
@@ -73,7 +73,7 @@ export const TextAreaForObj_View: Story = {
   },
 }
 export const TextAreaForObj_Edit: Story = {
-  render: renderTextAreaAsObj,
+  render: renderTextAreaAsObj as any,
   args: {
     label: "Text area for obj in edit mode",
     mode: 'edit',

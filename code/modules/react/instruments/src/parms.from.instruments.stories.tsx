@@ -13,7 +13,7 @@ const ParamsFromInstrument = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof ParamsFromInstrument> = {
   title: 'ParamsFromInstrument',
-  component: ParamsFromInstrument,
+  component: ParamsFromInstrument as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -35,7 +35,7 @@ interface TestArgsForParams {
 const instrumentL: Optional<TestStateForParams,ScriptInstrument> = focusOn ( identity<TestStateForParams> (), 'instrument' )
 
 
-const render = ( args: TestArgsForParams ) => {
+const render : any= ( args: TestArgsForParams ) => {
   return <DisplayStoryBook s={{ instrument: args.instrument, data: args.params }} opt={instrumentL} mode={args.mode}>{displayParamsFromInstrument<TestStateForParams> ()}</DisplayStoryBook>
 };
 export const LsView: Story = {

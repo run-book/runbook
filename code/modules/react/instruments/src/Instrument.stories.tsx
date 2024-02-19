@@ -16,7 +16,7 @@ const Instrument = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof Instrument> = {
   title: 'Instrument',
-  component: Instrument,
+  component: Instrument as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -46,7 +46,7 @@ const fetchCommandOpt: Optional<TestStateForInstrument, FetchCommand[]> = focusQ
 function scriptInstrument ( mode: string, name: string, id: string, target: string ): RunbookComponent<TestStateForInstrument, Tuple3<ScriptInstrument, any, NameAnd<StatusEndpointData>>> {
   return displayScriptInstrument<TestStateForInstrument> ( fetchCommandOpt, name, id, target )
 }
-const render = ( args: TestArgsForInstrument ) => {
+const render : any= ( args: TestArgsForInstrument ) => {
   return <DisplayStoryBook s={{ instrument: args.instrument, fetchCommands: [], status:{} }} opt={instrumentAndTargetL} mode={args.mode}>
     {scriptInstrument ( args.mode, args.name, 'someId', 'target' )}</DisplayStoryBook>
 };

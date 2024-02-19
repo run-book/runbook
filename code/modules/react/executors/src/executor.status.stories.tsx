@@ -14,7 +14,7 @@ const ExecutorStatus = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof ExecutorStatus> = {
   title: 'ExecutorStatus',
-  component: ExecutorStatus,
+  component: ExecutorStatus as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -33,7 +33,7 @@ const statusL: Optional<TestStateForParams, NameAnd<StatusEndpointData>> =
         focusOn ( identity<TestStateForParams> (), 'status' )
 
 
-const render = ( args: TestArgsForParams ) => {
+const render: any = ( args: TestArgsForParams ) => {
   return <>
     <DisplayStoryBook s={args} opt={statusL} mode='view'>{displayExecutors<TestStateForParams> ()}</DisplayStoryBook></>
 };

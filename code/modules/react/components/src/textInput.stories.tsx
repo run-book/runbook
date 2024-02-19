@@ -12,7 +12,7 @@ const TextInput = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof TextInput> = {
   title: 'TextInput',
-  component: TextInput,
+  component: TextInput as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -34,7 +34,7 @@ interface TestArgsForTextInput {
 
 let textL: Optional<TestStateForTextInput, string> = focusOn ( identity<TestStateForTextInput> (), 'text' )
 
-const render = ( args: TestArgsForTextInput ) => {
+const render: any = ( args: TestArgsForTextInput ) => {
   return <DisplayStoryBook s={{ text: args.text }} opt={textL as any} mode={args.mode}>{labelAnd ( args.label, textInput ({}) )}</DisplayStoryBook>
 };
 

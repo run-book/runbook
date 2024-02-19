@@ -7,7 +7,7 @@ const RefParentChild = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof RefParentChild> = {
   title: 'RefParentChild',
-  component: RefParentChild,
+  component: RefParentChild as any,
 };
 
 export default meta;
@@ -21,7 +21,7 @@ interface TestArgsForRefData {
 }
 
 
-const renderParentChild = ( args: TestArgsForRefData ) => {
+const renderParentChild: any = ( args: TestArgsForRefData ) => {
   const { parent, child } = args
   return displayMereology ( displayMereologyContext ) ( makeConditionToDisplayParentChildRefData, args.order ) ( { q: { parent, child } } );
 }

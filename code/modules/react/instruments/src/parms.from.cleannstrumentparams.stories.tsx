@@ -13,7 +13,7 @@ const ParamsFromCleanInstrumentParams = <S extends any> (): JSX.Element => <div>
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof ParamsFromCleanInstrumentParams> = {
   title: 'ParamsFromCleanInstrumentParams',
-  component: ParamsFromCleanInstrumentParams,
+  component: ParamsFromCleanInstrumentParams as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -36,7 +36,7 @@ const instrumentL: Optional<TestStateForParams, NameAnd<CleanInstrumentParam>> =
 const dataL: Optional<TestStateForParams, NameAnd<string>> = focusOn ( identity<TestStateForParams> (), 'data' )
 const refAndDataL = optionalForRefAndData ( instrumentL, dataL )
 
-const render = ( args: TestArgsForParams ) => {
+const render: any = ( args: TestArgsForParams ) => {
   return <DisplayStoryBook s={{ instrument: args.instrument, data: args.params }} opt={refAndDataL} mode={args.mode}>{displayParamsFromReference<TestStateForParams> ()}</DisplayStoryBook>
 };
 const instrument: NameAnd<CleanInstrumentParam> = { a: { default: 'defAValue', description: 'a' }, b: { default: 'defBValue', description: 'b' } }

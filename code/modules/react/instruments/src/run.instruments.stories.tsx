@@ -15,7 +15,7 @@ const RunInstruments = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof RunInstruments> = {
   title: 'RunInstruments',
-  component: RunInstruments,
+  component: RunInstruments as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -45,7 +45,7 @@ const targetL: Optional<TestStateForParams, any> = focusOn ( identity<TestStateF
 const statusL: Optional<TestStateForParams, NameAnd<StatusEndpointData>> = focusQuery ( identity<TestStateForParams> (), 'status' )
 const instrumentAndTargetL = optionalForTuple3 ( instrumentL, targetL, statusL )
 
-const render = ( args: TestArgsForParams ) => {
+const render: any = ( args: TestArgsForParams ) => {
   return <DisplayStoryBook s={{ instrument: { ...args.instrument, paramData: args.params, result: args.result }, fetchCommands: [], status: {} }}
                            opt={instrumentAndTargetL} mode={args.mode}>{displayRunForInstrument<TestStateForParams> ( fetchCommandsL, args.name, 'someId', 'target' )}</DisplayStoryBook>
 };

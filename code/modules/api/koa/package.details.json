@@ -5,7 +5,8 @@
   "packageJson": {
     "dependencies":    {
       "koa":            "^2.14.2",
-      "koa-bodyparser": "^4.4.0"
+      "koa-bodyparser": "^4.4.0",
+      "@koa/cors": "^5.0.0"
     },
     "devDependencies": {
       "supertest": "^6.3.3"
@@ -13,7 +14,7 @@
     "scripts":         {
     }
   },
-  "links":       [],
+  "links":       ["@runbook/utils"],
   "guards":      {
     "compile": true,
     "publish": true,

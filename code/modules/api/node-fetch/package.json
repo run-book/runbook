@@ -1,7 +1,7 @@
 {
   "name": "@runbook/node-fetch",
   "description": "",
-  "version": "0.3.10",
+  "version": "0.3.14",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {

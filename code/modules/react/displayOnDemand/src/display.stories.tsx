@@ -13,7 +13,7 @@ const Display = (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof Display> = {
   title: 'Display',
-  component: Display,
+  component: Display as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: [ 'autodocs' ],
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
@@ -35,7 +35,7 @@ const dc: DisplayContext<DisplayStoryState> = fixtureDisplayContext<DisplayStory
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduc
 
-const render = ( args: DisplayStoryArgs ) => {
+const render: any = ( args: DisplayStoryArgs ) => {
   return <DisplayStoryBook s={args.data} opt={identity<DisplayStoryState> ()} mode={args.mode}>
     {( st: RunbookState<DisplayStoryState, DisplayStoryState> ) => props =>
       displayOnDemand ( dc, split ( args.parentPath, '.' ), args.item ) ( st ) ( props )}

@@ -8,7 +8,7 @@ const AllDataForRoot = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof AllDataForRoot> = {
   title: 'AllDataForRoot',
-  component: AllDataForRoot,
+  component: AllDataForRoot as any,
 };
 
 export default meta;
@@ -26,21 +26,21 @@ const renderRoot = ( args: TestArgsForRefData ) =>
 const renderFor = ( args: TestArgsForRefData ) =>
   displayAllDataFor ( displayMereologyContext ) ( { thing: args.item } )
 export const Environment: Story = {
-  render: renderRoot,
+  render: renderRoot as any,
   args: {
     item: "environment",
   }
 }
 
 export const Service: Story = {
-  render: renderRoot,
+  render: renderRoot as any,
   args: {
     item: "service",
   }
 }
 
 export const leo: Story = {
-  render: renderFor,
+  render: renderFor as any,
   args: {
     item: 'leo:service'
   }

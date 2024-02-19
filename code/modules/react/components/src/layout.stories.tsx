@@ -13,7 +13,7 @@ import { DisplayStoryBook } from "@runbook/storybook";
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof Layout> = {
   title: 'Layout',
-  component: Layout,
+  component: Layout as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -34,7 +34,7 @@ function makeTestState ( prefix: string, count: number ): TestStateForLayout {
 }
 
 
-const render = ( args: TestArgsForTextInput ) => {
+const render: any = ( args: TestArgsForTextInput ) => {
   return <DisplayStoryBook s={makeTestState ( 'text', 12 )} opt={identity<string[]> ()} mode={args.mode}>{
     st => props => <div><h1>Layout: {JSON.stringify ( args.layout )}</h1> <Layout layout={args.layout || []}>
       {[ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ].map ( i =>

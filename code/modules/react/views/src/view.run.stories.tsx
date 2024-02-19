@@ -14,7 +14,7 @@ const ViewRunComponent = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof ViewRunComponent> = {
   title: 'RunView',
-  component: ViewRunComponent,
+  component: ViewRunComponent as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -39,7 +39,7 @@ const situationL: Optional<TestStateForView, any> = focusOn ( identity<TestState
 const viewAndSituationL = optionalForTuple2 ( viewL, situationL )
 
 
-const render = ( args: TestArgsForView ) => {
+const render : any = ( args: TestArgsForView ) => {
   return <DisplayStoryBook s={{ view: args.view, situation: args.situation }} opt={viewAndSituationL} mode={args.mode}>{runView ( args.name, bc ,name2Instrument)}</DisplayStoryBook>
 };
 

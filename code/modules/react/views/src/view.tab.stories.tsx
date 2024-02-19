@@ -16,7 +16,7 @@ const ViewTabComponent = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof ViewTabComponent> = {
   title: 'ViewTabs',
-  component: ViewTabComponent,
+  component: ViewTabComponent as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -45,7 +45,7 @@ const selectionStateAndViewAndSituationL: Optional<TestStateForView, RefAndData<
         optionalForRefAndData ( selectionStateL, viewAndSituation )
 
 
-const render = ( args: TestArgsForView ) => {
+const render : any= ( args: TestArgsForView ) => {
   const mode = ( ss: SelectionState | undefined ) => ss?.rememberedMode?.[ 'menu.path' ] || 'view';
   return <DisplayStoryBook s={{ view: args.view, situation: args.situation, selectionState: args.selectionState }}
                            opt={selectionStateAndViewAndSituationL}

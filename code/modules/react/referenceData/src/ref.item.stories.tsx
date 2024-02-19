@@ -9,7 +9,7 @@ const RefItem = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof RefItem> = {
   title: 'RefItem',
-  component: RefItem,
+  component: RefItem as any,
 };
 
 export default meta;
@@ -23,7 +23,7 @@ interface TestArgsForRefData {
 }
 
 
-const render = ( args: TestArgsForRefData ) =>
+const render : any= ( args: TestArgsForRefData ) =>
   displayMereology ( displayMereologyContext ) ( makeConditionToDisplayOneRefData, args.order ) ( { q: args.item } )
 export const Environment: Story = {
   render,

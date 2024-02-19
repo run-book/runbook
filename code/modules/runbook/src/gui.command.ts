@@ -23,18 +23,20 @@ function findReactDir ( cwd: string ) {
 export function addGuiCommand ( os: OS, cmd: Command, cleanConfig: CleanConfig, cwd: string, executor: Executor ) {
   cmd.command ( 'gui' ).description ( 'starts the react gui' )
     .option ( '-p|--port <port>', 'port to run on', '3001' )
-    .option ( '---directory', 'directory to run from - for development only' )
+    .option ( '--directory', 'directory to run from - for development only' )
+    .option ( '-d, --debug', 'some debugging on the api' )
     .action ( async ( opts ) => {
       addDebug ( opts.debug )
       const reactDir = opts.directory ? opts.directory : findReactDir ( cwd );
       if ( isErrors ( reactDir ) ) return reactDir.errors.forEach ( e => console.log ( e ) )
       const port = Number.parseInt ( opts.port )
+      const debug = opts.debug === true
       const cacheOptions = makeCacheOptions ()
       const cache: Cache<Execution<[ string, any ]>> = {}
       const nameToInstrument: ( name: string ) => ScriptInstrument = name => cleanConfig.instrument[ name ]
       const executeFn = ( name: string, s: ScriptInstrument ) => ( params: Params ): Execution<[ string, ScriptInstrument ]> =>
         execute ( executor ) ( scriptExecutable ( os, 'api', opts.debug ), 10000, [ name, s ], params )
-      await startKoa ( reactDir, port, defaultHandler (
+      await startKoa ( reactDir, port, debug, defaultHandler (
         getHandler ( '/config', JSON.stringify ( cleanConfig ), 'application/json' ),
         // postHandler ( '/instrument', instrumentBodyHandler ( cwd, cleanConfig ) ),
         executeEndpoint ( '/execute', cacheOptions, nameToInstrument, cache, executeFn ),

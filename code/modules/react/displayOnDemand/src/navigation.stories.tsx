@@ -13,7 +13,7 @@ const Navigation = (): JSX.Element => <div></div>;
 
 const meta: Meta<typeof Navigation> = {
   title: 'Navigation',
-  component: Navigation,
+  component: Navigation as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: [ 'autodocs' ],
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
@@ -35,7 +35,7 @@ type Story = StoryObj<NavigationStoryArgs>;
 
 const nc = fixtureNavContext<NavigationStoryState> ()
 const selectionOpt = focusQuery ( identity<NavigationStoryState> (), 'selected' )
-const render = ( args: NavigationStoryArgs ) => {
+const render: any = ( args: NavigationStoryArgs ) => {
   return <DisplayStoryBook s={{ selected: args.selected }} opt={selectionOpt} mode={undefined}>
     {st => props =>
       navigation ( nc ) ( st ) ( { ...props, parentPath: [], parent: args.data } )}

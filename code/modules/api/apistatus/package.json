@@ -1,7 +1,7 @@
 {
   "name": "@runbook/apistatus",
   "description": "",
-  "version": "0.3.10",
+  "version": "0.3.14",
   "main": "dist/index",
   "types": "dist/index",
   "browserslist": {
@@ -17,7 +17,7 @@
     ]
   },
   "dependencies": {
-    "@runbook/koa": "0.3.10",
+    "@runbook/koa": "0.3.14",
     "debug": "^4.3.4"
   },
   "devDependencies": {

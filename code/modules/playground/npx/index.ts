@@ -7,7 +7,7 @@ import { ping, status } from "@runbook/apistatus";
 const port = process.argv[ 2 ] ? Number.parseInt ( process.argv[ 2 ] ) : 3001
 
 console.log ( 'port', port )
-startKoa ( process.cwd (), port, defaultHandler (
+startKoa ( process.cwd (), port, true, defaultHandler (
   status ( '/api', () => ({}) ),
   ping ( "/api" ) ) )
   .then ( () => {

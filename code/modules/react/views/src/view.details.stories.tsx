@@ -12,7 +12,7 @@ const ViewDetailsComponent = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof ViewDetailsComponent> = {
   title: 'ViewDetails',
-  component: ViewDetailsComponent,
+  component: ViewDetailsComponent as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -33,7 +33,7 @@ interface TestArgsForView {
 const viewL: Optional<TestStateForView, View> = focusOn ( identity<TestStateForView> (), 'view' )
 
 
-const render = ( args: TestArgsForView ) => {
+const render: any = ( args: TestArgsForView ) => {
   return <DisplayStoryBook s={{ view: args.view }} opt={viewL} mode={args.mode}>{displayView ( args.name )}</DisplayStoryBook>
 };
 export const ViewInViewMode: Story = {

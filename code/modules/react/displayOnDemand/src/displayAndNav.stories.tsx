@@ -14,7 +14,7 @@ const DisplayAndNav = (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof DisplayAndNav> = {
   title: 'DisplayAndNav',
-  component: DisplayAndNav,
+  component: DisplayAndNav as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: [ 'autodocs' ],
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
@@ -62,14 +62,14 @@ const render = ( args: DisplayAndNavStoryArgs ) => {
 
 
 export const Views: Story = {
-  render: render,
+  render: render as any,
   args: {
     path: 'views',
     data: sampleDisplay
   }
 }
 export const ViewV1InViewMode: Story = {
-  render: render,
+  render: render as any,
   args: {
     path: 'views.V1',
     mode: 'view',
@@ -78,7 +78,7 @@ export const ViewV1InViewMode: Story = {
 }
 
 export const ViewV2InEditMode: Story = {
-  render: render,
+  render: render as any,
   args: {
     path: 'views.V2',
     mode: 'edit',
@@ -88,42 +88,42 @@ export const ViewV2InEditMode: Story = {
 
 
 export const Instruments: Story = {
-  render: render,
+  render: render as any,
   args: {
     path: 'instruments',
     data: sampleDisplay
   }
 }
 export const InstrumentI1: Story = {
-  render: render,
+  render: render as any,
   args: {
     path: 'instruments.I1',
     data: sampleDisplay
   }
 }
 export const Ontology: Story = {
-  render: render,
+  render: render as any,
   args: {
     path: 'ontology',
     data: sampleDisplay
   }
 }
 export const Mereology: Story = {
-  render: render,
+  render: render as any,
   args: {
     path: 'ontology.mereology',
     data: sampleDisplay
   }
 }
 export const Reference: Story = {
-  render: render,
+  render: render as any,
   args: {
     path: 'ontology.reference',
     data: sampleDisplay
   }
 }
 export const Inheritance: Story = {
-  render: render,
+  render: render as any,
   args: {
     path: 'ontology.inheritance',
     data: sampleDisplay

@@ -3,7 +3,9 @@ import Koa from 'koa';
 import http from 'http';
 import { chainOfResponsibility } from "@runbook/utils";
 import { contextAndStats, ContextAndStats, defaultShowsError, directoryServesDefaultsIfExists, handleFile, KoaPartialFunction, notFoundIs404 } from "./koaPartialFunction";
-const bodyParser = require('koa-bodyparser');
+const cors = require('@koa/cors');
+
+const bodyParser = require ( 'koa-bodyparser' );
 
 export interface KoaAndServer {
   app: Koa
@@ -19,11 +21,12 @@ export const defaultHandler = ( ...handlers: KoaPartialFunction[] ): ( from: Con
   )
 
 
-export function startKoa ( root: string, port: number, handler?: ( c: ContextAndStats ) => Promise<void> ): Promise<KoaAndServer> {
+export function startKoa ( root: string, port: number, debug: boolean, handler?: ( c: ContextAndStats ) => Promise<void> ): Promise<KoaAndServer> {
   const app = new Koa ();
-  app.use(bodyParser());
+  app.use ( bodyParser () );
+  app.use(cors());
   const realHandler = handler || defaultHandler ();
-  app.use ( async ctx => realHandler ( await contextAndStats ( ctx, root ) ) )
+  app.use ( async ctx => realHandler ( await contextAndStats ( ctx, root, debug ) ) )
   const server = http.createServer ( app.callback () );
   return new Promise<KoaAndServer> ( ( resolve, reject ) => {
     server.listen ( port, () => {

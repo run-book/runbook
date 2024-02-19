@@ -12,7 +12,7 @@ const Menu = <S extends any> (): JSX.Element => <div></div>;
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof Menu> = {
   title: 'Menu',
-  component: Menu,
+  component: Menu as any,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -36,7 +36,7 @@ const selectionL: Optional<TestStateForDisplay, SelectionState> = focusOn ( iden
 const dataL: Optional<TestStateForDisplay, NameAnd<any>> = focusOn ( identity<TestStateForDisplay> (), 'data' )
 const refAndDataL: Optional<TestArgsForDisplay, RefAndDataForDisplay>= optionalForRefAndData(selectionL,dataL)
 
-const render = ( args: TestArgsForDisplay ) => {
+const render : any= ( args: TestArgsForDisplay ) => {
   const initial: TestStateForDisplay = args
   const menuFns: MenuAndDisplayFnsForRunbook<TestStateForDisplay, any> = bootstrapMenu<TestStateForDisplay, any> ()
   const md: MenuDefnForRunbook<TestStateForDisplay> = menuDefn ( fixtureDisplayWithMode ( selectionL ) )
